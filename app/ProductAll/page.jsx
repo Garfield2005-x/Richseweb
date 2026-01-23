@@ -63,9 +63,21 @@ function page() {
 />
 
 <div className="absolute top-4 left-4 bg-[#c3a2ab] text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider z-10">Limited</div>
-<button className="absolute inset-x-4 bottom-4 bg-white/90 backdrop-blur-md text-[#161314] py-4 rounded-xl font-bold text-sm tracking-widest uppercase opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 shadow-xl z-10">
-                    Quick Add
-                </button>
+<Link
+  href="/Product"
+  className="absolute inset-x-4 bottom-4
+             block text-center
+             bg-white/90 backdrop-blur-md
+             text-[#161314]
+             py-4 rounded-xl
+             font-bold text-sm tracking-widest uppercase
+             opacity-0 translate-y-4
+             group-hover:opacity-100 group-hover:translate-y-0
+             transition-all duration-500
+             shadow-xl z-10"
+>
+  Quick Add
+</Link>
 </div>
 <div className="space-y-1 px-1">
 <h3 className="font-display text-xl font-bold">Night Repair Oil</h3>

@@ -48,7 +48,7 @@ function Footer() {
                           <li><a className="hover:text-primary transition-colors" href="#">Careers</a></li>
                           <li>
   <Link
-    href="/Contace"
+    href="/Contact"
     className="transition-colors hover:text-primary"
   >
     Contact
