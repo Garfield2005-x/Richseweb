@@ -1,9 +1,43 @@
+"use client";
+import { useState } from "react";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Link from 'next/link'
 
 export default function Home() {
-     
+      const [email, setEmail] = useState("");
+      const [message, setMessage] = useState("");
+      const [loading, setLoading] = useState(false);
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setMessage("");
+
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+  alert("สมัครสำเร็จ! กรุณาตรวจสอบอีเมล 🎉");
+  setEmail("");
+} else {
+  alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
+}
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      setMessage("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้");
+    }
+
+    setLoading(false);
+  };
 
   return (
     <div>
@@ -88,7 +122,7 @@ export default function Home() {
 <div>
 <p className="text-white font-bold">Featured Product</p>
 <p className="text-white/80 text-sm">Gold Radiance Serum</p>
-</div>
+</div>  
 <div className="text-white font-display text-xl">$120</div>
 </div>
 </div>
@@ -149,16 +183,25 @@ export default function Home() {
 {/* <!-- Product Card 1 --> */}
 <div className="min-w-75 group">
 <div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-gray-100 mb-4">
-<div
-  className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-  data-alt="Gold Radiance Serum luxury bottle"
-  style={{ backgroundImage: "url('/G11.png')" }}
-></div>
+<Link href="/Product1"><div
+      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+      data-alt="Night Repair Oil evening glow"
+      style={{ backgroundImage: "url('/G11.png')" }}
+    ></div></Link>
 
 <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Top Rated</div>
-<button className="absolute bottom-4 left-4 right-4 bg-white text-[#161314] py-3 rounded-xl font-bold text-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl">
-                            Quick Add
-                        </button>
+<Link
+  href="/Product1"
+  className="absolute bottom-4 left-4 right-4
+             bg-white text-[#161314]
+             py-3 rounded-xl font-bold text-sm
+             opacity-0 translate-y-4
+             group-hover:opacity-100 group-hover:translate-y-0
+             transition-all duration-300
+             shadow-xl text-center"
+>
+  Quick Add
+</Link>
 </div>
 <div className="space-y-1">
 <p className="font-display text-lg font-bold">Gold Radiance Serum</p>
@@ -169,15 +212,24 @@ export default function Home() {
 {/* <!-- Product Card 2 --> */}
 <div className="min-w-75 group">
   <div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-gray-100 mb-4">
-    <div
+    <Link href="/Product3"><div
       className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-      data-alt="Deep Hydration Cream rich texture"
+      data-alt="Night Repair Oil evening glow"
       style={{ backgroundImage: "url('/G12.png')" }}
-    ></div>
+    ></div></Link>
 
-    <button className="absolute bottom-4 left-4 right-4 bg-white text-[#161314] py-3 rounded-xl font-bold text-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl">
-      Quick Add
-    </button>
+    <Link
+  href="/Product3"
+  className="absolute bottom-4 left-4 right-4
+             bg-white text-[#161314]
+             py-3 rounded-xl font-bold text-sm
+             opacity-0 translate-y-4
+             group-hover:opacity-100 group-hover:translate-y-0
+             transition-all duration-300
+             shadow-xl text-center"
+>
+  Quick Add
+</Link>
   </div>
 
   <div className="space-y-1">
@@ -190,11 +242,11 @@ export default function Home() {
 {/* <!-- Product Card 3 --> */}
 <div className="min-w-75 group">
   <div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-gray-100 mb-4">
-    <div
+    <Link href="/Product"><div
       className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
       data-alt="Night Repair Oil evening glow"
       style={{ backgroundImage: "url('/G13.png')" }}
-    ></div>
+    ></div></Link>
 
     <div className="absolute top-4 left-4 bg-[#c3a2ab] text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
       Limited Edition
@@ -224,15 +276,24 @@ export default function Home() {
 {/* <!-- Product Card 4 --> */}
 <div className="min-w-75 group">
   <div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-gray-100 mb-4">
-    <div
+    <Link href="/Product2"><div
       className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-      data-alt="Gentle Cleanser soft focus"
+      data-alt="Night Repair Oil evening glow"
       style={{ backgroundImage: "url('/G14.png')" }}
-    ></div>
+    ></div></Link>
 
-    <button className="absolute bottom-4 left-4 right-4 bg-white text-[#161314] py-3 rounded-xl font-bold text-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl">
-      Quick Add
-    </button>
+    <Link
+  href="/Product2"
+  className="absolute bottom-4 left-4 right-4
+             bg-white text-[#161314]
+             py-3 rounded-xl font-bold text-sm
+             opacity-0 translate-y-4
+             group-hover:opacity-100 group-hover:translate-y-0
+             transition-all duration-300
+             shadow-xl text-center"
+>
+  Quick Add
+</Link>
   </div>
 
   <div className="space-y-1">
@@ -408,20 +469,33 @@ export default function Home() {
       Receive early access to new rituals, exclusive events, and expert skincare advice.
     </p>
 
-    <form className="flex flex-col md:flex-row gap-4 max-w-lg mx-auto">
-      <input
-        type="email"
-        placeholder="Your email address"
-        className="flex-1 rounded-xl bg-white dark:bg-background-dark border-none focus:ring-2 focus:ring-primary px-6 py-4"
-      />
-
-      <button
-        type="submit"
-        className="bg-[#c3a2ab] text-white font-bold px-10 py-4 rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 transition-all"
+    <form
+        onSubmit={handleSubmit}
+        className="flex flex-col md:flex-row gap-4 max-w-lg mx-auto"
       >
-        Subscribe
-      </button>
-    </form>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Your email address"
+          className="flex-1 rounded-xl bg-white border-none focus:ring-2 focus:ring-primary px-6 py-4"
+        />
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-[#c3a2ab] text-white font-bold px-10 py-4 rounded-xl shadow-lg hover:opacity-90 transition-all disabled:opacity-50"
+        >
+          {loading ? "Sending..." : "Subscribe"}
+        </button>
+
+        {message && (
+          <p className="text-sm mt-2 w-full text-center">
+            {message}
+          </p>
+        )}
+      </form>
 
     <p className="text-[10px] text-gray-400 mt-6 uppercase tracking-widest">
       Privacy Respected. Unsubscribe Anytime.

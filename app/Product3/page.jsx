@@ -20,7 +20,7 @@ function page() {
     data-alt="Premium glass bottle of Lumiere serum on a marble surface"
     style={{
       backgroundImage:
-        "url('/G13.png')",
+        "url('/G12.png')",
     }}
   />
 </div>

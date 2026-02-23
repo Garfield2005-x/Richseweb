@@ -8,7 +8,7 @@ function Navbar() {
       
       <div className="max-w-360 mx-auto px-6 md:px-10 py-4 flex items-center justify-between">
         <div className="flex items-center gap-10">
-          <Link className="flex items-center gap-2 group" href="/">
+          <Link className="flex items-center gap-2 group" href="/  ">
            
               <div className="h-14 w-12">
  <img src="/logo.png" alt="Logo" className="h-full w-auto"/>

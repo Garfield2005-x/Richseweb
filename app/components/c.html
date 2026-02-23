@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout | Richse Luxury Skincare</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;family=Noto+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#b88b8d",
+                        "off-white": "#faf9f8",
+                        "dusty-rose": "#c49293",
+                        "rose-gold": "#d4a3a5",
+                        "rose-gold-dark": "#b88b8d",
+                        "text-main": "#2d2425",
+                        "luxury-white": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Noto Serif", "serif"],
+                        "sans": ["Noto Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #faf9f8;
+        }
+        .elegant-underline {
+            @apply w-full bg-transparent border-0 border-b border-rose-gold/30 px-0 py-2 text-sm text-text-main placeholder:text-text-main/20 focus:border-rose-gold focus:ring-0 transition-all;
+        }
+        .input-label {
+            @apply block text-[9px] uppercase tracking-[0.2em] text-text-main/40 font-semibold mb-1;
+        }
+        .payment-option {
+            @apply flex items-center justify-between py-6 border-b border-rose-gold/10 cursor-pointer transition-all;
+        }
+        .payment-option.active .indicator {
+            @apply border-[5px] border-rose-gold;
+        }
+        .indicator {
+            @apply size-4 rounded-full border border-rose-gold/30 transition-all;
+        }
+    </style>
+</head>
+<body class="font-sans text-text-main selection:bg-rose-gold/20 min-h-screen">
+<main class="max-w-6xl mx-auto px-8 py-12 md:py-24">
+<div class="flex justify-center mb-24">
+<div class="flex items-center gap-3">
+<div class="size-7 text-rose-gold-dark">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"></path>
+</svg>
+</div>
+<span class="font-display text-2xl font-light tracking-[0.15em] text-text-main uppercase">Richse</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-24">
+<div class="lg:col-span-7 space-y-20">
+<section>
+<h2 class="font-display text-2xl font-light mb-12 tracking-wide">Shipping Details</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10">
+<div class="md:col-span-2">
+<label class="input-label">Full Name</label>
+<input class="elegant-underline" type="text" value="Eleanor Thorne"/>
+</div>
+<div class="md:col-span-2">
+<label class="input-label">Address</label>
+<input class="elegant-underline" type="text" value="742 Luxury Lane, Suite 402"/>
+</div>
+<div>
+<label class="input-label">City</label>
+<input class="elegant-underline" type="text" value="Beverly Hills"/>
+</div>
+<div>
+<label class="input-label">Zip Code</label>
+<input class="elegant-underline" type="text" value="90210"/>
+</div>
+<div>
+<label class="input-label">Country</label>
+<input class="elegant-underline" type="text" value="United States"/>
+</div>
+<div>
+<label class="input-label">Phone</label>
+<input class="elegant-underline" type="tel" value="+1 (555) 892-0431"/>
+</div>
+<div class="md:col-span-2">
+<label class="input-label">Special Instructions</label>
+<textarea class="elegant-underline h-12 resize-none pt-2" placeholder="Note to store..."></textarea>
+</div>
+</div>
+</section>
+<section>
+<h2 class="font-display text-2xl font-light mb-8 tracking-wide">Delivery Method</h2>
+<div class="flex items-center justify-between py-6 border-b border-rose-gold/10">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-rose-gold text-lg">storm</span>
+<span class="text-sm font-light tracking-wide italic">Signature Ritual Delivery (2-3 Days)</span>
+</div>
+<span class="text-[10px] uppercase tracking-widest text-rose-gold-dark font-semibold">Complimentary</span>
+</div>
+</section>
+<section>
+<h2 class="font-display text-2xl font-light mb-4 tracking-wide">Payment Method</h2>
+<div class="">
+<div class="payment-option active">
+<div class="flex items-center gap-6">
+<div class="w-10 h-6 bg-text-main/5 flex items-center justify-center text-[8px] text-text-main font-bold tracking-widest border border-text-main/10">VISA</div>
+<div class="flex flex-col">
+<span class="text-sm font-light">Ending in 4429</span>
+<span class="text-[9px] text-text-main/40 uppercase tracking-widest">Expires 12/26</span>
+</div>
+</div>
+<div class="indicator"></div>
+</div>
+<div class="payment-option">
+<div class="flex items-center gap-6">
+<div class="w-10 h-6 flex items-center justify-center overflow-hidden grayscale">
+<svg class="h-4" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.5 5h75c2.5 0 4.5 2 4.5 4.5v21c0 2.5-2 4.5-4.5 4.5h-75C10 35 8 33 8 30.5v-21C8 7 10 5 12.5 5z" fill="#003D6B" opacity="0.2"></path>
+<path d="M25 10c-2 0-3.5 1.5-3.5 3.5s1.5 3.5 3.5 3.5h10c2 0 3.5-1.5 3.5-3.5S37 10 35 10H25z" fill="#003D6B"></path>
+<path d="M65 23c2 0 3.5-1.5 3.5-3.5s-1.5-3.5-3.5-3.5h-10c-2 0-3.5 1.5-3.5 3.5s1.5 3.5 3.5 3.5h10z" fill="#003D6B"></path>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-light">PromptPay QR Code</span>
+<span class="text-[9px] text-text-main/40 uppercase tracking-widest">Instant bank transfer via QR</span>
+</div>
+</div>
+<div class="indicator"></div>
+</div>
+</div>
+</section>
+</div>
+<div class="lg:col-span-5">
+<div class="sticky top-12 space-y-12">
+<div class="pb-8">
+<h3 class="font-display text-xl font-light mb-10 tracking-wide">Bag Summary</h3>
+<div class="space-y-8">
+<div class="flex items-start gap-6">
+<div class="size-24 bg-white border border-rose-gold/5 overflow-hidden flex-shrink-0">
+<img alt="Serum" class="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEkbJh8VlLWboC1HOSeXbG2KzmwKvZD7KE590snCZntmm-593HiRwaF44kHPiA20sKMu7OBnHlv530wWFCT2qKe0WVApQSaDK58dPT_TCEOrvFR3ENk2czH_ZL5iz5gmpjd2R0Cnq-iux1GiHFrrWk-gC-ynQtomNgmzM0SCU83de4Q3M7SnGBC4GUdaNJJVMNDXdFCukIQUceWQTe73UbJuSa0RQ4E4ZRNT5h2p_QvNfKr39sfgp9huKcl43GTVbi6ILw4LUCoOQ"/>
+</div>
+<div class="flex-1">
+<h4 class="font-display text-sm font-light tracking-wide text-text-main">Gold Radiance Serum</h4>
+<p class="text-[10px] text-text-main/40 uppercase tracking-widest mt-1">30ml / Quantity 1</p>
+<p class="text-sm font-light mt-2">$120.00</p>
+</div>
+</div>
+<div class="flex items-start gap-6">
+<div class="size-24 bg-white border border-rose-gold/5 overflow-hidden flex-shrink-0">
+<img alt="Cream" class="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9gK41F_E3KD9aC1-KgzvNdSocELgUPFYmEDXHgvfZ_cBwy1wHh8YOsBDjrUmYLbErezeDaa6cQIsN5BmgWB3CSEWPYNzByAseB-v23CHPZgg_GfezQD3stfC0l8subfh9acMYDmT75w2hTWNs29l5TqlJDCRAwYuKDiqdPepdFz0amF0WdbsaRR70WSNBU3AuaqTkWX5U-zM8oe4hoscUmDZzxLIBnIjC0NMBGfCxtjabNNCC9-djscoZxuE731tFXwhOsec9QFg"/>
+</div>
+<div class="flex-1">
+<h4 class="font-display text-sm font-light tracking-wide text-text-main">Deep Hydration Cream</h4>
+<p class="text-[10px] text-text-main/40 uppercase tracking-widest mt-1">50ml / Quantity 1</p>
+<p class="text-sm font-light mt-2">$95.00</p>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-4 border-t border-rose-gold/10 pt-10">
+<div class="flex justify-between text-sm font-light">
+<span class="text-text-main/60">Subtotal</span>
+<span class="tracking-wider">215.00</span>
+</div>
+<div class="flex justify-between text-sm font-light">
+<span class="text-text-main/60">Shipping</span>
+<span class="text-[10px] uppercase tracking-widest text-rose-gold-dark font-medium">Complimentary</span>
+</div>
+<div class="flex justify-between text-sm font-light">
+<span class="text-text-main/60">Taxes</span>
+<span class="tracking-wider">18.27</span>
+</div>
+<div class="flex justify-between text-lg pt-6 border-t border-rose-gold/10">
+<span class="font-display font-light tracking-widest uppercase text-sm">Total</span>
+<span class="font-display text-xl tracking-tight">$233.27</span>
+</div>
+</div>
+<div class="space-y-6">
+<button class="w-full bg-dusty-rose text-white py-5 font-light tracking-[0.2em] uppercase text-xs hover:bg-rose-gold transition-colors">
+                        Place Order
+                    </button>
+<div class="flex flex-col items-center gap-4">
+<p class="text-[9px] text-text-main/40 uppercase tracking-[0.2em] text-center">
+                            Secure Encrypted Checkout
+                        </p>
+<p class="text-[9px] uppercase tracking-[0.2em] text-rose-gold-dark/60 font-medium">
+                            Need Assistance? <span class="border-b border-rose-gold-dark/30 cursor-pointer">Contact Concierge</span>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+</body></html>

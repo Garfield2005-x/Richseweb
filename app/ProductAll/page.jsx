@@ -28,9 +28,21 @@ function page() {
   style={{ backgroundImage: "url('/G11.png')" }}
 />
 
-<button className="absolute inset-x-4 bottom-4 bg-white/90 backdrop-blur-md text-[#161314] py-4 rounded-xl font-bold text-sm tracking-widest uppercase opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 shadow-xl z-10">
-                    Quick Add
-                </button>
+<Link
+  href="/Product1"
+  className="absolute inset-x-4 bottom-4
+             block text-center
+             bg-white/90 backdrop-blur-md
+             text-[#161314]
+             py-4 rounded-xl
+             font-bold text-sm tracking-widest uppercase
+             opacity-0 translate-y-4
+             group-hover:opacity-100 group-hover:translate-y-0
+             transition-all duration-500
+             shadow-xl z-10"
+>
+  Quick Add
+</Link>
 </div>
 <div className="space-y-1 px-1">
 <h3 className="font-display text-xl font-bold">Gold Radiance Serum</h3>
@@ -45,9 +57,21 @@ function page() {
   style={{ backgroundImage: "url('/G12.png')" }}
 />
 
-<button className="absolute inset-x-4 bottom-4 bg-white/90 backdrop-blur-md text-[#161314] py-4 rounded-xl font-bold text-sm tracking-widest uppercase opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 shadow-xl z-10">
-                    Quick Add
-                </button>
+<Link
+  href="/Product3"
+  className="absolute inset-x-4 bottom-4
+             block text-center
+             bg-white/90 backdrop-blur-md
+             text-[#161314]
+             py-4 rounded-xl
+             font-bold text-sm tracking-widest uppercase
+             opacity-0 translate-y-4
+             group-hover:opacity-100 group-hover:translate-y-0
+             transition-all duration-500
+             shadow-xl z-10"
+>
+  Quick Add
+</Link>
 </div>
 <div className="space-y-1 px-1">
 <h3 className="font-display text-xl font-bold">Deep Hydration Cream</h3>
@@ -92,9 +116,21 @@ function page() {
   style={{ backgroundImage: "url('/G14.png')" }}
 />
 
-<button className="absolute inset-x-4 bottom-4 bg-white/90 backdrop-blur-md text-[#161314] py-4 rounded-xl font-bold text-sm tracking-widest uppercase opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 shadow-xl z-10">
-                    Quick Add
-                </button>
+<Link
+  href="/Product2"
+  className="absolute inset-x-4 bottom-4
+             block text-center
+             bg-white/90 backdrop-blur-md
+             text-[#161314]
+             py-4 rounded-xl
+             font-bold text-sm tracking-widest uppercase
+             opacity-0 translate-y-4
+             group-hover:opacity-100 group-hover:translate-y-0
+             transition-all duration-500
+             shadow-xl z-10"
+>
+  Quick Add
+</Link>
 </div>
 <div className="space-y-1 px-1">
 <h3 className="font-display text-xl font-bold">Gentle Cleanser</h3>
@@ -109,9 +145,21 @@ function page() {
   style={{ backgroundImage: "url('/G11.png')" }}
 />
 
-<button className="absolute inset-x-4 bottom-4 bg-white/90 backdrop-blur-md text-[#161314] py-4 rounded-xl font-bold text-sm tracking-widest uppercase opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 shadow-xl z-10">
-                    Quick Add
-                </button>
+<Link
+  href="/Product1"
+  className="absolute inset-x-4 bottom-4
+             block text-center
+             bg-white/90 backdrop-blur-md
+             text-[#161314]
+             py-4 rounded-xl
+             font-bold text-sm tracking-widest uppercase
+             opacity-0 translate-y-4
+             group-hover:opacity-100 group-hover:translate-y-0
+             transition-all duration-500
+             shadow-xl z-10"
+>
+  Quick Add
+</Link>
 </div>
 <div className="space-y-1 px-1">
 <h3 className="font-display text-xl font-bold">L éclat Essence</h3>
@@ -125,10 +173,21 @@ function page() {
   className="absolute inset-0 bg-cover bg-center product-card-image"
   style={{ backgroundImage: "url('/G12.png')" }}
 />
-
-<button className="absolute inset-x-4 bottom-4 bg-white/90 backdrop-blur-md text-[#161314] py-4 rounded-xl font-bold text-sm tracking-widest uppercase opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 shadow-xl z-10">
-                    Quick Add
-                </button>
+<Link
+  href="/Product3"
+  className="absolute inset-x-4 bottom-4
+             block text-center
+             bg-white/90 backdrop-blur-md
+             text-[#161314]
+             py-4 rounded-xl
+             font-bold text-sm tracking-widest uppercase
+             opacity-0 translate-y-4
+             group-hover:opacity-100 group-hover:translate-y-0
+             transition-all duration-500
+             shadow-xl z-10"
+>
+  Quick Add
+</Link>
 </div>
 <div className="space-y-1 px-1">
 <h3 className="font-display text-xl font-bold">Restorative Balm</h3>

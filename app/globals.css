@@ -4,6 +4,14 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #b88b8d;
+  --off-white: #faf9f8;
+  --dusty-rose: #c49293;
+  --rose-gold: #d4a3a5;
+  --rose-gold-dark: #b88b8d;
+  --text-main: #2d2425;
+  --luxury-white: #ffffff;
+  
 }
 
 /* Dark mode */

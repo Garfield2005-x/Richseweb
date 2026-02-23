@@ -20,7 +20,7 @@ function page() {
     data-alt="Premium glass bottle of Lumiere serum on a marble surface"
     style={{
       backgroundImage:
-        "url('/G13.png')",
+        "url('/G11.png')",
     }}
   />
 </div>
@@ -65,7 +65,7 @@ function page() {
 <div className="flex flex-col gap-6">
 <div>
 <span className="text-xs uppercase tracking-[0.2em] text-[#c3a2ab] font-bold mb-3 block">The Radiance Collection</span>
-<h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-[#161314] dark:text-white leading-tight mb-4">Lumière Regenerating Serum</h2>
+<h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-[#161314] dark:text-white leading-tight mb-4">Midnight Renewal Cream</h2>
 <div className="flex items-center gap-4">
 <div className="flex items-center text-[#C9A961]">
 <span className="material-symbols-outlined fill-1">star</span>
