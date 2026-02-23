@@ -1,7 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
+"use client";
 import Link from 'next/link'
+import { signIn, signOut, useSession } from "next-auth/react";
+
 
 function Navbar() {
+  const { data: session } = useSession();
+
   return (
     
     <><header className="sticky top-0 z-50 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-[#efecec] dark:border-white/10">
@@ -35,9 +40,23 @@ function Navbar() {
             <span className="material-symbols-outlined text-sm opacity-60">search</span>
             <input className="bg-transparent border-none focus:ring-0 text-sm placeholder:text-gray-400 w-32 md:w-48" placeholder="Search rituals..." type="text" />
           </div>
-          <button className="p-2 hover:bg-primary/10 rounded-full transition-colors">
-            <span className="material-symbols-outlined">person</span>
-          </button>
+          <>
+      {session ? (
+        <button
+          onClick={() => signOut()}
+          className="p-2 hover:bg-primary/10 rounded-full transition-colors"
+        >
+          <span className="material-symbols-outlined">logout</span>
+        </button>
+      ) : (
+        <button
+          onClick={() => signIn("google")}
+          className="p-2 hover:bg-primary/10 rounded-full transition-colors"
+        >
+          <span className="material-symbols-outlined">person</span>
+        </button>
+      )}
+    </>
           <button className="p-2 hover:bg-primary/10 rounded-full transition-colors relative">
             <span className="material-symbols-outlined">shopping_bag</span>
             <span className="absolute top-1 right-1 size-2 bg-primary rounded-full"></span>

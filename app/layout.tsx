@@ -1,7 +1,9 @@
 /* eslint-disable @next/next/no-page-custom-font */
+
 import type { ReactNode } from "react";
 import { Noto_Serif, Noto_Sans } from "next/font/google";
 import "./globals.css";
+import Providers from "./Providers"
 
 const notoSerif = Noto_Serif({
   variable: "--font-display",
@@ -36,7 +38,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${notoSerif.variable} ${notoSans.variable} antialiased`}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
