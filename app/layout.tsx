@@ -33,6 +33,14 @@ export const metadata = {
       "Luxury fashion and skincare curated for modern elegance.",
     url: "https://www.richseofficial.com",
     siteName: "Richse Official",
+    images: [
+      {
+        url: "/og-image.png", // ต้องมีไฟล์นี้ใน public
+        width: 1200,
+        height: 630,
+        alt: "Richse Official",
+      },
+    ],
     type: "website",
   },
 };
