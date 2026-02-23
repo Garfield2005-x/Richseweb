@@ -1,4 +1,7 @@
 "use client";
+
+import { products } from "@/data/products"
+import { useCart } from "@/context/CartContext"
 import { useState } from "react";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
@@ -8,6 +11,8 @@ export default function Home() {
       const [email, setEmail] = useState("");
       const [message, setMessage] = useState("");
       const [loading, setLoading] = useState(false);
+      const { addToCart } = useCart()
+ 
 
       const handleSubmit = async (e) => {
         e.preventDefault();
@@ -180,128 +185,72 @@ export default function Home() {
 </div>
 </div>
 <div className="flex gap-6 px-6 md:px-20 overflow-x-auto no-scrollbar pb-10">
-{/* <!-- Product Card 1 --> */}
-<div className="min-w-75 group">
-<div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-gray-100 mb-4">
-<Link href="/Product1"><div
-      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-      data-alt="Night Repair Oil evening glow"
-      style={{ backgroundImage: "url('/G11.png')" }}
-    ></div></Link>
 
-<div className="absolute top-4 left-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Top Rated</div>
-<Link
-  href="/Product1"
-  className="absolute bottom-4 left-4 right-4
-             bg-white text-[#161314]
-             py-3 rounded-xl font-bold text-sm
-             opacity-0 translate-y-4
-             group-hover:opacity-100 group-hover:translate-y-0
-             transition-all duration-300
-             shadow-xl text-center"
->
-  Quick Add
-</Link>
-</div>
-<div className="space-y-1">
-<p className="font-display text-lg font-bold">Gold Radiance Serum</p>
-<p className="text-sm text-gray-500">Intensive brightening &amp; lift</p>
-<p className="font-bold text-[#c3a2ab] mt-2">$120.00</p>
-</div>
-</div>
-{/* <!-- Product Card 2 --> */}
-<div className="min-w-75 group">
-  <div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-gray-100 mb-4">
-    <Link href="/Product3"><div
-      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-      data-alt="Night Repair Oil evening glow"
-      style={{ backgroundImage: "url('/G12.png')" }}
-    ></div></Link>
 
-    <Link
-  href="/Product3"
-  className="absolute bottom-4 left-4 right-4
-             bg-white text-[#161314]
-             py-3 rounded-xl font-bold text-sm
-             opacity-0 translate-y-4
-             group-hover:opacity-100 group-hover:translate-y-0
-             transition-all duration-300
-             shadow-xl text-center"
->
-  Quick Add
-</Link>
-  </div>
 
-  <div className="space-y-1">
-    <p className="font-display text-lg font-bold">Deep Hydration Cream</p>
-    <p className="text-sm text-gray-500">24-hour moisture lock</p>
-    <p className="font-bold text-[#c3a2ab] mt-2">$95.00</p>
-  </div>
-</div>
+<div className="overflow-x-auto">
+      <div className="flex gap-6 w-max px-6">
 
-{/* <!-- Product Card 3 --> */}
-<div className="min-w-75 group">
-  <div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-gray-100 mb-4">
-    <Link href="/Product"><div
-      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-      data-alt="Night Repair Oil evening glow"
-      style={{ backgroundImage: "url('/G13.png')" }}
-    ></div></Link>
+        {products.map((product) => (
+          <div key={product.id} className="min-w-75 group">
 
-    <div className="absolute top-4 left-4 bg-[#c3a2ab] text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
-      Limited Edition
+            {/* รูปสินค้า */}
+            <div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-gray-100 mb-4">
+
+              <Link href={`/Product${product.id}`}>
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                  style={{ backgroundImage: `url('${product.image}')` }}
+                />
+              </Link>
+
+              {/* ป้าย Limited (ตัวอย่าง: แสดงเฉพาะ id 3) */}
+              {product.id === 3 && (
+                <div className="absolute top-4 left-4 bg-[#c3a2ab] text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                  Limited Edition
+                </div>
+              )}
+
+              {/* Quick Add */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  addToCart(product)
+                }}
+                className="absolute bottom-4 left-4 right-4
+                           bg-white text-[#161314]
+                           py-3 rounded-xl font-bold text-sm
+                           opacity-0 translate-y-4
+                           group-hover:opacity-100 group-hover:translate-y-0
+                           transition-all duration-300
+                           shadow-xl text-center"
+              >
+                Quick Add
+              </button>
+            </div>
+
+            {/* รายละเอียด */}
+            <div className="space-y-1">
+              <p className="font-display text-lg font-bold">
+                {product.name}
+              </p>
+
+              <p className="text-sm text-gray-500">
+                {product.taxe}
+              </p>
+
+              <p className="font-bold text-[#c3a2ab] mt-2">
+                ${product.price}
+              </p>
+            </div>
+
+          </div>
+        ))}
+
+      </div>
     </div>
 
-    <Link
-  href="/Product"
-  className="absolute bottom-4 left-4 right-4
-             bg-white text-[#161314]
-             py-3 rounded-xl font-bold text-sm
-             opacity-0 translate-y-4
-             group-hover:opacity-100 group-hover:translate-y-0
-             transition-all duration-300
-             shadow-xl text-center"
->
-  Quick Add
-</Link>
-  </div>
 
-  <div className="space-y-1">
-    <p className="font-display text-lg font-bold">Night Repair Oil</p>
-    <p className="text-sm text-gray-500">Cellular renewal formula</p>
-    <p className="font-bold text-[#c3a2ab] mt-2">$110.00</p>
-  </div>
-</div>
-
-{/* <!-- Product Card 4 --> */}
-<div className="min-w-75 group">
-  <div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-gray-100 mb-4">
-    <Link href="/Product2"><div
-      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-      data-alt="Night Repair Oil evening glow"
-      style={{ backgroundImage: "url('/G14.png')" }}
-    ></div></Link>
-
-    <Link
-  href="/Product2"
-  className="absolute bottom-4 left-4 right-4
-             bg-white text-[#161314]
-             py-3 rounded-xl font-bold text-sm
-             opacity-0 translate-y-4
-             group-hover:opacity-100 group-hover:translate-y-0
-             transition-all duration-300
-             shadow-xl text-center"
->
-  Quick Add
-</Link>
-  </div>
-
-  <div className="space-y-1">
-    <p className="font-display text-lg font-bold">Gentle Cleanser</p>
-    <p className="text-sm text-gray-500">pH-balanced purity</p>
-    <p className="font-bold text-[#c3a2ab] mt-2">$65.00</p>
-  </div>
-</div>
 
 </div>
 </section>

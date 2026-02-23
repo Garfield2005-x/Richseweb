@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Noto_Serif, Noto_Sans } from "next/font/google";
 import "./globals.css";
 import Providers from "./Providers"
+import { CartProvider } from "@/context/CartContext"
 
 const notoSerif = Noto_Serif({
   variable: "--font-display",
@@ -59,9 +60,11 @@ export default function RootLayout({
         />
       </head>
       <body className={`${notoSerif.variable} ${notoSans.variable} antialiased`}>
+        <CartProvider>
         <Providers>
           {children}
         </Providers>
+        </CartProvider>
       </body>
     </html>
   );

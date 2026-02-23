@@ -2,10 +2,19 @@
 "use client";
 import Link from 'next/link'
 import { signIn, signOut, useSession } from "next-auth/react";
-
+import { useCart } from "@/context/CartContext"
+import Image from "next/image"
+import { useState } from "react"
 
 function Navbar() {
   const { data: session } = useSession();
+  const { cart, increaseQty, decreaseQty } = useCart()
+  const [open, setOpen] = useState(false)
+
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  )
 
   return (
     
@@ -57,10 +66,86 @@ function Navbar() {
         </button>
       )}
     </>
-          <button className="p-2 hover:bg-primary/10 rounded-full transition-colors relative">
-            <span className="material-symbols-outlined">shopping_bag</span>
-            <span className="absolute top-1 right-1 size-2 bg-primary rounded-full"></span>
-          </button>
+           <div className="relative">
+
+      {/* ปุ่มตะกร้า */}
+      <button
+        onClick={() => setOpen(!open)}
+        className="p-2 hover:bg-primary/10 rounded-full transition-colors relative"
+      >
+        <span className="material-symbols-outlined">
+          shopping_bag
+        </span>
+
+        {cart.length > 0 && (
+          <span className="absolute -top-1 -right-1 bg-black text-white text-xs px-1.5 py-0.5 rounded-full">
+            {cart.length}
+          </span>
+        )}
+      </button>
+
+      {/* กล่องตะกร้า */}
+      {open && (
+        <div className="absolute right-0 mt-4 w-80 bg-white shadow-2xl p-4 rounded-2xl z-50">
+
+          {cart.length === 0 && (
+            <p className="text-gray-500">Cart is empty</p>
+          )}
+
+          {cart.map(item => (
+            <div key={item.id} className="flex gap-3 mb-4">
+              <Image
+                src={item.image}
+                alt={item.name}
+                width={60}
+                height={60}
+                className="rounded-xl"
+              />
+
+              <div className="flex-1">
+                <p className="font-semibold">{item.name}</p>
+                <p className="text-sm text-gray-500">
+                  {item.price} บาท
+                </p>
+
+                <div className="flex items-center gap-2 mt-1">
+                  <button
+                    onClick={() => decreaseQty(item.id)}
+                    className="px-2 bg-gray-200 rounded"
+                  >
+                    -
+                  </button>
+
+                  <span>{item.quantity}</span>
+
+                  <button
+                    onClick={() => increaseQty(item.id)}
+                    className="px-2 bg-gray-200 rounded"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {cart.length > 0 && (
+            <>
+              <div className="border-t pt-3 font-bold">
+                Total: {total} บาท
+              </div>
+
+              <Link
+                href="/checkout"
+                className="block mt-3 bg-black text-white text-center py-2 rounded-xl"
+              >
+                Checkout
+              </Link>
+            </>
+          )}
+        </div>
+      )}
+    </div>
         </div>
       </div>
     </header>
