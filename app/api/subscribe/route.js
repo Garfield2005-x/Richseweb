@@ -5,6 +5,18 @@ export async function POST(req) {
   try {  
     const { email } = await req.json();
     
+    // ✅ 1. เช็คก่อนว่ามีเมลนี้แล้วไหม
+    const existing = await prisma.subscriber.findUnique({
+      where: { email },
+    });
+
+    if (existing) {
+      return Response.json(
+        { message: "Email นี้เคยสมัครแล้ว 💌" },
+        { status: 400 }
+      );
+    }
+
     
     const subscriber = await prisma.subscriber.upsert({
       where: { email },
