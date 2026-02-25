@@ -1,9 +1,20 @@
 import nodemailer from "nodemailer";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req) {
-  try {
+  try {  
     const { email } = await req.json();
+    
+    
+    const subscriber = await prisma.subscriber.upsert({
+      where: { email },
+      update: {},
+      create: { email },
+    });
 
+    console.log("Saved:", subscriber.email);
+
+    // ✅ ค่อยสร้าง transporter
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
