@@ -16,12 +16,14 @@ export async function POST(req) {
 
     // ✅ ค่อยสร้าง transporter
     const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // ต้องเป็น true ถ้าใช้ 465
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
     await transporter.sendMail({
       from: `"Richse Official" <${process.env.EMAIL_USER}>`,
