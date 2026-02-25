@@ -34,7 +34,7 @@ export default function Home() {
   alert("สมัครสำเร็จ! กรุณาตรวจสอบอีเมล 🎉");
   setEmail("");
 } else {
-  alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
+  alert("Email นี้เคยสมัครแล้ว 💌");
 }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
