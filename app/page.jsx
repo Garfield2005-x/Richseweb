@@ -68,7 +68,7 @@ export default function Home() {
 </div> 
 <div className="flex flex-wrap gap-4">
 <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wide hover:opacity-90 transition-all shadow-lg shadow-primary/20" href="/ProductAll">
-                                Shop the Collection
+                                Coming Soon
                             </Link>
 <button className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wide hover:bg-white dark:hover:bg-white/5 transition-all">
                                 Take Skin Quiz
@@ -325,8 +325,7 @@ export default function Home() {
         </div>
 
         <p className="italic text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-          Richse has completely transformed my morning ritual. The Gold Serum
-          gives an immediate luminosity that I haven it found in any other premium brand.
+         “ดิฉันประทับใจในความอ่อนโยนและประสิทธิภาพที่พิสูจน์ได้จริง ผิวแลดูเรียบเนียนและแข็งแรงขึ้นภายในสองสัปดาห์ นับเป็นผลิตภัณฑ์ที่โดดเด่นอย่างยิ่งค่ะ”
         </p>
 
         <div className="flex items-center gap-3">
@@ -338,7 +337,7 @@ export default function Home() {
             }}
           />
           <div>
-            <p className="font-bold text-sm">Elena Valance</p>
+            <p className="font-bold text-sm">กนกวรรณ ศรีอำไพ</p>
             <p className="text-xs text-gray-500">Vogue Contributor</p>
           </div>
         </div>
@@ -355,8 +354,7 @@ export default function Home() {
         </div>
 
         <p className="italic text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-          Finally, a luxury line that doesn it irritate my sensitive skin. The clinical
-          results are visible after just two weeks of use. Truly remarkable.
+          “ผลิตภัณฑ์นี้ให้ผลลัพธ์เชิงประจักษ์ภายในระยะเวลาอันสั้น โดยไม่ก่อให้เกิดการระคายเคืองต่อผิวแพ้ง่าย ถือเป็นอีกมาตรฐานที่น่าชื่นชมในกลุ่มสกินแคร์ระดับสูง”
         </p>
 
         <div className="flex items-center gap-3">
@@ -368,7 +366,7 @@ export default function Home() {
             }}
           />
           <div>
-            <p className="font-bold text-sm">Sophie Chen</p>
+            <p className="font-bold text-sm">ธีรภัทร วัฒนศิริ</p>
             <p className="text-xs text-gray-500">Skincare Specialist</p>
           </div>
         </div>
@@ -385,8 +383,7 @@ export default function Home() {
         </div>
 
         <p className="italic text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-          The textures are heavenly. It is like a spa experience at home.
-          My fine lines have significantly softened since I started the ritual.
+          “ในที่สุดก็พบผลิตภัณฑ์ระดับพรีเมียมที่อ่อนโยนต่อผิวบอบบางอย่างแท้จริง เห็นการเปลี่ยนแปลงของผิวอย่างชัดเจนภายในสองสัปดาห์ ประสิทธิภาพน่าประทับใจมากค่ะ”
         </p>
 
         <div className="flex items-center gap-3">
@@ -398,7 +395,7 @@ export default function Home() {
             }}
           />
           <div>
-            <p className="font-bold text-sm">Isabella Rossi</p>
+            <p className="font-bold text-sm">โสภี จันทร์เพ็ญ</p>
             <p className="text-xs text-gray-500">Lifestyle Influencer</p>
           </div>
         </div>

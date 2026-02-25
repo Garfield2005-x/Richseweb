@@ -78,7 +78,7 @@ function Navbar() {
         </span>
 
         {cart.length > 0 && (
-          <span className="absolute -top-1 -right-1 bg-black text-white text-xs px-1.5 py-0.5 rounded-full">
+          <span className="absolute -top-1 -right-1 bg-[#c3a2ab] text-white text-xs px-1.5 py-0.5 rounded-full">
             {cart.length}
           </span>
         )}
@@ -131,13 +131,13 @@ function Navbar() {
 
           {cart.length > 0 && (
             <>
-              <div className="border-t pt-3 font-bold">
+              <div className=" pt-3 font-bold">
                 Total: {total} บาท
               </div>
 
               <Link
                 href="/checkout"
-                className="block mt-3 bg-black text-white text-center py-2 rounded-xl"
+                className="bg-[#c3a2ab] text-white block mt-3hover:opacity-90 font-bold tracking-wide transition-all shadow-lg shadow-primary/20 text-center py-2 rounded-xl"
               >
                 Checkout
               </Link>
