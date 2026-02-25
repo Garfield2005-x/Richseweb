@@ -51,3 +51,9 @@ model Session {
 
   user User @relation(fields: [userId], references: [id])
 }
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
