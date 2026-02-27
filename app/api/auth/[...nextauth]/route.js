@@ -1,13 +1,17 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { prisma } from "@/lib/prisma";
 import nodemailer from "nodemailer";
 
 const handler = NextAuth({
+  adapter: PrismaAdapter(prisma), // 👈 เพิ่มตัวนี้
+
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
+  clientId: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+})
   ],
 
   callbacks: {
@@ -20,8 +24,6 @@ const handler = NextAuth({
             pass: process.env.EMAIL_PASS,
           },
         });
-
-        const email = user.email;
 
         await transporter.sendMail({
           from: `"Richse Official" <${process.env.EMAIL_USER}>`,
@@ -100,13 +102,11 @@ const handler = NextAuth({
 
         return true;
       } catch (error) {
-        console.error("Email error:", error);
-        return true;
+        console.error(error);
+        return false;
       }
     },
   },
-
-  secret: process.env.NEXTAUTH_SECRET,
 });
 
 export { handler as GET, handler as POST };
