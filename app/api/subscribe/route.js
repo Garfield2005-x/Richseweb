@@ -1,94 +1,72 @@
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import nodemailer from "nodemailer";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
-import crypto from "crypto";
+import { randomBytes } from "crypto";
 
-function generateCodeFromEmail(email) {
-  const username = email.split("@")[0];
+function generateCode() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = randomBytes(8);
 
-  const cleaned = username
-    .replace(/[^a-zA-Z0-9]/g, "")
-    .toUpperCase()
-    .slice(0, 6);
+  let result = "";
+  for (let i = 0; i < 8; i++) {
+    result += chars[bytes[i] % chars.length];
+  }
 
-  const hash = crypto
-    .createHash("md5")
-    .update(email)
-    .digest("hex")
-    .slice(0, 4)
-    .toUpperCase();
-
-  return `RICHSE-${cleaned}${hash}`;
+  return `RICHSE-${result}`;
 }
 
-const handler = NextAuth({
-  adapter: PrismaAdapter(prisma),
+async function generateUniqueCode() {
+  while (true) {
+    const code = generateCode();
 
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-  ],
+    const existing = await prisma.subscriber.findUnique({
+      where: { discountCode: code },
+    });
 
-  callbacks: {
-    async signIn({ user }) {
-      try {
-        console.log("🔥 SignIn callback triggered");
+    if (!existing) return code;
+  }
+}
 
-        if (!user?.email) {
-          console.log("❌ No email found");
-          return true;
-        }
+export async function POST(req) {
+  try {
+    const { email } = await req.json();
 
-        // ดึง user ล่าสุดจาก DB
-        const dbUser = await prisma.user.findUnique({
-          where: { email: user.email },
-        });
+    if (!email) {
+      return Response.json({ message: "กรุณากรอกอีเมล" }, { status: 400 });
+    }
 
-        if (!dbUser) {
-          console.log("❌ User not found in DB");
-          return true;
-        }
+    // เช็ค email ซ้ำ
+    const existing = await prisma.subscriber.findUnique({
+      where: { email },
+    });
 
-        // ถ้ามีโค้ดแล้ว = ไม่ต้องสร้างใหม่
-        if (dbUser.discountCode) {
-          console.log("ℹ️ User already has discount code");
-          return true;
-        }
+    if (existing) {
+      return Response.json(
+        { message: "Email นี้เคยสมัครแล้ว 💌" },
+        { status: 400 }
+      );
+    }
 
-        // 🔥 สร้างโค้ด
-        const code = generateCodeFromEmail(user.email);
+    // สุ่มโค้ด
+    const discountCode = await generateUniqueCode();
 
-        console.log("Generated Code:", code);
+    // บันทึกลง DB
+    await prisma.subscriber.create({
+      data: {
+        email,
+        discountCode,
+      },
+    });
 
-        // อัปเดต user
-        await prisma.user.update({
-          where: { email: user.email },
-          data: {
-            discountCode: code,
-            discountExpiresAt: new Date(
-              Date.now() + 7 * 24 * 60 * 60 * 1000
-            ),
-          },
-        });
-
-        console.log("✅ Discount code saved to DB");
-
-        // 🔐 เช็ค env
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-          throw new Error("Email environment variables missing");
-        }
-
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-          },
-        });
+    // สร้าง transporter
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
 
     await transporter.sendMail({
@@ -181,17 +159,10 @@ const handler = NextAuth({
       `,
     });
 
-   console.log("📧 Email sent successfully");
+     return Response.json({ success: true });
 
-        return true;
-      } catch (error) {
-        console.error("🚨 SignIn Error:", error);
-        return true; // ไม่ block login
-      }
-    },
-  },
-
-  secret: process.env.NEXTAUTH_SECRET,
-});
-
-export { handler as GET, handler as POST };
+  } catch (err) {
+    console.error(err);
+    return Response.json({ error: "Failed" }, { status: 500 });
+  }
+}
