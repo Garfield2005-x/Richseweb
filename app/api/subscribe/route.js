@@ -1,11 +1,40 @@
 import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
+import { randomBytes } from "crypto";
+
+function generateCode() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = randomBytes(8);
+
+  let result = "";
+  for (let i = 0; i < 8; i++) {
+    result += chars[bytes[i] % chars.length];
+  }
+
+  return `RICHSE-${result}`;
+}
+
+async function generateUniqueCode() {
+  while (true) {
+    const code = generateCode();
+
+    const existing = await prisma.subscriber.findUnique({
+      where: { discountCode: code },
+    });
+
+    if (!existing) return code;
+  }
+}
 
 export async function POST(req) {
-  try {  
+  try {
     const { email } = await req.json();
-    
-    // ✅ 1. เช็คก่อนว่ามีเมลนี้แล้วไหม
+
+    if (!email) {
+      return Response.json({ message: "กรุณากรอกอีเมล" }, { status: 400 });
+    }
+
+    // เช็ค email ซ้ำ
     const existing = await prisma.subscriber.findUnique({
       where: { email },
     });
@@ -17,25 +46,28 @@ export async function POST(req) {
       );
     }
 
-    
-    const subscriber = await prisma.subscriber.upsert({
-      where: { email },
-      update: {},
-      create: { email },
+    // สุ่มโค้ด
+    const discountCode = await generateUniqueCode();
+
+    // บันทึกลง DB
+    await prisma.subscriber.create({
+      data: {
+        email,
+        discountCode,
+      },
     });
 
-    console.log("Saved:", subscriber.email);
-
-    // ✅ ค่อยสร้าง transporter
+    // สร้าง transporter
     const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // ต้องเป็น true ถ้าใช้ 465
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
 
     await transporter.sendMail({
       from: `"Richse Official" <${process.env.EMAIL_USER}>`,
@@ -128,7 +160,8 @@ export async function POST(req) {
       `,
     });
 
-    return Response.json({ success: true });
+     return Response.json({ success: true });
+
   } catch (err) {
     console.error(err);
     return Response.json({ error: "Failed" }, { status: 500 });

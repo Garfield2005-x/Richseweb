@@ -55,5 +55,6 @@ model Session {
 model Subscriber {
   id        String   @id @default(cuid())
   email     String   @unique
+  discountCode String   @unique
   createdAt DateTime @default(now())
 }
