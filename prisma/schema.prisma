@@ -22,6 +22,10 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+
+  discountCode      String?  @unique
+  discountUsed      Boolean  @default(false)
+  discountExpiresAt DateTime?
 }
 
 model Account {
@@ -56,5 +60,6 @@ model Subscriber {
   id        String   @id @default(cuid())
   email     String   @unique
   discountCode String   @unique
+  used          Boolean  @default(false) 
   createdAt DateTime @default(now())
 }
