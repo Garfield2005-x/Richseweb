@@ -105,15 +105,18 @@ export async function POST(req) {
                   ใช้โค้ดส่วนลดด้านล่างสำหรับการสั่งซื้อครั้งแรกของคุณ
                 </p>
 
-                <div style="margin:25px 0;padding:20px;background:#f3ecef;border-radius:12px;text-align:center;">
-                  <span style="font-size:26px;font-weight:bold;color:#c3a2ab;letter-spacing:2px;">
-                    RICHSE10
-                  </span>
-                  <p style="margin:10px 0 0 0;font-size:14px;color:#666;">
-                    รับส่วนลด 10% สำหรับคำสั่งซื้อแรกของคุณ
-                  </p>
-                </div>
-
+                <span style="
+  font-size:26px;
+  font-weight:bold;
+  color:#c3a2ab;
+  letter-spacing:3px;
+  background:#fff;
+  padding:12px 20px;
+  border-radius:8px;
+  display:inline-block;
+">
+  ${discountCode}
+</span>
                 <p>
                   รีบใช้ก่อนหมดเขต และติดตามโปรโมชั่นพิเศษ Flash Sale,
                   Exclusive Drop และสิทธิ์ Early Access สำหรับสมาชิกเท่านั้น
