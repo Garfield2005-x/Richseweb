@@ -3,6 +3,25 @@ import GoogleProvider from "next-auth/providers/google";
 import nodemailer from "nodemailer";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma"; // 🔥 ต้องมีไฟล์นี้
+import crypto from "crypto";
+
+function generateCodeFromEmail(email) {
+  const username = email.split("@")[0];
+
+  const cleaned = username
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .toUpperCase()
+    .slice(0, 6);
+
+  const hash = crypto
+    .createHash("md5")
+    .update(email)
+    .digest("hex")
+    .slice(0, 4)
+    .toUpperCase();
+
+  return `RICHSE-${cleaned}${hash}`;
+}
 
 const handler = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -12,10 +31,30 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  
 
-  callbacks: {
-    async signIn({ user }) {
-      try {
+callbacks: {
+  async signIn({ user }) {
+    try {
+      if (!user.email) return true;
+
+      const existingUser = await prisma.user.findUnique({
+        where: { email: user.email },
+      });
+
+      // 🔥 ถ้าไม่มี discountCode = login ครั้งแรก
+      if (existingUser && !existingUser.discountCode) {
+
+        const code = generateCodeFromEmail(user.email);
+
+        await prisma.user.update({
+          where: { email: user.email },
+          data: {
+            discountCode: code,
+            discountExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 วัน
+          },
+        });
+
         const transporter = nodemailer.createTransport({
           service: "gmail",
           auth: {
@@ -24,7 +63,6 @@ const handler = NextAuth({
           },
         });
 
-        const email = user.email;
 
         await transporter.sendMail({
           from: `"Richse Official" <${process.env.EMAIL_USER}>`,
@@ -59,7 +97,7 @@ const handler = NextAuth({
 
                         <div style="margin:25px 0;padding:20px;background:#f3ecef;border-radius:12px;text-align:center;">
                           <span style="font-size:26px;font-weight:bold;color:#c3a2ab;letter-spacing:2px;">
-                            RICHSE10
+                           ${code}
                           </span>
                           <p style="margin:10px 0 0 0;font-size:14px;color:#666;">
                             รับส่วนลด 10% สำหรับคำสั่งซื้อแรกของคุณ
@@ -98,12 +136,14 @@ const handler = NextAuth({
               </tr>
             </table>
           </div>
-          `,
-        });
+                   `,
+          });
+        }
 
+  
         return true;
       } catch (error) {
-        console.error("Email error:", error);
+        console.error("Login error:", error);
         return true;
       }
     },
