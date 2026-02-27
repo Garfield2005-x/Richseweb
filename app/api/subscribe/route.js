@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
 import { randomBytes } from "crypto";
@@ -14,18 +15,6 @@ function generateCode() {
   return `RICHSE-${result}`;
 }
 
-async function generateUniqueCode() {
-  while (true) {
-    const code = generateCode();
-
-    const existing = await prisma.subscriber.findUnique({
-      where: { discountCode: code },
-    });
-
-    if (!existing) return code;
-  }
-}
-
 export async function POST(req) {
   try {
     const { email } = await req.json();
@@ -34,30 +23,48 @@ export async function POST(req) {
       return Response.json({ message: "กรุณากรอกอีเมล" }, { status: 400 });
     }
 
-    // เช็ค email ซ้ำ
-    const existing = await prisma.subscriber.findUnique({
+    // เช็ค email ซ้ำก่อน
+    const existingEmail = await prisma.subscriber.findUnique({
       where: { email },
     });
 
-    if (existing) {
+    if (existingEmail) {
       return Response.json(
         { message: "Email นี้เคยสมัครแล้ว 💌" },
         { status: 400 }
       );
     }
 
-    // สุ่มโค้ด
-    const discountCode = await generateUniqueCode();
+    // 🔥 สร้าง subscriber พร้อม retry กัน code ซ้ำ
+    let subscriber;
+    let attempts = 0;
 
-    // บันทึกลง DB
-    await prisma.subscriber.create({
-      data: {
-        email,
-        discountCode,
-      },
-    });
+    while (!subscriber && attempts < 5) {
+      try {
+        const discountCode = generateCode();
 
-    // สร้าง transporter
+        subscriber = await prisma.subscriber.create({
+          data: {
+            email,
+            discountCode,
+          },
+        });
+      } catch (err) {
+        // ถ้า code ซ้ำ จะเข้า catch
+        attempts++;
+        if (attempts >= 5) {
+          throw new Error("Failed to generate unique discount code");
+        }
+      }
+    }
+
+    console.log("Created subscriber:", subscriber);
+
+    // 🔐 เช็ค env ก่อนส่งเมล
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      throw new Error("Email environment variables not set");
+    }
+
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -67,7 +74,6 @@ export async function POST(req) {
         pass: process.env.EMAIL_PASS,
       },
     });
-
 
     await transporter.sendMail({
       from: `"Richse Official" <${process.env.EMAIL_USER}>`,
@@ -159,10 +165,12 @@ export async function POST(req) {
       `,
     });
 
-     return Response.json({ success: true });
+    console.log("Email sent to:", email);
+
+    return Response.json({ success: true });
 
   } catch (err) {
-    console.error(err);
+    console.error("ERROR:", err);
     return Response.json({ error: "Failed" }, { status: 500 });
   }
 }
