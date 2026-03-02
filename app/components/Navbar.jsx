@@ -136,7 +136,7 @@ function Navbar() {
               </div>
 
               <Link
-                href="/checkout"
+                href="/Checkout"
                 className="bg-[#c3a2ab] text-white block mt-3hover:opacity-90 font-bold tracking-wide transition-all shadow-lg shadow-primary/20 text-center py-2 rounded-xl"
               >
                 Checkout
