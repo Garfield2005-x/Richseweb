@@ -1,9 +1,27 @@
-
+/* eslint-disable react-hooks/rules-of-hooks */
+"use client";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import Link from 'next/link'
+import { useState } from "react";
+import { products } from "@/data/products"
+import { useCart } from "@/context/CartContext"
+
 
 function page() {
+ const product = products.find(p => p.id === 2)
+  const { addToCart } = useCart()
+
+  const [quantity, setQuantity] = useState(1)
+
+  if (!product) return <div>Product not found</div>
+
+  const increase = () => {
+    setQuantity(prev => prev + 1)
+  }
+
+  const decrease = () => {
+    setQuantity(prev => (prev > 1 ? prev - 1 : 1))
+  }
   return (
     <div>
       <title>Richse | Lumière Regenerating Serum</title>
@@ -25,40 +43,7 @@ function page() {
   />
 </div>
 
-<div className="flex md:flex-col gap-3 overflow-x-auto no-scrollbar">
-  <div className="size-20 md:size-24 shrink-0 rounded-lg border-2 border-[#c3a2ab] overflow-hidden cursor-pointer">
-    <div
-      className="w-full h-full bg-cover bg-center"
-      data-alt="Close up of serum texture"
-      style={{
-        backgroundImage:
-          "url('https://lh3.googleusercontent.com/aida-public/AB6AXuB2bscotRIKSrS69HYmFrXnBT3c-BU0pKVFHHjIR04ZqvKFjQTRym8Hx4CZIwlFGa0g5p8jYGY8_MWb29V3JHFsotFifgt_2Jzi8V7ZtdVqpBhuOO1GE7R7uKGZkeDNwQEQZz4nbcJYYBF-XWcZ3Ww3ZaddTJe8EM9w5Iy2yTCI8Z_V-GdEQ53gdch_onVjRBAeU6o66-pCM9X7jyiWsSBUq-aOOY6z38MLuxgqM1v_oU1iGNolOuEQkUx-DZmlwWn-oK7zkk6c1uU')",
-      }}
-    />
-  </div>
 
-  <div className="size-20 md:size-24 shrink-0 rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden cursor-pointer hover:border-primary transition-colors">
-    <div
-      className="w-full h-full bg-cover bg-center"
-      data-alt="Model applying serum to cheek"
-      style={{
-        backgroundImage:
-          "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCPu3a6Vc8bs4XOQ68XBZLNmB4q9T7VhrPvj_3jArP7T6T7oWXrkWI8LdqJc-cCpCOvrdVuorqsRHvAYKMt8yLfFOG6eWgU947pKdRj6VGPEQJmqKQiKLmVrQSpUYFdDkGtlmJy5KkFe_dir6LBgtvuq_NRLZxUVcnJBCeRkFBptvMPMgIe_TxrSPJ5M4UpWwcnUHw9kPmU7yEWbI-SNFsCBW6IJVWChJsK3J-qZAW93nvkp0Ca7Gdrt4EOzHpdzq_JEVYwA2Vd6XA')",
-      }}
-    />
-  </div>
-
-  <div className="size-20 md:size-24 shrink-0 rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden cursor-pointer hover:border-primary transition-colors">
-    <div
-      className="w-full h-full bg-cover bg-center"
-      data-alt="Serum ingredients spread out"
-      style={{
-        backgroundImage:
-          "url('https://lh3.googleusercontent.com/aida-public/AB6AXuACNhDN4pXva7qRXx3wRqagcJOsMkxiwNS78CVYbWHoLVQqtv0LZOETFfp2zQbx4b3XvLsz9rkBDPGgEkPzYqynSAUL32CNxE2wKbiMU1qt6W0a9VZ42uZGjG_xOk13hV4m5KT3mjrkqJKM6fMKFCMW1epsCD35BLOOyMan_8vc4rhvkk5qjKBLsSZ2DBaqSBedQibVgSlFrucCFpPw522EBkvPwiPjuicmwL0yEZThKMlO_yeLPqkRmSWFRKtG3KbWoIJrheb1K5Y')",
-      }}
-    />
-  </div>
-</div>
 
 </div>
 <div className="lg:col-span-5 sticky top-12">
@@ -86,14 +71,40 @@ function page() {
                 </p>
 <div className="space-y-4 pt-6 border-t border-gray-100 dark:border-gray-800">
 <div className="flex items-center gap-4">
-<div className="flex-1 flex items-center justify-between border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3">
-<button className="material-symbols-outlined text-sm">remove</button>
-<span className="font-medium">1</span>
-<button className="material-symbols-outlined text-sm">add</button>
-</div>
-<button className="flex-3 bg-[#c3a2ab] hover:bg-[#c3a2ab]/90 text-white font-bold py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 uppercase tracking-widest text-sm">
-                            Add to Cart
-                        </button>
+  <div className="flex-1 flex items-center justify-between border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3">
+    <button
+      onClick={(e) => {
+        e.stopPropagation()
+        decrease()
+      }}
+      className="material-symbols-outlined text-sm"
+    >
+      remove
+    </button>
+
+    <span className="font-medium">{quantity}</span>
+
+    <button
+      onClick={(e) => {
+        e.stopPropagation()
+        increase()
+      }}
+      className="material-symbols-outlined text-sm"
+    >
+      add
+    </button>
+  </div>
+
+  <button
+    onClick={(e) => {
+      e.stopPropagation()
+      addToCart(product, quantity)   // ✅ ส่ง quantity เข้าไป
+      setQuantity(1)                 // (ถ้าต้องการรีเซ็ต)
+    }}
+    className="flex-3 bg-[#c3a2ab] hover:bg-[#c3a2ab]/90 text-white font-bold py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 uppercase tracking-widest text-sm"
+  >
+    Add to Cart
+  </button>
 </div>
 <button className="w-full border-2 border-[#161314] dark:border-white text-[#161314] dark:text-white font-bold py-4 rounded-lg hover:bg-[#161314] hover:text-white dark:hover:bg-white dark:hover:text-black transition-all uppercase tracking-widest text-sm">
                         Buy It Now
