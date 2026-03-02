@@ -10,6 +10,7 @@ type CartType = {
   addToCart: (product: Product, quantity?: number) => void
   increaseQty: (id: number) => void
   decreaseQty: (id: number) => void
+  clearCart: () => void
 }
 
 const CartContext = createContext<CartType | null>(null)
