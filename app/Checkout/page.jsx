@@ -21,7 +21,7 @@ export default function Checkout() {
     phone: ""
   })
 
-  const [shipping, setShipping] = useState("standard")
+  const [shipping, setShipping] = useState("Bank Transfer (Free Shipping)")
 
   // ===== คำนวณราคา =====
   const subtotal = cart.reduce(
@@ -29,8 +29,8 @@ export default function Checkout() {
     0
   )
 
-  const tax = subtotal * 0.08
-  const shippingCost = shipping === "express" ? 25 : 0
+  const tax = subtotal * 0
+  const shippingCost = shipping === "Cash on Delivery (+$30 Fee)" ? 30 : 0
   const total = subtotal + tax + shippingCost
 
   // ===== กดสั่งซื้อ =====
@@ -95,6 +95,27 @@ if (itemsError) {
   console.error("Order items error:", itemsError)
   alert(itemsError.message)
   return
+}
+const lineRes = await fetch("/api/line", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    fullName: shippingInfo.fullName,
+    address: shippingInfo.address,
+    city: shippingInfo.city,
+    postalCode: shippingInfo.postalCode,
+    phone: shippingInfo.phone,
+    shippingMethod: shipping,
+    subtotal,
+    tax,
+    total,
+    cart
+  })
+})
+
+if (!lineRes.ok) {
+  const errText = await lineRes.text()
+  console.error("LINE notify failed:", errText)
 }
 
       // 3️⃣ สำเร็จ
@@ -185,10 +206,10 @@ if (itemsError) {
                   <span>
                     <input
                       type="radio"
-                      checked={shipping === "standard"}
-                      onChange={() => setShipping("standard")}
+                      checked={shipping === "Bank Transfer (Free Shipping)"}
+                      onChange={() => setShipping("Bank Transfer (Free Shipping)")}
                     />{" "}
-                    Standard Shipping (Free)
+                    Bank Transfer (Free Shipping)
                   </span>
                   <span>$0</span>
                 </label>
@@ -197,12 +218,12 @@ if (itemsError) {
                   <span>
                     <input
                       type="radio"
-                      checked={shipping === "express"}
-                      onChange={() => setShipping("express")}
+                      checked={shipping === "Cash on Delivery (+$30 Fee)"}
+                      onChange={() => setShipping("Cash on Delivery (+$30 Fee)")}
                     />{" "}
-                    Express (Next Day)
+                    Cash on Delivery (+$30 Fee)
                   </span>
-                  <span>$25</span>
+                  <span>$30</span>
                 </label>
               </div>
             </div>
