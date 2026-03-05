@@ -30,7 +30,7 @@ function Navbar() {
 
             <span className="font-display text-2xl font-bold tracking-tight">Richse</span>
           </Link>
-          <nav className="hidden lg:flex items-center gap-8">
+          {/* <nav className="hidden lg:flex items-center gap-8">
             <Link
   href="/ProductAll"
   className="group relative text-sm font-medium transition-colors hover:text-primary"
@@ -42,13 +42,13 @@ function Navbar() {
             <Link className="text-sm font-medium hover:text-primary transition-colors" href="#">Treatments</Link>
             <Link className="text-sm font-medium hover:text-primary transition-colors" href="#">Our Story</Link>
             <Link className="text-sm font-medium hover:text-primary transition-colors" href="#">The Journal</Link>
-          </nav>
+          </nav> */}
         </div>
         <div className="flex items-center gap-4 lg:gap-6">
-          <div className="hidden sm:flex items-center bg-[#efecec] dark:bg-white/5 rounded-full px-4 py-1.5">
+          {/* <div className="hidden sm:flex items-center bg-[#efecec] dark:bg-white/5 rounded-full px-4 py-1.5">
             <span className="material-symbols-outlined text-sm opacity-60">search</span>
             <input className="bg-transparent border-none focus:ring-0 text-sm placeholder:text-gray-400 w-32 md:w-48" placeholder="Search rituals..." type="text" />
-          </div>
+          </div> */}
           <>
       {session ? (
         <button

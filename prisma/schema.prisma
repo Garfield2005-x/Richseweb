@@ -55,7 +55,56 @@ model Session {
 model Subscriber {
   id        String   @id @default(cuid())
   email     String   @unique
-  discountCode String   @unique
-  used          Boolean  @default(false) 
   createdAt DateTime @default(now())
+}
+model Order {
+  id              String   @id @default(uuid())
+  full_name       String
+  address         String
+  city            String
+  postal_code     String
+  phone           String
+  shipping_method String
+  subtotal        Float
+  tax             Float
+  total           Float
+  created_at      DateTime @default(now())
+
+  order_items     OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id           String   @id @default(uuid())
+  order_id     String
+  product_id   Int
+  product_name String
+  quantity     Int
+  price        Float
+
+  order Order @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
+}
+
+model DiscountCode {
+  id               String   @id @default(uuid())
+  code             String   @unique
+  discount_percent Int
+  active           Boolean  @default(true)
+  created_at       DateTime @default(now())
+
+  @@map("discount_codes")
+}
+
+model DiscountUsage {
+  id         String   @id @default(uuid())
+  phone      String
+  code       String
+  created_at DateTime @default(now())
+
+  @@unique([phone, code])
+
+  @@map("discount_usage")
 }

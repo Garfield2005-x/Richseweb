@@ -70,9 +70,9 @@ export default function Home() {
 <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wide hover:opacity-90 transition-all shadow-lg shadow-primary/20" href="/ProductAll">
                                 Coming Soon
                             </Link>
-<button className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wide hover:bg-white dark:hover:bg-white/5 transition-all">
+{/* <button className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wide hover:bg-white dark:hover:bg-white/5 transition-all">
                                 Take Skin Quiz
-                            </button>
+                            </button> */}
 </div>
 <div className="pt-8 flex items-center gap-6">
 <div className="flex -space-x-3">
@@ -240,7 +240,7 @@ export default function Home() {
               </p>
 
               <p className="font-bold text-[#c3a2ab] mt-2">
-                ${product.price}
+                ฿{product.price}
               </p>
             </div>
 

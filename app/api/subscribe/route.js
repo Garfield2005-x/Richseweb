@@ -1,30 +1,5 @@
 import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
-import { randomBytes } from "crypto";
-
-function generateCode() {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const bytes = randomBytes(8);
-
-  let result = "";
-  for (let i = 0; i < 8; i++) {
-    result += chars[bytes[i] % chars.length];
-  }
-
-  return `RICHSE-${result}`;
-}
-
-async function generateUniqueCode() {
-  while (true) {
-    const code = generateCode();
-
-    const existing = await prisma.subscriber.findUnique({
-      where: { discountCode: code },
-    });
-
-    if (!existing) return code;
-  }
-}
 
 export async function POST(req) {
   try {
@@ -46,18 +21,16 @@ export async function POST(req) {
       );
     }
 
-    // สุ่มโค้ด
-    const discountCode = await generateUniqueCode();
+    // ✅ ใช้โค้ดเดียว
+    const discountCode = "RICHSEUP88";
 
-    // บันทึกลง DB
+    // บันทึกลง DB (เก็บแค่ email ก็พอ)
     await prisma.subscriber.create({
       data: {
         email,
-        discountCode,
       },
     });
 
-    // สร้าง transporter
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -67,7 +40,6 @@ export async function POST(req) {
         pass: process.env.EMAIL_PASS,
       },
     });
-
 
     await transporter.sendMail({
       from: `"Richse Official" <${process.env.EMAIL_USER}>`,
@@ -107,7 +79,7 @@ export async function POST(req) {
 
                 <div style="margin:25px 0;padding:20px;background:#f3ecef;border-radius:12px;text-align:center;">
   <span style="font-size:26px;font-weight:bold;color:#c3a2ab;letter-spacing:2px;">
-    ${discountCode}
+    "RICHSEUP88"
   </span>
   <p style="margin:10px 0 0 0;font-size:14px;color:#666;">
     รับส่วนลด 10% สำหรับคำสั่งซื้อแรกของคุณ
