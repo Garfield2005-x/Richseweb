@@ -18,9 +18,12 @@ const handler = NextAuth({
   ],
 
   callbacks: {
-    async signIn({ user, req }) {
+   async signIn({ user, req }) {
+
+    console.log("SIGNIN CALLBACK WORKING");
 
     if (!req || !req.headers) {
+      console.log("REQ NOT FOUND");
       return true;
     }
 
