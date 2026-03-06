@@ -6,12 +6,11 @@ import { supabase } from "@/lib/supabase"
 import { useCart } from "@/context/CartContext"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
-import { useRef } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
 
 export default function Checkout() {
   const [verified,setVerified] = useState(false)
-  const recaptchaRef = useRef(null)
+
   const [discountCode, setDiscountCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
   const router = useRouter()
