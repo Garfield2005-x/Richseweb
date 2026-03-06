@@ -1,93 +1,81 @@
-<!DOCTYPE html>
+<div style="margin:0;padding:0;background-color:#f8f6f4;font-family:Arial,Helvetica,sans-serif;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
+              <tr>
+                <td align="center">
+                  <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.05);">
+                    
+                    <tr>
+                      <td align="center" style="background:#c3a2ab;padding:30px;">
+                        <h1 style="color:#ffffff;margin:0;font-size:28px;letter-spacing:1px;">
+                          Welcome to Richse Official ✨
+                        </h1>
+                      </td>
+                    </tr>
 
-<html class="light" lang="en"><head><meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Customer Information - Richse Official</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#c4a4a8",
-                        "brand-beige": "#fcf9f6",
-                        "background-light": "#fcf9f6",
-                        "background-dark": "#1a1515",
-                    },
-                    fontFamily: {
-                        "sans": ["Public Sans", "sans-serif"],
-                        "display": ["Playfair Display", "serif"]
-                    },
-                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
-                },
-            },
-        }
-    </script>
-<style>
-        body {
-            font-family: "Public Sans", sans-serif;
-        }
-        .brand-heading {
-            font-family: "Playfair Display", serif;
-        }
-    </style></head>
-<body class="bg-brand-beige dark:bg-background-dark min-h-screen flex items-center justify-center p-4">
-<div class="w-full max-w-[500px] bg-white dark:bg-stone-900 rounded-xl shadow-[0_32px_64px_-15px_rgba(0,0,0,0.08)] overflow-hidden border border-stone-100/50 dark:border-stone-800">
-<div class="px-8 pt-12 pb-10 flex flex-col items-center">
-<div class="mb-8 text-center">
-<span class="text-stone-400 tracking-[0.4em] uppercase text-[10px] font-bold block mb-3">Richse Official</span>
-<h1 class="text-stone-800 dark:text-stone-100 text-3xl font-medium tracking-tight brand-heading">Customer Information</h1>
-<p class="text-stone-500 dark:text-stone-400 text-sm mt-2">Please provide your details to process your request</p>
-</div>
-<form class="w-full space-y-6">
-<div class="space-y-2">
-<label class="block text-stone-500 dark:text-stone-400 text-[11px] font-bold tracking-widest uppercase">
-                        Full Name (ชื่อ-นามสกุล)
-                    </label>
-<div class="relative group">
-<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-<span class="material-symbols-outlined text-stone-400 group-focus-within:text-primary transition-colors">person</span>
-</div>
-<input class="w-full pl-12 pr-4 py-4 rounded-lg bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none" placeholder="Enter your full name" type="text"/>
-</div>
-</div>
-<div class="space-y-2">
-<label class="block text-stone-500 dark:text-stone-400 text-[11px] font-bold tracking-widest uppercase">
-                        Phone Number (เบอร์โทรศัพท์)
-                    </label>
-<div class="relative group">
-<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-<span class="material-symbols-outlined text-stone-400 group-focus-within:text-primary transition-colors">call</span>
-</div>
-<input class="w-full pl-12 pr-4 py-4 rounded-lg bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none" placeholder="08X-XXX-XXXX" type="tel"/>
-</div>
-</div>
-<div class="space-y-2">
-<label class="block text-stone-500 dark:text-stone-400 text-[11px] font-bold tracking-widest uppercase">
-                        Order Number (เลขที่คำสั่งซื้อ)
-                    </label>
-<div class="relative group">
-<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-<span class="material-symbols-outlined text-stone-400 group-focus-within:text-primary transition-colors">shopping_bag</span>
-</div>
-<input class="w-full pl-12 pr-4 py-4 rounded-lg bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none" placeholder="#12345" type="text"/>
-</div>
-</div>
-<div class="pt-6">
-<button class="w-full bg-primary hover:opacity-90 text-white font-semibold py-5 rounded-lg transition-all duration-300 transform active:scale-[0.98] shadow-md shadow-primary/10 flex items-center justify-center gap-2 group" type="submit">
-<span>Submit Information</span>
-<span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-</button>
-</div>
-<div class="flex items-center justify-center gap-2 mt-8 opacity-40">
-<span class="h-px w-8 bg-stone-400"></span>
-<span class="text-[10px] tracking-widest uppercase font-bold text-stone-900 dark:text-white">Secure Form</span>
-<span class="h-px w-8 bg-stone-400"></span>
-</div>
-</form>
-</div>
-</div>
-</body></html>
+                    <tr>
+                      <td style="padding:40px 30px;color:#333333;line-height:1.8;">
+                        <h2 style="margin-top:0;">ยินดีต้อนรับคุณ ${user.name || ""} 🤍</h2>
+                         
+                        <p>
+                          การเข้าสู่ระบบของคุณเสร็จสมบูรณ์แล้ว  
+                          เรารู้สึกยินดีอย่างยิ่งที่คุณเป็นส่วนหนึ่งของครอบครัว 
+                          <strong>Richse Official</strong>
+                        </p>
+
+                        <h3 style="margin-bottom:10px;">🎁 Welcome Gift สำหรับคุณ</h3>
+
+                        <div style="margin:25px 0;padding:20px;background:#f3ecef;border-radius:12px;text-align:center;">
+                          <span style="font-size:26px;font-weight:bold;color:#c3a2ab;letter-spacing:2px;">
+                            RICHSE10
+                          </span>
+                          <p style="margin:10px 0 0 0;font-size:14px;color:#666;">
+                            รับส่วนลด 10% สำหรับคำสั่งซื้อแรกของคุณ
+                          </p>
+                        </div>
+
+                        <div style="text-align:center;margin:30px 0;">
+                          <a href="https://www.richseofficial.com"
+                             style="background:#c3a2ab;color:#ffffff;text-decoration:none;
+                                    padding:14px 28px;border-radius:30px;font-weight:bold;
+                                    display:inline-block;">
+                            เลือกชมสินค้าเลย
+                          </a>
+                        </div>
+
+                        <hr style="border:none;border-top:1px solid #eee;margin:40px 0;">
+
+                        <p style="font-size:14px;color:#777;">
+                          หากนี่ไม่ใช่คุณที่ทำการเข้าสู่ระบบ กรุณาติดต่อทีมงานทันที
+                        </p>
+
+                        <p style="font-size:13px;color:#aaa;">
+                          Login Time: ${new Date().toLocaleString()}
+                        </p>
+                        <hr style="border:none;border-top:1px solid #eee;margin:35px 0;">
+
+              <h3>🔐 ข้อมูลการเข้าสู่ระบบ</h3>
+
+              <p>📱 Device: ${device}</p>
+              <p>🌐 Browser: ${browser}</p>
+              <p>💻 OS: ${os}</p>
+              <p>📍 IP Address: ${ip}</p>
+              <p>⏰ Time: ${new Date().toLocaleString()}</p>
+              <p>📍 Location: ${location}</p>
+
+              <p style="margin-top:30px;font-size:14px;color:#777;">
+                หากนี่ไม่ใช่คุณที่ทำการเข้าสู่ระบบ กรุณาติดต่อทีมงานทันที
+              </p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center" style="background:#fafafa;padding:20px;font-size:12px;color:#999;">
+                        © ${new Date().getFullYear()} Richse Official. All rights reserved.
+                      </td>
+                    </tr>
+
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>

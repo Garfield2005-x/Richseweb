@@ -4,8 +4,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import nodemailer from "nodemailer";
 import { UAParser } from "ua-parser-js";
-
-const prisma = new PrismaClient();
+import { headers } from "next/headers";
 
 const handler = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -18,23 +17,22 @@ const handler = NextAuth({
   ],
 
   callbacks: {
-    async signIn({ user, req }) {
+    async signIn({ user }) {
       try {
 
-        if (!user?.email) {
-          console.log("No user email");
-          return true;
-        }
+        if (!user?.email) return true;
 
-        console.log("SIGNIN CALLBACK WORKING");
+        // ดึง user จริงจาก DB
+        const dbUser = await prisma.user.findUnique({
+          where: { email: user.email },
+        });
 
-        if (!req || !req.headers) {
-          console.log("REQ NOT FOUND");
-          return true;
-        }
+        if (!dbUser) return true;
 
-        const userAgent = req.headers.get("user-agent") || "Unknown";
-        const forwarded = req.headers.get("x-forwarded-for");
+        const headerList = headers();
+
+        const userAgent = headerList.get("user-agent") || "Unknown";
+        const forwarded = headerList.get("x-forwarded-for");
         const ip = forwarded ? forwarded.split(",")[0] : "Unknown";
 
         const parser = new UAParser(userAgent);
@@ -43,16 +41,19 @@ const handler = NextAuth({
         const browser = parser.getBrowser().name || "Unknown";
         const os = parser.getOS().name || "Unknown";
 
-        const geo = await fetch(`https://ipapi.co/${ip}/json/`);
-        const geoData = await geo.json();
+        // location
+        let location = "Unknown";
 
-        const location = `${geoData.city || "Unknown"}, ${geoData.country_name || ""}`;
+        try {
+          const geo = await fetch(`https://ipapi.co/${ip}/json/`);
+          const geoData = await geo.json();
+          location = `${geoData.city || "Unknown"}, ${geoData.country_name || ""}`;
+        } catch {}
 
-        if (!user?.id) return true;
-
+        // ตรวจสอบ device เดิม
         const existingDevice = await prisma.loginDevice.findFirst({
           where: {
-            userId: user.id,
+            userId: dbUser.id,
             device,
             browser,
             os,
@@ -63,7 +64,7 @@ const handler = NextAuth({
 
           await prisma.loginDevice.create({
             data: {
-              userId: user.id,
+              userId: dbUser.id,
               ip,
               device,
               browser,
@@ -71,6 +72,7 @@ const handler = NextAuth({
             },
           });
 
+          // email transporter
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -84,12 +86,12 @@ const handler = NextAuth({
             to: user.email,
             subject: "⚠️ New Login Detected",
             html: `
-              <h2>มีการเข้าสู่ระบบใหม่</h2>
+              <h2>New Login Detected</h2>
               <p>Device: ${device}</p>
               <p>Browser: ${browser}</p>
               <p>OS: ${os}</p>
               <p>IP: ${ip}</p>
-              <p>📍 Location: ${location}</p>
+              <p>Location: ${location}</p>
               <p>Time: ${new Date().toLocaleString()}</p>
             `,
           });
@@ -98,9 +100,11 @@ const handler = NextAuth({
 
         return true;
 
-      } catch (err) {
-        console.error("SIGNIN ERROR:", err);
+      } catch (error) {
+
+        console.error("LOGIN SECURITY ERROR:", error);
         return true;
+
       }
     },
   },
@@ -108,19 +112,21 @@ const handler = NextAuth({
   events: {
     async createUser({ user }) {
 
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
+      try {
 
-      await transporter.sendMail({
-        from: `"Richse Official" <${process.env.EMAIL_USER}>`,
-        to: user.email,
-        subject: "🎉 ยินดีต้อนรับสู่ Richse Official – รับส่วนลดพิเศษทันที!",
-        html: `<div style="margin:0;padding:0;background-color:#f8f6f4;font-family:Arial,Helvetica,sans-serif;">
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+        });
+
+        await transporter.sendMail({
+          from: `"Richse Official" <${process.env.EMAIL_USER}>`,
+          to: user.email,
+          subject: "🎉 Welcome to Richse Official",
+          html: `<div style="margin:0;padding:0;background-color:#f8f6f4;font-family:Arial,Helvetica,sans-serif;">
             <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
               <tr>
                 <td align="center">
@@ -201,7 +207,11 @@ const handler = NextAuth({
               </tr>
             </table>
           </div>`,
-      });
+        });
+
+      } catch (err) {
+        console.error("WELCOME EMAIL ERROR:", err);
+      }
 
     },
   },
