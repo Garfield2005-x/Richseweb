@@ -1,10 +1,9 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import nodemailer from "nodemailer";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
+import nodemailer from "nodemailer";
 import { UAParser } from "ua-parser-js";
-import { headers } from "next/headers";
 
 const prisma = new PrismaClient();
 
@@ -19,23 +18,19 @@ const handler = NextAuth({
   ],
 
   callbacks: {
-    async signIn({ user }) {
-       const headersList = headers();
+    async signIn({ user, req }) {
 
-    const userAgent = headersList.get("user-agent") || "Unknown";
+    const userAgent = req.headers.get("user-agent") || "Unknown";
 
-    const forwarded = headersList.get("x-forwarded-for");
+    const forwarded = req.headers.get("x-forwarded-for");
 
-    const ip = forwarded
-      ? forwarded.split(",")[0]
-      : "Unknown";
+    const ip = forwarded ? forwarded.split(",")[0] : "Unknown";
 
+    const parser = new UAParser(userAgent);
 
-      const parser = new UAParser(userAgent);
-
-      const device = parser.getDevice().model || "Desktop";
-      const browser = parser.getBrowser().name || "Unknown";
-      const os = parser.getOS().name || "Unknown";
+    const device = parser.getDevice().model || "Desktop";
+    const browser = parser.getBrowser().name || "Unknown";
+    const os = parser.getOS().name || "Unknown";
       const geo = await fetch(`https://ipapi.co/${ip}/json/`);
       const geoData = await geo.json();
 
@@ -194,10 +189,9 @@ const handler = NextAuth({
 
     },
   },
-
+  
   secret: process.env.NEXTAUTH_SECRET,
 });
 
+
 export { handler as GET, handler as POST };
-
-
