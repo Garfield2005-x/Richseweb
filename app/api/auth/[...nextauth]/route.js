@@ -18,79 +18,90 @@ const handler = NextAuth({
   ],
 
   callbacks: {
-   async signIn({ user, req }) {
+    async signIn({ user, req }) {
+      try {
 
-    console.log("SIGNIN CALLBACK WORKING");
+        if (!user?.email) {
+          console.log("No user email");
+          return true;
+        }
 
-    if (!req || !req.headers) {
-      console.log("REQ NOT FOUND");
-      return true;
-    }
+        console.log("SIGNIN CALLBACK WORKING");
 
-    const userAgent = req.headers.get("user-agent") || "Unknown";
+        if (!req || !req.headers) {
+          console.log("REQ NOT FOUND");
+          return true;
+        }
 
-    const forwarded = req.headers.get("x-forwarded-for");
+        const userAgent = req.headers.get("user-agent") || "Unknown";
+        const forwarded = req.headers.get("x-forwarded-for");
+        const ip = forwarded ? forwarded.split(",")[0] : "Unknown";
 
-    const ip = forwarded ? forwarded.split(",")[0] : "Unknown";
+        const parser = new UAParser(userAgent);
 
-    const parser = new UAParser(userAgent);
+        const device = parser.getDevice().model || "Desktop";
+        const browser = parser.getBrowser().name || "Unknown";
+        const os = parser.getOS().name || "Unknown";
 
-    const device = parser.getDevice().model || "Desktop";
-    const browser = parser.getBrowser().name || "Unknown";
-    const os = parser.getOS().name || "Unknown";
-      const geo = await fetch(`https://ipapi.co/${ip}/json/`);
-      const geoData = await geo.json();
+        const geo = await fetch(`https://ipapi.co/${ip}/json/`);
+        const geoData = await geo.json();
 
-      const location = `${geoData.city || "Unknown"}, ${geoData.country_name || ""}`;
-      if (!user?.id) return true;
+        const location = `${geoData.city || "Unknown"}, ${geoData.country_name || ""}`;
 
-      const existingDevice = await prisma.loginDevice.findFirst({
-        where: {
-          userId: user.id,
-          device,
-          browser,
-          os,
-        },
-      });
+        if (!user?.id) return true;
 
-      if (!existingDevice) {
-
-        await prisma.loginDevice.create({
-          data: {
+        const existingDevice = await prisma.loginDevice.findFirst({
+          where: {
             userId: user.id,
-            ip,
             device,
             browser,
             os,
           },
         });
 
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-          },
-        });
+        if (!existingDevice) {
 
-        await transporter.sendMail({
-          from: `"Richse Official" <${process.env.EMAIL_USER}>`,
-          to: user.email,
-          subject: "⚠️ New Login Detected",
-          html: `
-            <h2>มีการเข้าสู่ระบบใหม่</h2>
-            <p>Device: ${device}</p>
-            <p>Browser: ${browser}</p>
-            <p>OS: ${os}</p>
-            <p>IP: ${ip}</p>
-            <p>📍 Location: ${location}</p>
-            <p>Time: ${new Date().toLocaleString()}</p>
-          `,
-        });
+          await prisma.loginDevice.create({
+            data: {
+              userId: user.id,
+              ip,
+              device,
+              browser,
+              os,
+            },
+          });
 
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+            },
+          });
+
+          await transporter.sendMail({
+            from: `"Richse Official" <${process.env.EMAIL_USER}>`,
+            to: user.email,
+            subject: "⚠️ New Login Detected",
+            html: `
+              <h2>มีการเข้าสู่ระบบใหม่</h2>
+              <p>Device: ${device}</p>
+              <p>Browser: ${browser}</p>
+              <p>OS: ${os}</p>
+              <p>IP: ${ip}</p>
+              <p>📍 Location: ${location}</p>
+              <p>Time: ${new Date().toLocaleString()}</p>
+            `,
+          });
+
+        }
+
+        return true;
+
+      } catch (err) {
+        console.error("SIGNIN ERROR:", err);
+        return true;
       }
-
-      return true;
     },
   },
 
@@ -105,12 +116,11 @@ const handler = NextAuth({
         },
       });
 
-        await transporter.sendMail({
-          from: `"Richse Official" <${process.env.EMAIL_USER}>`,
-          to: user.email,
-          subject: "🎉 ยินดีต้อนรับสู่ Richse Official – รับส่วนลดพิเศษทันที!",
-          html: `
-          <div style="margin:0;padding:0;background-color:#f8f6f4;font-family:Arial,Helvetica,sans-serif;">
+      await transporter.sendMail({
+        from: `"Richse Official" <${process.env.EMAIL_USER}>`,
+        to: user.email,
+        subject: "🎉 ยินดีต้อนรับสู่ Richse Official – รับส่วนลดพิเศษทันที!",
+        html: `<div style="margin:0;padding:0;background-color:#f8f6f4;font-family:Arial,Helvetica,sans-serif;">
             <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
               <tr>
                 <td align="center">
@@ -190,15 +200,13 @@ const handler = NextAuth({
                 </td>
               </tr>
             </table>
-          </div>
-          `,
-        });
+          </div>`,
+      });
 
     },
   },
-  
+
   secret: process.env.NEXTAUTH_SECRET,
 });
-
 
 export { handler as GET, handler as POST };
