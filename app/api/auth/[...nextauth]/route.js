@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import { UAParser } from "ua-parser-js";
+import { headers } from "next/headers";
 
 const prisma = new PrismaClient();
 
@@ -18,15 +19,17 @@ const handler = NextAuth({
   ],
 
   callbacks: {
-    async signIn({ user, req }) {
+    async signIn({ user }) {
+       const headersList = headers();
 
-      const forwarded = req.headers["x-forwarded-for"];
-const ip = forwarded
-  ? forwarded.split(",")[0]
-  : req.socket?.remoteAddress || "Unknown"; 
+    const userAgent = headersList.get("user-agent") || "Unknown";
 
+    const forwarded = headersList.get("x-forwarded-for");
 
-      const userAgent = req.headers["user-agent"] || "Unknown";
+    const ip = forwarded
+      ? forwarded.split(",")[0]
+      : "Unknown";
+
 
       const parser = new UAParser(userAgent);
 
