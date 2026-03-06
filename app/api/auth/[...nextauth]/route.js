@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import nodemailer from "nodemailer";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
-import UAParser from "ua-parser-js";
+import { UAParser } from "ua-parser-js";
 
 const prisma = new PrismaClient();
 
