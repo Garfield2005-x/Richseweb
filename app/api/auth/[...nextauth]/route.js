@@ -20,6 +20,10 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user, req }) {
 
+    if (!req || !req.headers) {
+      return true;
+    }
+
     const userAgent = req.headers.get("user-agent") || "Unknown";
 
     const forwarded = req.headers.get("x-forwarded-for");
