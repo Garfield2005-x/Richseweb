@@ -82,13 +82,66 @@ const ip = forwarded?.split(",")[0]?.trim() ?? "Unknown"
             to: user.email,
             subject: "⚠️ New Login Detected",
             html: `
-              <h2>New Login Detected</h2>
-              <p>Device: ${device}</p>
-              <p>Browser: ${browser}</p>
-              <p>OS: ${os}</p>
-              <p>IP: ${ip}</p>
-              <p>Location: ${location}</p>
-              <p>Time: ${new Date().toLocaleString()}</p>
+              <!-- Header --> <tr> <td align="center" style="background:#c9a1aa;padding:30px;"> 
+              <h1 style="color:#ffffff;margin:0;font-size:28px;letter-spacing:2px;"> RICHSE </h1> 
+              <p style="color:#f5e9ec;margin:8px 0 0 0;font-size:13px;"> Security Notification </p> 
+              </td> 
+              </tr> 
+              <!-- Content -->
+               <tr> 
+               <td style="padding:40px 35px;color:#333;line-height:1.7;"> 
+               <h2 style="margin-top:0;color:#c9a1aa;"> ⚠️ New Login Detected </h2>
+                <p> เราตรวจพบการเข้าสู่ระบบใหม่ในบัญชี <strong>RICHSE</strong> ของคุณ หากนี่เป็นคุณ คุณไม่จำเป็นต้องดำเนินการใด ๆ </p>
+                 <!-- Login Info Card -->
+                  <div style="margin:30px 0;padding:25px;background:#f6eef1;border-radius:12px;">
+                   <table width="100%" style="font-size:14px;color:#444;"> 
+                   <tr>
+                    <td style="padding:6px 0;"><strong>📱 Device</strong>
+                    </td> <td style="text-align:right;">${device}</td> 
+                    </tr>
+                     <tr> 
+                     <td style="padding:6px 0;"><strong>🌐 Browser</strong>
+                     </td> 
+                     <td style="text-align:right;">${browser}</td>
+                      </tr> 
+                      <tr> 
+                      <td style="padding:6px 0;"><strong>💻 OS</strong>
+                      </td>
+                       <td style="text-align:right;">${os}</td> 
+                       </tr> 
+                       <tr> 
+                       <td style="padding:6px 0;"><strong>📍 IP Address</strong></td>
+                        <td style="text-align:right;">${ip}</td>
+                         </tr>
+                          <tr> 
+                          <td style="padding:6px 0;"><strong>🌏 Location</strong></td>
+                          <td style="text-align:right;">${location}</td>
+                           </tr> 
+                           <tr> 
+                           <td style="padding:6px 0;"><strong>⏰ Time</strong></td>
+                            <td style="text-align:right;">${new Date().toLocaleString()}</td> 
+                            </tr> 
+                            </table>
+                             </div> 
+                             <p style="font-size:14px;color:#666;"> 
+                             หากนี่ไม่ใช่คุณ กรุณาติดต่อทีมงานของเราทันทีเพื่อความปลอดภัยของบัญชี 
+                             </p>
+                              <!-- Button --> 
+                              <div style="text-align:center;margin:35px 0;"> 
+                              <a href="https://www.richseofficial.com" style="background:#c9a1aa;color:#ffffff;text-decoration:none; padding:14px 32px;border-radius:30px; font-weight:bold;font-size:14px;display:inline-block;"> 
+                              Visit Richse 
+                              </a> 
+                              </div>
+                               </td> 
+                               </tr> 
+                               <!-- Footer -->
+                                <tr> 
+                                <td align="center" style="background:#fafafa;padding:20px;font-size:12px;color:#999;"> © ${new Date().getFullYear()} Richse Official. All rights reserved. 
+                                </td>
+                                 </tr> 
+                                 </table>
+                                  </td> 
+                                  </tr>
             `,
           });
         }
