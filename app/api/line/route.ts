@@ -21,6 +21,7 @@ type LineRequestBody = {
   discountAmount?: number
   discountCode?: string
   cart: CartItem[]
+  order_number: string
 }
 
 export async function POST(req: Request) {
@@ -37,7 +38,8 @@ export async function POST(req: Request) {
 
   const message = `
 📦 มีออเดอร์ใหม่
-
+ 
+🧾 Order: ${body.order_number}
 👤 ชื่อ: ${body.fullName}
 📞 เบอร์: ${body.phone}
 

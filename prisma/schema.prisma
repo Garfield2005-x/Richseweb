@@ -1,8 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider  = "postgresql"
@@ -10,21 +8,15 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?       @unique
   emailVerified DateTime?
   image         String?
-
-  accounts Account[]
-  sessions Session[]
-
-  loginDevices LoginDevice[]
+  accounts      Account[]
+  loginDevices  LoginDevice[]
+  sessions      Session[]
 }
 
 model Account {
@@ -33,15 +25,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -51,8 +42,7 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
 }
 
 model Subscriber {
@@ -62,32 +52,39 @@ model Subscriber {
 }
 
 model Order {
-  id              String   @id @default(uuid())
+  id              String      @id @default(dbgenerated("gen_random_uuid()"))
+  order_number    String?     @unique(map: "unique_order_number") @default(dbgenerated("generate_order_number()"))
+
   full_name       String
-  address         String
-  city            String
-  postal_code     String
   phone           String
+
+  address         String
+  province        String
+  district        String
+  subdistrict     String
+  postal_code     String
+
   shipping_method String
+
   subtotal        Float
   tax             Float
   total           Float
-  created_at      DateTime @default(now())
 
-  order_items OrderItem[]
+  created_at      DateTime    @default(now())
+
+  order_items     OrderItem[]
 
   @@map("orders")
 }
 
 model OrderItem {
-  id           String @id @default(uuid())
+  id           String @id @default(dbgenerated("gen_random_uuid()"))
   order_id     String
   product_id   Int
   product_name String
   quantity     Int
   price        Float
-
-  order Order @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  order        Order  @relation(fields: [order_id], references: [id], onDelete: Cascade)
 
   @@map("order_items")
 }
@@ -120,6 +117,5 @@ model LoginDevice {
   browser   String
   os        String
   createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }

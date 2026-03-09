@@ -7,16 +7,42 @@ import { useCart } from "@/context/CartContext"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import ReCAPTCHA from "react-google-recaptcha"
+import thaiAddress from "@/data/sub_district_with_district_and_province.json";
 
 export default function Checkout() {
   const [verified,setVerified] = useState(false)
-
+const provinces = [...new Set(thaiAddress.map(i => i.district.province.name_th))]
   const [discountCode, setDiscountCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
   const router = useRouter()
   const { cart, clearCart } = useCart()
   const tax = 0
   const [loading, setLoading] = useState(false)
+
+const [shippingInfo, setShippingInfo] = useState({
+  fullName: "",
+  address: "",
+  city: "",
+  postalCode: "",
+  phone: "",
+  city: "",
+  district: "",
+  subdistrict: "",
+  postcode: ""
+})
+
+  const districts = [
+  ...new Set(
+    thaiAddress
+      .filter(i => i.district.province.name_th === shippingInfo.province)
+      .map(i => i.district.name_th)
+  )
+]
+  const subdistricts = thaiAddress.filter(
+  i =>
+    i.district.province.name_th === shippingInfo.province &&
+    i.district.name_th === shippingInfo.district
+)
   
  const handleCaptcha = (token) => {
   if(token){
@@ -24,13 +50,7 @@ export default function Checkout() {
   }
  }
 
- const [shippingInfo, setShippingInfo] = useState({
-  fullName: "",
-  address: "",
-  city: "",
-  postalCode: "",
-  phone: ""
-})
+ 
 
 const handlePurchase = async () => {
   await handleCheckout()
@@ -256,25 +276,81 @@ if (!lineRes.ok) {
                 />
 
                 <div className="grid grid-cols-2 gap-4">
-                  <input
-                    placeholder="City"
-                    value={shippingInfo.city}
-                    onChange={(e) =>
-                      setShippingInfo({ ...shippingInfo, city: e.target.value })
-                    }
-                    className="border rounded-lg px-4 py-3 w-full"
-                  />
+                  <select
+  value={shippingInfo.province}
+  onChange={(e) =>
+    setShippingInfo({
+      ...shippingInfo,
+      province: e.target.value,
+      district: "",
+      subdistrict: "",
+      postcode: ""
+    })
+  }
+  className="border rounded-lg px-4 py-3 w-full"
+>
+  <option value="">Province</option>
 
-                  <input
-                    placeholder="Postal Code"
-                    value={shippingInfo.postalCode}
-                    onChange={(e) =>
-                      setShippingInfo({ ...shippingInfo, postalCode: e.target.value })
-                    }
-                    className="border rounded-lg px-4 py-3 w-full"
-                  />
-                </div>
+  {provinces.map((p) => (
+    <option key={p} value={p}>
+      {p}
+    </option>
+  ))}
+</select>
 
+<select
+  value={shippingInfo.district}
+  onChange={(e) =>
+    setShippingInfo({
+      ...shippingInfo,
+      district: e.target.value,
+      subdistrict: "",
+      postcode: ""
+    })
+  }
+  disabled={!shippingInfo.province}
+  className="border rounded-lg px-4 py-3 w-full"
+>
+  <option value="">District</option>
+
+  {districts.map((d) => (
+    <option key={d} value={d}>
+      {d}
+    </option>
+  ))}
+</select>
+<select
+  value={shippingInfo.subdistrict}
+  onChange={(e) => {
+    const selected = subdistricts.find(
+      s => s.name_th === e.target.value
+    )
+
+    setShippingInfo({
+      ...shippingInfo,
+      subdistrict: e.target.value,
+      postcode: selected.zip_code
+    })
+  }}
+  disabled={!shippingInfo.district}
+  className="border rounded-lg px-4 py-3 w-full"
+>
+  <option value="" >Subdistrict</option>
+
+  {subdistricts.map((s) => (
+    <option key={s.id} value={s.name_th}>
+      {s.name_th}
+    </option>
+  ))}
+</select>
+                 <input
+  value={shippingInfo.postcode}
+  readOnly
+  className="border rounded-lg px-4 py-3 w-full bg-gray-100"
+  placeholder="Postal Code"
+/>
+                
+</div>
                 <input
                   placeholder="Phone"
                   value={shippingInfo.phone}
@@ -283,6 +359,7 @@ if (!lineRes.ok) {
                   }
                   className="border rounded-lg px-4 py-3 w-full"
                 />
+                
               </div>
             </div>
 
