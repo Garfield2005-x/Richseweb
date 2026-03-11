@@ -11,11 +11,12 @@ type LineRequestBody = {
   fullName: string
   phone: string
   address: string
-  city: string
-  postalCode: string
+  province: string
+  district: string
+  subdistrict: string
+  postcode: string
   shippingMethod: string
   subtotal: number
-  tax: number
   total: number
   shippingCost?: number
   discountAmount?: number
@@ -45,7 +46,8 @@ export async function POST(req: Request) {
 
 🏠 ที่อยู่:
 ${body.address}
-${body.city} ${body.postalCode}
+ต.${body.subdistrict} อ.${body.district}
+จ.${body.province} ${body.postcode}
 
 🚚 วิธีการจัดส่ง: ${body.shippingMethod}
 

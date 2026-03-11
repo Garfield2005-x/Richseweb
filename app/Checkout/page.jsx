@@ -208,20 +208,23 @@ if (discountAmount > 0) {
 const lineRes = await fetch("/api/line", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    fullName: shippingInfo.fullName,
-    address: shippingInfo.address,
-    city: shippingInfo.city,
-    postalCode: shippingInfo.postalCode,
-    phone: shippingInfo.phone,
-    shippingMethod: shipping,
-    subtotal,
-    shippingCost,
-    total: finalTotal,
-    cart,
-    discountAmount,
-    discountCode
-  })
+ body: JSON.stringify({
+  order_number: order.order_number,
+  fullName: shippingInfo.fullName,
+  phone: shippingInfo.phone,
+  address: shippingInfo.address,
+  province: shippingInfo.province,
+  district: shippingInfo.district,
+  subdistrict: shippingInfo.subdistrict,
+  postcode: shippingInfo.postcode,
+  shippingMethod: shipping,
+  subtotal,
+  shippingCost,
+  total: finalTotal,
+  cart,
+  discountAmount,
+  discountCode
+})
 })
 
 if (!lineRes.ok) {
