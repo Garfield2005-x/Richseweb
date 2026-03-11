@@ -23,7 +23,7 @@ export const products: Product[] = [
   },
   {
     id: 3,
-    name: "Richse Serum",
+    name: "Richse Milk Hya Serum",
     price: 269,
     image: "/G13.png",
     taxe: "Cellular renewal formula",

@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import { useState } from "react";
 import { products } from "@/data/products"
 import { useCart } from "@/context/CartContext"
+import Link from "next/link";
 
 
 function page() {
@@ -50,7 +51,7 @@ function page() {
 <div className="flex flex-col gap-6">
 <div>
 <span className="text-xs uppercase tracking-[0.2em] text-[#c3a2ab] font-bold mb-3 block">The Radiance Collection</span>
-<h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-[#161314] dark:text-white leading-tight mb-4">Lumière Regenerating Serum</h2>
+<h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-[#161314] dark:text-white leading-tight mb-4">Richse Gold Mask</h2>
 <div className="flex items-center gap-4">
 <div className="flex items-center text-[#C9A961]">
 <span className="material-symbols-outlined fill-1">star</span>
@@ -58,16 +59,17 @@ function page() {
 <span className="material-symbols-outlined fill-1">star</span>
 <span className="material-symbols-outlined fill-1">star</span>
 <span className="material-symbols-outlined">star_half</span>
-<span className="ml-2 text-sm text-gray-600 dark:text-gray-400 font-sans">4.9 (124 reviews)</span>
+<span className="ml-2 text-sm text-gray-600 dark:text-gray-400 font-sans">4.9 </span>
 </div>
 </div>
 </div>
 <div className="flex items-baseline gap-4">
-<span className="text-3xl font-light text-[#161314] dark:text-white">$145.00</span>
-<span className="text-sm text-gray-500 dark:text-gray-400">50ml / 1.7 fl. oz.</span>
+<span className="text-3xl font-light text-[#161314] dark:text-white">฿279.00</span>
+<span className="text-sm text-gray-500 dark:text-gray-400">10ml</span>
 </div>
 <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-sans text-lg">
-                    A transformational serum infused with stabilized vitamin C and botanical peptides. Designed to restore elasticity  brighten complexion, and deliver a lit-from-within glow in just 7 days.
+                    RICHSE is a skincare brand dedicated to enhancing natural beauty through thoughtful care and refined formulas. Focused on quality, balance, and skin wellness, RICHSE helps support healthier-looking, radiant skin as part of a modern self-care routine.
+
                 </p>
 <div className="space-y-4 pt-6 border-t border-gray-100 dark:border-gray-800">
 <div className="flex items-center gap-4">
@@ -106,9 +108,12 @@ function page() {
     Add to Cart
   </button>
 </div>
-<button className="w-full border-2 border-[#161314] dark:border-white text-[#161314] dark:text-white font-bold py-4 rounded-lg hover:bg-[#161314] hover:text-white dark:hover:bg-white dark:hover:text-black transition-all uppercase tracking-widest text-sm">
-                        Buy It Now
-                    </button>
+<Link
+  href="/Checkout"
+  className="w-full border-2 border-[#161314] dark:border-white text-[#161314] dark:text-white font-bold py-4 rounded-lg hover:bg-[#161314] hover:text-white dark:hover:bg-white dark:hover:text-black transition-all uppercase tracking-widest text-sm block text-center"
+>
+  Buy It Now
+</Link>
 </div>
 <div className="grid grid-cols-3 gap-4 pt-8 border-t border-gray-100 dark:border-gray-800">
 <div className="flex flex-col items-center text-center gap-2">
@@ -167,22 +172,22 @@ function page() {
 <div className="flex gap-8 items-start">
 <span className="text-5xl font-display text-primary/20 leading-none">01</span>
 <div>
-<h5 className="font-bold text-lg mb-2">Cleanse</h5>
-<p className="text-gray-600 dark:text-gray-400">Prepare your canvas with the Richse Gentle Cleansing Milk to ensure maximum absorption of active ingredients.</p>
+<h5 className="font-bold text-lg mb-2">Treat</h5>
+<p className="text-gray-600 dark:text-gray-400">Apply Richse Milk Hya Serum (Cellular renewal formula) with 2–3 drops onto face and neck to deeply hydrate and support skin renewal.</p>
 </div>
 </div>
 <div className="flex gap-8 items-start">
 <span className="text-5xl font-display text-primary/20 leading-none">02</span>
 <div>
-<h5 className="font-bold text-lg mb-2">Apply</h5>
-<p className="text-gray-600 dark:text-gray-400">Gently press 2-3 drops into face and neck while skin is slightly damp. Focus on areas with fine lines.</p>
+<h5 className="font-bold text-lg mb-2">Moisturize</h5>
+<p className="text-gray-600 dark:text-gray-400">Follow with Richse Moist (Moisturizer) to balance skin and lock in hydration for long-lasting comfort.</p>
 </div>
 </div>
 <div className="flex gap-8 items-start">
 <span className="text-5xl font-display text-primary/20 leading-none">03</span>
 <div>
-<h5 className="font-bold text-lg mb-2">Massage</h5>
-<p className="text-gray-600 dark:text-gray-400">Use upward, outward motions until fully absorbed. Follow with moisturizer to lock in the transformation.</p>
+<h5 className="font-bold text-lg mb-2">Repair & Glow</h5>
+<p className="text-gray-600 dark:text-gray-400">Finish your routine with Richse Night Cream for intensive brightening and lifting while you sleep. Use Richse Gold Mask as a special treatment to boost 24-hour moisture.</p>
 </div>
 </div>
 </div>
@@ -210,7 +215,7 @@ function page() {
 <span className="material-symbols-outlined fill-1 text-2xl">star</span>
 <span className="material-symbols-outlined fill-1 text-2xl">star</span>
 </div>
-<p className="text-sm text-gray-500">Based on 124 verified purchasers</p>
+{/* <p className="text-sm text-gray-500">Based on 124 verified purchasers</p> */}
 </div> 
        
 </div>
@@ -273,7 +278,7 @@ function page() {
 </div>
 </div>
 </section>
-<section className="landing-section">
+{/* <section className="landing-section">
 <div className="flex justify-between items-end mb-12">
 <h3 className="text-3xl font-display">Complete Your Regimen</h3>
 <a className="text-sm font-bold border-b-2 border-[#c3a2ab] text-[#c3a2ab] pb-1 tracking-widest uppercase" href="#">Explore More</a>
@@ -340,7 +345,7 @@ function page() {
 <p className="text-gray-500 text-sm">$35.00</p>
 </div>
 </div>
-</section>
+</section> */}
 </div>
 
 </main>

@@ -63,12 +63,12 @@ export default function Home() {
 
 </h1>
 <p className="text-lg text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
-                                Science-backed luxury for your most luminous skin yet. Experience the restorative power of premium botanicals and clinical precision.
+                               Thoughtfully crafted skincare that blends refined formulation with a modern approach to skin wellness, designed to support a naturally radiant and healthy-looking complexion.
                             </p>
 </div> 
 <div className="flex flex-wrap gap-4">
 <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wide hover:opacity-90 transition-all shadow-lg shadow-primary/20" href="/ProductAll">
-                                Coming Soon
+                                Shop All
                             </Link>
 {/* <button className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wide hover:bg-white dark:hover:bg-white/5 transition-all">
                                 Take Skin Quiz
@@ -126,9 +126,9 @@ export default function Home() {
 <div className="flex justify-between items-center">
 <div>
 <p className="text-white font-bold">Featured Product</p>
-<p className="text-white/80 text-sm">Gold Radiance Serum</p>
+<p className="text-white/80 text-sm">Richse Night Cream</p>
 </div>  
-<div className="text-white font-display text-xl">$120</div>
+<div className="text-white font-display text-xl">฿290</div>
 </div>
 </div>
 </div>
@@ -149,21 +149,21 @@ export default function Home() {
 <span className="material-symbols-outlined">shield_with_heart</span>
 </div>
 <h3 className="font-display text-xl font-bold mb-3">Dermatologist Tested</h3>
-<p className="text-gray-600 dark:text-gray-400 leading-relaxed">Formulated by clinical experts and tested on all sensitive skin types for guaranteed safety and efficacy.</p>
+<p className="text-gray-600 dark:text-gray-400 leading-relaxed">Developed with professional skincare insight and thoughtfully tested to ensure it is gentle and suitable for everyday use, including sensitive skin.</p>
 </div>
 <div className="p-8 rounded-2xl border border-[#dfd8da] dark:border-white/10 hover:shadow-xl hover:-translate-y-1 transition-all group">
 <div className="size-12 rounded-xl bg-[#c3a2ab]/10 flex items-center justify-center text-[#c3a2ab] mb-6 group-hover:bg-[#c3a2ab] group-hover:text-white transition-colors">
 <span className="material-symbols-outlined">eco</span>
 </div>
 <h3 className="font-display text-xl font-bold mb-3">Ethical Beauty</h3>
-<p className="text-gray-600 dark:text-gray-400 leading-relaxed">100% cruelty-free, vegan formulations housed in sustainable, luxury Italian glass packaging.</p>
+<p className="text-gray-600 dark:text-gray-400 leading-relaxed">Created with a mindful approach to beauty, focusing on thoughtful formulation and carefully chosen packaging that reflects a commitment to responsible and refined skincare.</p>
 </div>
 <div className="p-8 rounded-2xl border border-[#dfd8da] dark:border-white/10 hover:shadow-xl hover:-translate-y-1 transition-all group">
 <div className="size-12 rounded-xl bg-[#c3a2ab]/10 flex items-center justify-center text-[#c3a2ab] mb-6 group-hover:bg-[#c3a2ab] group-hover:text-white transition-colors">
 <span className="material-symbols-outlined">auto_awesome</span>
 </div>
 <h3 className="font-display text-xl font-bold mb-3">Clinical Results</h3>
-<p className="text-gray-600 dark:text-gray-400 leading-relaxed">Visible improvements in hydration and texture documented in independent trials within just 14 days.</p>
+<p className="text-gray-600 dark:text-gray-400 leading-relaxed">Developed with insights from modern skincare research, focusing on formulas designed to support hydration, comfort, and a smoother-looking complexion with consistent use.</p>
 </div>
 </div>
 </div>
@@ -278,10 +278,10 @@ export default function Home() {
         </h2>
 
         <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-          Founded in the heart of Paris, Richse was born from a desire to merge
-          traditional botanical wisdom with groundbreaking dermatological
-          advancements. We believe skincare is more than a routine—it is a ritual
-          of self-reverence.
+          
+
+RICHSE was created with the vision of thoughtful skincare that blends timeless care with a modern approach to skin wellness. We believe skincare is more than a routine — it is a moment of self-care, confidence, and quiet luxury in everyday life.
+
         </p>
 
         <div className="h-px w-24 bg-[#C9A961]" />
