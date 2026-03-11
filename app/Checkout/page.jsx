@@ -26,7 +26,7 @@ const [shippingInfo, setShippingInfo] = useState({
   province: "",
   district: "",
   subdistrict: "",
-  postcode: ""
+  postal_code: ""
 })
 
   const districts = [
@@ -156,18 +156,21 @@ const checkDiscount = async () => {
       const { data: order, error } = await supabase
   .from("orders")
   .insert([
-    {
-      full_name: shippingInfo.fullName,
-      address: shippingInfo.address,
-      city: shippingInfo.city,
-      postal_code: shippingInfo.postalCode,
-      phone: shippingInfo.phone,
-      shipping_method: shipping,
-      subtotal,
-      tax,
-      total: finalTotal 
-    }
-  ])
+  {
+    full_name: shippingInfo.fullName,
+    address: shippingInfo.address,
+    province: shippingInfo.province,
+    district: shippingInfo.district,
+    subdistrict: shippingInfo.subdistrict,
+    postal_code: shippingInfo.postcode, // ต้อง map ตรงนี้
+    phone: shippingInfo.phone,
+    shipping_method: shipping,
+    subtotal,
+    tax,
+    total: finalTotal
+  }
+])
+
   .select()
   .single()
 
