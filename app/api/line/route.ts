@@ -32,8 +32,8 @@ export async function POST(req: Request) {
     .map(
       (item) => `• ${item.name}
   จำนวน: ${item.quantity}
-  ราคา: $${item.price}
-  รวม: $${(item.price * item.quantity).toFixed(2)}`
+  ราคา: ฿${item.price}
+  รวม: ฿${(item.price * item.quantity).toFixed(2)}`
     )
     .join("\n\n")
 
@@ -54,17 +54,17 @@ ${body.address}
 🛍 รายการสินค้า:
 ${productList}
 
-💰 Subtotal: $${body.subtotal.toFixed(2)}
-🚚 Shipping: $${body.shippingCost?.toFixed(2) || "0.00"}
+💰 Subtotal: ฿${body.subtotal.toFixed(2)}
+🚚 Shipping: ฿${body.shippingCost?.toFixed(2) || "0.00"}
 
 ${
   body.discountAmount && body.discountAmount > 0
     ? `🎟 โค้ดส่วนลด: ${body.discountCode}
-💸 ส่วนลด: -$${body.discountAmount.toFixed(2)}`
+💸 ส่วนลด: -฿${body.discountAmount.toFixed(2)}`
     : ""
 }
 
-💳 ยอดสุทธิ: $${body.total.toFixed(2)}
+💳 ยอดสุทธิ: ฿${body.total.toFixed(2)}
 `
 
   const res = await fetch("https://api.line.me/v2/bot/message/push", {

@@ -393,7 +393,7 @@ if (!lineRes.ok) {
                       checked={shipping === "Cash on Delivery (+$30 Fee)"}
                       onChange={() => setShipping("Cash on Delivery (+$30 Fee)")}
                     />{" "}
-                    Cash on Delivery (+$30 Fee)
+                    Cash on Delivery (+฿30 Fee)
                   </span>
                   <span>฿30</span>
                 </label>
