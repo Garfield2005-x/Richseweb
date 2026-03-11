@@ -22,10 +22,8 @@ const provinces = [...new Set(thaiAddress.map(i => i.district.province.name_th))
 const [shippingInfo, setShippingInfo] = useState({
   fullName: "",
   address: "",
-  city: "",
-  postalCode: "",
   phone: "",
-  city: "",
+  province: "",
   district: "",
   subdistrict: "",
   postcode: ""
@@ -139,16 +137,18 @@ const checkDiscount = async () => {
         return
       }
 
-      if (
-        !shippingInfo.fullName ||
-        !shippingInfo.address ||
-        !shippingInfo.city ||
-        !shippingInfo.postalCode ||
-        !shippingInfo.phone
-      ) {
-        alert("Please fill in all shipping information")
-        return
-      }
+     if (
+  !shippingInfo.fullName ||
+  !shippingInfo.address ||
+  !shippingInfo.province ||
+  !shippingInfo.district ||
+  !shippingInfo.subdistrict ||
+  !shippingInfo.postcode ||
+  !shippingInfo.phone
+) {
+  alert("Please fill in all shipping information")
+  return
+}
      
       setLoading(true)
 
