@@ -23,7 +23,8 @@ function page() {
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 md:gap-y-24">
 <div className="group cursor-pointer">
 <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-soft-beige mb-6">
-<div
+<Link
+  href="/Product1"
   className="absolute inset-0 bg-cover bg-center product-card-image"
   style={{ backgroundImage: "url('/G11.png')" }}
 />
@@ -41,7 +42,7 @@ function page() {
              transition-all duration-500
              shadow-xl z-10"
 >
-  Quick Add
+  View Cart
 </Link>
 </div>
 <div className="space-y-1 px-1">
@@ -52,7 +53,8 @@ function page() {
 </div>
 <div className="group cursor-pointer">
 <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-soft-pink mb-6">
-<div
+<Link
+  href="/Product2"
   className="absolute inset-0 bg-cover bg-center product-card-image"
   style={{ backgroundImage: "url('/G12.png')" }}
 />
@@ -70,7 +72,7 @@ function page() {
              transition-all duration-500
              shadow-xl z-10"
 >
-  Quick Add
+  View Cart
 </Link>
 </div>
 <div className="space-y-1 px-1">
@@ -81,7 +83,8 @@ function page() {
 </div>
 <div className="group cursor-pointer">
 <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-soft-beige mb-6">
-<div
+<Link
+  href="/Product3"
   className="absolute inset-0 bg-cover bg-center product-card-image"
   style={{ backgroundImage: "url('/G13.png')" }}
 />
@@ -100,7 +103,7 @@ function page() {
              transition-all duration-500
              shadow-xl z-10"
 >
-  Quick Add
+  View Cart
 </Link>
 </div>
 <div className="space-y-1 px-1">
@@ -111,7 +114,8 @@ function page() {
 </div>
 <div className="group cursor-pointer">
 <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-soft-pink mb-6">
-<div
+<Link
+  href="/Product4"
   className="absolute inset-0 bg-cover bg-center product-card-image"
   style={{ backgroundImage: "url('/G14.png')" }}
 />
@@ -129,7 +133,7 @@ function page() {
              transition-all duration-500
              shadow-xl z-10"
 >
-  Quick Add
+  View Cart
 </Link>
 </div>
 <div className="space-y-1 px-1">

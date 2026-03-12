@@ -68,7 +68,7 @@ export default function Home() {
 </div> 
 <div className="flex flex-wrap gap-4">
 <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wide hover:opacity-90 transition-all shadow-lg shadow-primary/20" href="/ProductAll">
-                                Shop All
+                                The Collection
                             </Link>
 {/* <button className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wide hover:bg-white dark:hover:bg-white/5 transition-all">
                                 Take Skin Quiz
