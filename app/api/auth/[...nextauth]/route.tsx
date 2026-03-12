@@ -7,6 +7,7 @@ import { UAParser } from "ua-parser-js";
 import { headers } from "next/headers";
 
 const handler = NextAuth({
+  
   adapter: PrismaAdapter(prisma),
 
   providers: [
@@ -30,9 +31,9 @@ const handler = NextAuth({
         const headerList = await headers() 
 
 const userAgent = headerList.get("user-agent") ?? "Unknown"
-const forwarded = headerList.get("x-forwarded-for")
+const forwarded = headerList.get("x-forwarded-for") || ""
 
-const ip = forwarded?.split(",")[0]?.trim() ?? "Unknown"
+const ip = forwarded ? forwarded.split(",")[0]?.trim() : "Unknown"
         
 
         const parser = new UAParser(userAgent);
