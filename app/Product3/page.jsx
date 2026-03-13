@@ -158,7 +158,7 @@ function page() {
 </div>
 <div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
 <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
-<span className="material-symbols-outlined text-primary text-4xl">psychology_alt</span>
+<span className="material-symbols-outlined text-[#c3a2ab] text-4xl">psychology_alt</span>
 </div>
 <h4 className="font-display text-2xl mb-4">Skin Harmony</h4>
 <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Formulated with attention to skin harmony, helping maintain a calm, balanced, and naturally radiant appearance.</p>
