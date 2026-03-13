@@ -145,22 +145,23 @@ function page() {
 <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
 <span className="material-symbols-outlined text-[#c3a2ab] text-4xl">water_drop</span>
 </div>
-<h4 className="font-display text-2xl mb-4">Hyaluronic Acid</h4>
-<p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Triple-weight molecule technology for intense hydration across all skin layers, plumping from within.</p>
+<h4 className="font-display text-2xl mb-4">Balanced Hydration</h4>
+<p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Thoughtfully developed to support skin hydration and everyday comfort, helping maintain a soft, smooth, and refreshed-looking complexion.</p>
 </div>
 <div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
 <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
 <span className="material-symbols-outlined text-[#c3a2ab] text-4xl">shutter_speed</span>
 </div>
-<h4 className="font-display text-2xl mb-4">Retinol-Gold Complex</h4>
-<p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Time-released vitamin A wrapped in gold micro-particles to minimize irritation while maximizing cell turnover.</p>
+<h4 className="font-display text-2xl mb-4">Refined Renewal</h4>
+<p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">A carefully balanced approach to skincare designed to support smoother, healthier-looking skin while respecting the skin’s natural balance.
+</p>
 </div>
 <div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
 <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
 <span className="material-symbols-outlined text-primary text-4xl">psychology_alt</span>
 </div>
-<h4 className="font-display text-2xl mb-4">Niacinamide B3</h4>
-<p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Highly concentrated vitamin B3 to visibly reduce pores, even skin tone, and strengthen the barrier.</p>
+<h4 className="font-display text-2xl mb-4">Skin Harmony</h4>
+<p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Formulated with attention to skin harmony, helping maintain a calm, balanced, and naturally radiant appearance.</p>
 </div>
 </div>
 </section>
