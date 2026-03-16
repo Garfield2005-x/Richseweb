@@ -26,7 +26,7 @@ const [shippingInfo, setShippingInfo] = useState({
   province: "",
   district: "",
   subdistrict: "",
-  postal_code: ""
+  postcode: ""
 })
 
   const districts = [
