@@ -48,13 +48,13 @@ export default function Home() {
     <div>
         <title>Richse | Luxury Skincare - Radiance Refined</title>
       <Navbar />
-      <section className="hero-mesh dark:bg-background-dark py-12 md:py-20">
+      <section className="hero-mesh  py-12 md:py-20">
 <div className="max-w-7xl mx-auto px-6">
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 <div className="order-2 lg:order-1 space-y-8">
 <div className="space-y-4">
 <span className="text-[#c3a2ab] font-bold tracking-widest uppercase text-xs">New Collection: L éclat</span>
-<h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.1] text-[#161314] dark:text-white">
+<h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.1] text-[#161314] ">
                                 Radiance <br/><span className="text-[#C9A961] font-display italic font-medium">
   Refined.
 </span>
@@ -62,7 +62,7 @@ export default function Home() {
 
 
 </h1>
-<p className="text-lg text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
+<p className="text-lg text-gray-600  max-w-lg leading-relaxed">
                                Thoughtfully crafted skincare that blends refined formulation with a modern approach to skin wellness, designed to support a naturally radiant and healthy-looking complexion.
                             </p>
 </div> 
@@ -70,7 +70,7 @@ export default function Home() {
 <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wide hover:opacity-90 transition-all shadow-lg shadow-primary/20" href="/ProductAll">
                                 The Collection
                             </Link>
-{/* <button className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wide hover:bg-white dark:hover:bg-white/5 transition-all">
+{/* <button className="border border-[#dfd8da]  px-10 py-4 rounded-xl font-bold tracking-wide hover:bg-white  transition-all">
                                 Take Skin Quiz
                             </button> */}
 </div>
@@ -137,33 +137,33 @@ export default function Home() {
 </div>
 </section>
 
-<section className="py-20 bg-white dark:bg-background-dark/50">
+<section className="py-20 bg-white ">
 <div className="max-w-7xl mx-auto px-6">
 <div className="text-center mb-16 space-y-4">
 <h2 className="font-display text-3xl md:text-4xl font-bold">Why Richse</h2>
 <div className="w-16 h-0.5 bg-[#c3a2ab] mx-auto"></div>
 </div>
 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-<div className="p-8 rounded-2xl border border-[#dfd8da] dark:border-white/10 hover:shadow-xl hover:-translate-y-1 transition-all group">
+<div className="p-8 rounded-2xl border border-[#dfd8da]  hover:shadow-xl hover:-translate-y-1 transition-all group">
 <div className="size-12 rounded-xl bg-[#c3a2ab]/10 flex items-center justify-center text-[#c3a2ab] mb-6 group-hover:bg-[#c3a2ab] group-hover:text-white transition-colors">
 <span className="material-symbols-outlined">shield_with_heart</span>
 </div>
 <h3 className="font-display text-xl font-bold mb-3">Dermatologist Tested</h3>
-<p className="text-gray-600 dark:text-gray-400 leading-relaxed">Developed with professional skincare insight and thoughtfully tested to ensure it is gentle and suitable for everyday use, including sensitive skin.</p>
+<p className="text-gray-600  leading-relaxed">Developed with professional skincare insight and thoughtfully tested to ensure it is gentle and suitable for everyday use, including sensitive skin.</p>
 </div>
-<div className="p-8 rounded-2xl border border-[#dfd8da] dark:border-white/10 hover:shadow-xl hover:-translate-y-1 transition-all group">
+<div className="p-8 rounded-2xl border border-[#dfd8da]  hover:shadow-xl hover:-translate-y-1 transition-all group">
 <div className="size-12 rounded-xl bg-[#c3a2ab]/10 flex items-center justify-center text-[#c3a2ab] mb-6 group-hover:bg-[#c3a2ab] group-hover:text-white transition-colors">
 <span className="material-symbols-outlined">eco</span>
 </div>
 <h3 className="font-display text-xl font-bold mb-3">Ethical Beauty</h3>
-<p className="text-gray-600 dark:text-gray-400 leading-relaxed">Created with a mindful approach to beauty, focusing on thoughtful formulation and carefully chosen packaging that reflects a commitment to responsible and refined skincare.</p>
+<p className="text-gray-600  leading-relaxed">Created with a mindful approach to beauty, focusing on thoughtful formulation and carefully chosen packaging that reflects a commitment to responsible and refined skincare.</p>
 </div>
-<div className="p-8 rounded-2xl border border-[#dfd8da] dark:border-white/10 hover:shadow-xl hover:-translate-y-1 transition-all group">
+<div className="p-8 rounded-2xl border border-[#dfd8da]  hover:shadow-xl hover:-translate-y-1 transition-all group">
 <div className="size-12 rounded-xl bg-[#c3a2ab]/10 flex items-center justify-center text-[#c3a2ab] mb-6 group-hover:bg-[#c3a2ab] group-hover:text-white transition-colors">
 <span className="material-symbols-outlined">auto_awesome</span>
 </div>
 <h3 className="font-display text-xl font-bold mb-3">Clinical Results</h3>
-<p className="text-gray-600 dark:text-gray-400 leading-relaxed">Developed with insights from modern skincare research, focusing on formulas designed to support hydration, comfort, and a smoother-looking complexion with consistent use.</p>
+<p className="text-gray-600  leading-relaxed">Developed with insights from modern skincare research, focusing on formulas designed to support hydration, comfort, and a smoother-looking complexion with consistent use.</p>
 </div>
 </div>
 </div>
@@ -176,10 +176,10 @@ export default function Home() {
 <h2 className="font-display text-3xl md:text-4xl font-bold mt-2">Best Sellers</h2>
 </div>
 <div className="flex gap-2">
-<button className="size-10 rounded-full border border-[#dfd8da] dark:border-white/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+<button className="size-10 rounded-full border border-[#dfd8da]  flex items-center justify-center hover:bg-primary hover:text-white transition-all">
 <span className="material-symbols-outlined">chevron_left</span>
 </button>
-<button className="size-10 rounded-full border border-[#dfd8da] dark:border-white/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+<button className="size-10 rounded-full border border-[#dfd8da]  flex items-center justify-center hover:bg-primary hover:text-white transition-all">
 <span className="material-symbols-outlined">chevron_right</span>
 </button>
 </div>
@@ -255,7 +255,7 @@ export default function Home() {
 </div>
 </section>
 
-<section className="py-20 bg-[#fdf2f4] dark:bg-white/5 overflow-hidden">
+<section className="py-20 bg-[#fdf2f4]  overflow-hidden">
   <div className="max-w-360 mx-auto">
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
       
@@ -272,12 +272,12 @@ export default function Home() {
       </div>
 
       {/* Content side */}
-      <div className="p-10 md:p-24 flex flex-col justify-center space-y-8 bg-white dark:bg-background-dark">
+      <div className="p-10 md:p-24 flex flex-col justify-center space-y-8 bg-white ">
         <h2 className="font-display text-4xl md:text-5xl font-bold leading-tight">
           Crafted for the Modern Matriarch.
         </h2>
 
-        <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+        <p className="text-lg text-gray-600  leading-relaxed">
           
 
 RICHSE was created with the vision of thoughtful skincare that blends timeless care with a modern approach to skin wellness. We believe skincare is more than a routine — it is a moment of self-care, confidence, and quiet luxury in everyday life.
@@ -301,7 +301,7 @@ RICHSE was created with the vision of thoughtful skincare that blends timeless c
 </section>
 
 
-<section className="py-24 bg-white  dark:bg-background-dark">
+<section className="py-24 bg-white  ">
   <div className="max-w-7xl mx-auto px-6">
     <div className="text-center mb-16">
       <span className="text-primary font-bold tracking-widest uppercase text-xs">
@@ -315,7 +315,7 @@ RICHSE was created with the vision of thoughtful skincare that blends timeless c
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
       {/* Card 1 */}
-      <div className="hero-mesh dark:bg-white/5 p-8 rounded-2xl relative">
+      <div className="hero-mesh  p-8 rounded-2xl relative">
         <div className="flex gap-1 text-[#C9A961] mb-4">
           <span className="material-symbols-outlined fill-1">star</span>
           <span className="material-symbols-outlined fill-1">star</span>
@@ -324,7 +324,7 @@ RICHSE was created with the vision of thoughtful skincare that blends timeless c
           <span className="material-symbols-outlined fill-1">star</span>
         </div>
 
-        <p className="italic text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+        <p className="italic text-gray-700  mb-6 leading-relaxed">
          “ดิฉันประทับใจในความอ่อนโยนและประสิทธิภาพที่พิสูจน์ได้จริง ผิวแลดูเรียบเนียนและแข็งแรงขึ้นภายในสองสัปดาห์ นับเป็นผลิตภัณฑ์ที่โดดเด่นอย่างยิ่งค่ะ”
         </p>
 
@@ -344,7 +344,7 @@ RICHSE was created with the vision of thoughtful skincare that blends timeless c
       </div>
 
       {/* Card 2 */}
-      <div className="hero-mesh dark:bg-white/5 p-8 rounded-2xl relative">
+      <div className="hero-mesh  p-8 rounded-2xl relative">
         <div className="flex gap-1 text-[#C9A961] mb-4">
           <span className="material-symbols-outlined fill-1">star</span>
           <span className="material-symbols-outlined fill-1">star</span>
@@ -353,7 +353,7 @@ RICHSE was created with the vision of thoughtful skincare that blends timeless c
           <span className="material-symbols-outlined fill-1">star</span>
         </div>
 
-        <p className="italic text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+        <p className="italic text-gray-700  mb-6 leading-relaxed">
           “ผลิตภัณฑ์นี้ให้ผลลัพธ์เชิงประจักษ์ภายในระยะเวลาอันสั้น โดยไม่ก่อให้เกิดการระคายเคืองต่อผิวแพ้ง่าย ถือเป็นอีกมาตรฐานที่น่าชื่นชมในกลุ่มสกินแคร์ระดับสูง”
         </p>
 
@@ -373,7 +373,7 @@ RICHSE was created with the vision of thoughtful skincare that blends timeless c
       </div>
 
       {/* Card 3 */}
-      <div className="hero-mesh dark:bg-white/5 p-8 rounded-2xl relative">
+      <div className="hero-mesh  p-8 rounded-2xl relative">
         <div className="flex gap-1 text-[#C9A961] mb-4">
           <span className="material-symbols-outlined fill-1">star</span>
           <span className="material-symbols-outlined fill-1">star</span>
@@ -382,7 +382,7 @@ RICHSE was created with the vision of thoughtful skincare that blends timeless c
           <span className="material-symbols-outlined fill-1">star</span>
         </div>
 
-        <p className="italic text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+        <p className="italic text-gray-700  mb-6 leading-relaxed">
           “ในที่สุดก็พบผลิตภัณฑ์ระดับพรีเมียมที่อ่อนโยนต่อผิวบอบบางอย่างแท้จริง เห็นการเปลี่ยนแปลงของผิวอย่างชัดเจนภายในสองสัปดาห์ ประสิทธิภาพน่าประทับใจมากค่ะ”
         </p>
 
@@ -411,7 +411,7 @@ RICHSE was created with the vision of thoughtful skincare that blends timeless c
       Join The Inner Circle
     </h2>
 
-    <p className="text-gray-600 dark:text-gray-400 mb-8">
+    <p className="text-gray-600  mb-8">
       Receive early access to new rituals, exclusive events, and expert skincare advice.
     </p>
 

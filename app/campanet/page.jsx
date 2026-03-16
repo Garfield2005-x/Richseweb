@@ -15,8 +15,8 @@ alert("ลงทะเบียนสำเร็จ ✅")
 }
     
   return (
-    <div className="bg-brand-beige dark:bg-background-dark min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-125 bg-white dark:bg-stone-900 rounded-xl shadow-[0_32px_64px_-15px_rgba(0,0,0,0.08)] overflow-hidden border border-stone-100/50 dark:border-stone-800">
+    <div className="bg-brand-beige  min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-125 bg-white  rounded-xl shadow-[0_32px_64px_-15px_rgba(0,0,0,0.08)] overflow-hidden border border-stone-100/50 ">
         
         <div className="px-8 pt-12 pb-10 flex flex-col items-center">
 
@@ -25,11 +25,11 @@ alert("ลงทะเบียนสำเร็จ ✅")
               Richse Official
             </span>
 
-            <h1 className="text-stone-800 dark:text-stone-100 text-3xl font-medium tracking-tight brand-heading">
+            <h1 className="text-stone-800  text-3xl font-medium tracking-tight brand-heading">
               Customer Information
             </h1>
 
-            <p className="text-stone-500 dark:text-stone-400 text-sm mt-2">
+            <p className="text-stone-500  text-sm mt-2">
               Please provide your details to process your request
             </p>
           </div>
@@ -45,7 +45,7 @@ method="POST"
 
             {/* Name */}
             <div className="space-y-2">
-              <label className="block text-stone-500 dark:text-stone-400 text-[11px] font-bold tracking-widest uppercase">
+              <label className="block text-stone-500  text-[11px] font-bold tracking-widest uppercase">
                 Full Name (ชื่อ-นามสกุล)
               </label>
 
@@ -60,14 +60,14 @@ method="POST"
                   type="text"
                   placeholder="Enter your full name"
                   name="name"
-                  className="w-full pl-12 pr-4 py-4 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
+                  className="w-full pl-12 pr-4 py-4 rounded-lg bg-white  border border-stone-200  text-stone-900  placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
                 />
               </div>
             </div>
 
             {/* Phone */}
             <div className="space-y-2">
-              <label className="block text-stone-500 dark:text-stone-400 text-[11px] font-bold tracking-widest uppercase">
+              <label className="block text-stone-500  text-[11px] font-bold tracking-widest uppercase">
                 Phone Number (เบอร์โทรศัพท์)
               </label>
 
@@ -82,14 +82,14 @@ method="POST"
                   type="tel"
                   placeholder="08X-XXX-XXXX"
                   name="phone"
-                  className="w-full pl-12 pr-4 py-4 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
+                  className="w-full pl-12 pr-4 py-4 rounded-lg bg-white  border-stone-200  text-stone-900  placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
                 />
               </div>
             </div>
 
             {/* Order Number */}
             <div className="space-y-2">
-              <label className="block text-stone-500 dark:text-stone-400 text-[11px] font-bold tracking-widest uppercase">
+              <label className="block text-stone-500  text-[11px] font-bold tracking-widest uppercase">
                 Order Number (เลขที่คำสั่งซื้อ)
               </label>
 
@@ -104,7 +104,7 @@ method="POST"
                   type="text"
                   placeholder="#12345"
                   name="order"
-                  className="w-full pl-12 pr-4 py-4 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
+                  className="w-full pl-12 pr-4 py-4 rounded-lg bg-white  border border-stone-200  text-stone-900  placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
                 />
               </div>
             </div>
@@ -130,7 +130,7 @@ method="POST"
 
             <div className="flex items-center justify-center gap-2 mt-8 opacity-40">
               <span className="h-px w-8 bg-stone-400"></span>
-              <span className="text-[10px] tracking-widest uppercase font-bold text-stone-900 dark:text-white">
+              <span className="text-[10px] tracking-widest uppercase font-bold text-stone-900 ">
                 Secure Form
               </span>
               <span className="h-px w-8 bg-stone-400"></span>

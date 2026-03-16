@@ -6,7 +6,7 @@ function Footer() {
   return (
     <><div>
          
-      <footer className="bg-background-light dark:bg-background-dark py-16 border-t border-[#efecec] dark:border-white/10">
+      <footer className="bg-background-light  py-16 border-t border-[#efecec] ">
               <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
                   <div className="col-span-2 md:col-span-1 space-y-6">
                       <a className="flex items-center gap-2" href="#">
@@ -57,7 +57,7 @@ function Footer() {
                       </ul>
                   </div>
               </div>
-              <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-gray-200 dark:border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-gray-200  flex flex-col md:flex-row justify-between items-center gap-4">
                   <p className="text-[10px] text-gray-400 uppercase tracking-widest">© 2024 Richse Beauty. All Rights Reserved.</p>
                   <div className="flex gap-6 text-[10px] text-gray-400 uppercase tracking-widest">
                       <a className="hover:text-primary" href="#">Privacy Policy</a>

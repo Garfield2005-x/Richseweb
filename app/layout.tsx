@@ -5,6 +5,7 @@ import { Noto_Serif, Noto_Sans } from "next/font/google";
 import "./globals.css";
 import Providers from "./Providers"
 import { CartProvider } from "@/context/CartContext"
+import { Analytics } from "@vercel/analytics/react";
 
 const notoSerif = Noto_Serif({
   variable: "--font-display",
@@ -63,6 +64,7 @@ export default function RootLayout({
         <CartProvider>
         <Providers>
           {children}
+          <Analytics />
         </Providers>
         </CartProvider>
       </body>

@@ -34,7 +34,7 @@ function page() {
 
 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start landing-section">
 <div className="lg:col-span-7 flex flex-col md:flex-row-reverse gap-4">
-<div className="flex-1 bg-white dark:bg-gray-900 rounded-xl overflow-hidden aspect-4/5 relative group cursor-zoom-in border border-gray-100 dark:border-gray-800 shadow-sm">
+<div className="flex-1 bg-white  rounded-xl overflow-hidden aspect-4/5 relative group cursor-zoom-in border border-gray-100  shadow-sm">
   <div
     className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
     data-alt="Premium glass bottle of Lumiere serum on a marble surface"
@@ -52,7 +52,7 @@ function page() {
 <div className="flex flex-col gap-6">
 <div>
 <span className="text-xs uppercase tracking-[0.2em] text-[#c3a2ab] font-bold mb-3 block">The Radiance Collection</span>
-<h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-[#161314] dark:text-white leading-tight mb-4">Richse Night Cream</h2>
+<h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-[#161314]  leading-tight mb-4">Richse Night Cream</h2>
 <div className="flex items-center gap-4">
 <div className="flex items-center text-[#C9A961]">
 <span className="material-symbols-outlined fill-1">star</span>
@@ -60,21 +60,21 @@ function page() {
 <span className="material-symbols-outlined fill-1">star</span>
 <span className="material-symbols-outlined fill-1">star</span>
 <span className="material-symbols-outlined">star_half</span>
-<span className="ml-2 text-sm text-gray-600 dark:text-gray-400 font-sans">4.9 </span>
+<span className="ml-2 text-sm text-gray-600  font-sans">4.9 </span>
 </div>
 </div>
 </div>
 <div className="flex items-baseline gap-4">
-<span className="text-3xl font-light text-[#161314] dark:text-white">฿290.00</span>
-<span className="text-sm text-gray-500 dark:text-gray-400">20ml</span>
+<span className="text-3xl font-light text-[#161314] ">฿290.00</span>
+<span className="text-sm text-gray-500 ">20ml</span>
 </div>
-<p className="text-gray-600 dark:text-gray-400 leading-relaxed font-sans text-lg">
+<p className="text-gray-600  leading-relaxed font-sans text-lg">
                    RICHSE is a skincare brand dedicated to enhancing natural beauty through thoughtful care and refined formulas. Focused on quality, balance, and skin wellness, RICHSE helps support healthier-looking, radiant skin as part of a modern self-care routine.
 
                 </p>
-<div className="space-y-4 pt-6 border-t border-gray-100 dark:border-gray-800">
+<div className="space-y-4 pt-6 border-t border-gray-100 ">
 <div className="flex items-center gap-4">
-  <div className="flex-1 flex items-center justify-between border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3">
+  <div className="flex-1 flex items-center justify-between border border-gray-300  rounded-lg px-4 py-3">
     <button
       onClick={(e) => {
         e.stopPropagation()
@@ -111,12 +111,12 @@ function page() {
 </div>
 <Link
   href="/Checkout"
-  className="w-full border-2 border-[#161314] dark:border-white text-[#161314] dark:text-white font-bold py-4 rounded-lg hover:bg-[#161314] hover:text-white dark:hover:bg-white dark:hover:text-black transition-all uppercase tracking-widest text-sm block text-center"
+  className="w-full border-2 border-[#161314]  text-[#161314]  font-bold py-4 rounded-lg hover:bg-[#161314] hover:text-white  transition-all uppercase tracking-widest text-sm block text-center"
 >
   Buy It Now
 </Link>
 </div>
-<div className="grid grid-cols-3 gap-4 pt-8 border-t border-gray-100 dark:border-gray-800">
+<div className="grid grid-cols-3 gap-4 pt-8 border-t border-gray-100 ">
 <div className="flex flex-col items-center text-center gap-2">
 <span className="material-symbols-outlined text-[#C9A961] text-3xl">local_shipping</span>
 <span className="text-[10px] uppercase font-bold tracking-tighter">Free Priority Shipping</span>
@@ -142,31 +142,31 @@ function page() {
 <p className="text-gray-500 max-w-lg mx-auto">Sourced from the heart of the French Alps, refined with modern science to ensure visible results without irritation.</p>
 </div>
 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-<div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
+<div className="bg-white  p-10 rounded-2xl border border-gray-100  text-center hover:shadow-2xl transition-all duration-500">
 <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
 <span className="material-symbols-outlined text-[#c3a2ab] text-4xl">water_drop</span>
 </div>
 <h4 className="font-display text-2xl mb-4">Balanced Hydration</h4>
-<p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Thoughtfully developed to support skin hydration and everyday comfort, helping maintain a soft, smooth, and refreshed-looking complexion.</p>
+<p className="text-sm text-gray-600  leading-relaxed">Thoughtfully developed to support skin hydration and everyday comfort, helping maintain a soft, smooth, and refreshed-looking complexion.</p>
 </div>
-<div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
+<div className="bg-white  p-10 rounded-2xl border border-gray-100  text-center hover:shadow-2xl transition-all duration-500">
 <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
 <span className="material-symbols-outlined text-[#c3a2ab] text-4xl">shutter_speed</span>
 </div>
 <h4 className="font-display text-2xl mb-4">Refined Renewal</h4>
-<p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">A carefully balanced approach to skincare designed to support smoother, healthier-looking skin while respecting the skin’s natural balance.
+<p className="text-sm text-gray-600  leading-relaxed">A carefully balanced approach to skincare designed to support smoother, healthier-looking skin while respecting the skin’s natural balance.
 </p>
 </div>
-<div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
+<div className="bg-white  p-10 rounded-2xl border border-gray-100  text-center hover:shadow-2xl transition-all duration-500">
 <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
 <span className="material-symbols-outlined text-[#c3a2ab] text-4xl">psychology_alt</span>
 </div>
 <h4 className="font-display text-2xl mb-4">Skin Harmony</h4>
-<p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Formulated with attention to skin harmony, helping maintain a calm, balanced, and naturally radiant appearance.</p>
+<p className="text-sm text-gray-600  leading-relaxed">Formulated with attention to skin harmony, helping maintain a calm, balanced, and naturally radiant appearance.</p>
 </div>
 </div>
 </section>
-<section className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center bg-[#fdf2f4] dark:bg-primary/5 rounded-[3rem] p-12 lg:p-24 overflow-hidden relative landing-section">
+<section className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center bg-[#fdf2f4]  rounded-[3rem] p-12 lg:p-24 overflow-hidden relative landing-section">
 <div className="relative z-10">
 <span className="text-xs uppercase tracking-[0.2em] text-primary font-bold mb-4 block">Application</span>
 <h3 className="text-4xl font-display mb-10">The Daily Ritual</h3>
@@ -175,27 +175,27 @@ function page() {
 <span className="text-5xl font-display text-primary/20 leading-none">01</span>
 <div>
 <h5 className="font-bold text-lg mb-2">Treat</h5>
-<p className="text-gray-600 dark:text-gray-400">Apply Richse Milk Hya Serum (Cellular renewal formula) with 2–3 drops onto face and neck to deeply hydrate and support skin renewal.</p>
+<p className="text-gray-600 ">Apply Richse Milk Hya Serum (Cellular renewal formula) with 2–3 drops onto face and neck to deeply hydrate and support skin renewal.</p>
 </div>
 </div>
 <div className="flex gap-8 items-start">
 <span className="text-5xl font-display text-primary/20 leading-none">02</span>
 <div>
 <h5 className="font-bold text-lg mb-2">Moisturize</h5>
-<p className="text-gray-600 dark:text-gray-400">Follow with Richse Moist (Moisturizer) to balance skin and lock in hydration for long-lasting comfort.</p>
+<p className="text-gray-600 ">Follow with Richse Moist (Moisturizer) to balance skin and lock in hydration for long-lasting comfort.</p>
 </div>
 </div>
 <div className="flex gap-8 items-start">
 <span className="text-5xl font-display text-primary/20 leading-none">03</span>
 <div>
 <h5 className="font-bold text-lg mb-2">Repair & Glow</h5>
-<p className="text-gray-600 dark:text-gray-400">Finish your routine with Richse Night Cream for intensive brightening and lifting while you sleep. Use Richse Gold Mask as a special treatment to boost 24-hour moisture.</p>
+<p className="text-gray-600 ">Finish your routine with Richse Night Cream for intensive brightening and lifting while you sleep. Use Richse Gold Mask as a special treatment to boost 24-hour moisture.</p>
 </div>
 </div>
 </div>
 </div>
 <div
-  className="aspect-square bg-cover bg-center rounded-2xl shadow-2xl rotate-2 border-12 border-white dark:border-gray-800"
+  className="aspect-square bg-cover bg-center rounded-2xl shadow-2xl rotate-2 border-12 border-white "
   data-alt="Close up of serum being massaged into skin"
   style={{
     backgroundImage:
@@ -205,7 +205,7 @@ function page() {
 
 </section>
 <section className="landing-section">
-<div className="flex flex-col lg:flex-row gap-16 p-12 lg:p-16 bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-xl shadow-primary/5">
+<div className="flex flex-col lg:flex-row gap-16 p-12 lg:p-16 bg-white  rounded-[2.5rem] border border-gray-100  shadow-xl shadow-primary/5">
 <div className="flex flex-col gap-6 lg:w-1/3">
 <h3 className="text-4xl font-display">Customer Praise</h3>
 <div className="space-y-1">
@@ -224,7 +224,7 @@ function page() {
 <div className="flex-1 flex flex-col justify-center space-y-6">
 <div className="grid grid-cols-[30px_1fr_45px] items-center gap-6">
 <span className="text-sm font-bold">5</span>
-<div className="h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+<div className="h-2.5 bg-gray-100  rounded-full overflow-hidden">
 <div
   className="h-full bg-[#c3a2ab]"
   style={{ width: '87%' }}
@@ -235,7 +235,7 @@ function page() {
 </div>
 <div className="grid grid-cols-[30px_1fr_45px] items-center gap-6">
 <span className="text-sm font-bold">4</span>
-<div className="h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+<div className="h-2.5 bg-gray-100  rounded-full overflow-hidden">
 <div
   className="h-full bg-[#c3a2ab]"
   style={{ width: '10%' }}
@@ -246,7 +246,7 @@ function page() {
 </div>
 <div className="grid grid-cols-[30px_1fr_45px] items-center gap-6">
 <span className="text-sm font-bold">3</span>
-<div className="h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+<div className="h-2.5 bg-gray-100  rounded-full overflow-hidden">
 <div
   className="h-full bg-[#c3a2ab]"
   style={{ width: '2%' }}
@@ -257,7 +257,7 @@ function page() {
 </div>
 <div className="grid grid-cols-[30px_1fr_45px] items-center gap-6">
 <span className="text-sm font-bold">2</span>
-<div className="h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+<div className="h-2.5 bg-gray-100  rounded-full overflow-hidden">
 <div
   className="h-full bg-[#c3a2ab]"
   style={{ width: '1%' }}
@@ -268,7 +268,7 @@ function page() {
 </div>
 <div className="grid grid-cols-[30px_1fr_45px] items-center gap-6">
 <span className="text-sm font-bold">1</span>
-<div className="h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+<div className="h-2.5 bg-gray-100  rounded-full overflow-hidden">
 <div
   className="h-full bg-[#c3a2ab]"
   style={{ width: '0%' }}
@@ -287,7 +287,7 @@ function page() {
 </div>
 <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
 <div className="group cursor-pointer">
-<div className="aspect-3/4 bg-white dark:bg-gray-800 rounded-xl overflow-hidden mb-6 relative shadow-sm transition-shadow group-hover:shadow-md">
+<div className="aspect-3/4 bg-white  rounded-xl overflow-hidden mb-6 relative shadow-sm transition-shadow group-hover:shadow-md">
 <div
   className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
   data-alt="Milk Cleanser bottle"
@@ -302,7 +302,7 @@ function page() {
 <p className="text-gray-500 text-sm">$45.00</p>
 </div>
 <div className="group cursor-pointer">
-<div className="aspect-3/4 bg-white dark:bg-gray-800 rounded-xl overflow-hidden mb-6 relative shadow-sm transition-shadow group-hover:shadow-md">
+<div className="aspect-3/4 bg-white  rounded-xl overflow-hidden mb-6 relative shadow-sm transition-shadow group-hover:shadow-md">
 <div
   className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
   data-alt="Luxury Eye Cream jar"
@@ -317,7 +317,7 @@ function page() {
 <p className="text-gray-500 text-sm">$85.00</p>
 </div>
 <div className="group cursor-pointer">
-<div className="aspect-3/4 bg-white dark:bg-gray-800 rounded-xl overflow-hidden mb-6 relative shadow-sm transition-shadow group-hover:shadow-md">
+<div className="aspect-3/4 bg-white  rounded-xl overflow-hidden mb-6 relative shadow-sm transition-shadow group-hover:shadow-md">
 <div
   className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
   data-alt="Luxury Eye Cream jar"
@@ -332,7 +332,7 @@ function page() {
 <p className="text-gray-500 text-sm">$120.00</p>
 </div>
 <div className="group cursor-pointer">
-<div className="aspect-3/4 bg-white dark:bg-gray-800 rounded-xl overflow-hidden mb-6 relative shadow-sm transition-shadow group-hover:shadow-md">
+<div className="aspect-3/4 bg-white  rounded-xl overflow-hidden mb-6 relative shadow-sm transition-shadow group-hover:shadow-md">
 <div
   className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
   data-alt="Luxury Eye Cream jar"

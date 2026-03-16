@@ -18,7 +18,7 @@ function Navbar() {
 
   return (
     
-    <><header className="sticky top-0 z-50 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-[#efecec] dark:border-white/10">
+    <><header className="sticky top-0 z-50 w-full bg-background-light/80  backdrop-blur-md border-b border-[#efecec] ">
       
       <div className="max-w-360 mx-auto px-6 md:px-10 py-4 flex items-center justify-between">
         <div className="flex items-center gap-10">
@@ -45,7 +45,7 @@ function Navbar() {
           </nav> */}
         </div>
         <div className="flex items-center gap-4 lg:gap-6">
-          {/* <div className="hidden sm:flex items-center bg-[#efecec] dark:bg-white/5 rounded-full px-4 py-1.5">
+          {/* <div className="hidden sm:flex items-center bg-[#efecec]  rounded-full px-4 py-1.5">
             <span className="material-symbols-outlined text-sm opacity-60">search</span>
             <input className="bg-transparent border-none focus:ring-0 text-sm placeholder:text-gray-400 w-32 md:w-48" placeholder="Search rituals..." type="text" />
           </div> */}
