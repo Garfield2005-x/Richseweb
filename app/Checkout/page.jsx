@@ -17,7 +17,7 @@ const provinces = [...new Set(thaiAddress.map(i => i.district.province.name_th))
   const router = useRouter()
   const { cart, clearCart } = useCart()
   const tax = 0
-  const [loading, setLoading] = useState(false)
+  const [country, setCountry] = useState("thailand")
 
 const [shippingInfo, setShippingInfo] = useState({
   fullName: "",
@@ -260,9 +260,261 @@ if (!lineRes.ok) {
 
             {/* Shipping */}
             <div className="mb-12">
-              <h2 className="text-2xl mb-6 font-serif">Shipping Address</h2>
+              <div className="flex items-center gap-6 mb-6">
+  <h2 className="text-2xl font-serif">Shipping Address</h2>
 
-              <div className="space-y-4">
+  <label className="flex items-center gap-2">
+    <input
+      type="radio"
+      value="thailand"
+      checked={country === "thailand"}
+      onChange={(e) => setCountry(e.target.value)}
+    />
+    Thailand
+  </label>
+
+  <label className="flex items-center gap-2">
+    <input
+      type="radio"
+      value="international"
+      checked={country === "international"}
+      onChange={(e) => setCountry(e.target.value)}
+    />
+    International
+  </label>
+</div>
+ 
+ {country === "thailand" && (
+  <div>
+        <div className="space-y-4">
+                <input
+                  placeholder="Full Name"
+                  value={shippingInfo.fullName}
+                  onChange={(e) =>
+                    setShippingInfo({ ...shippingInfo, fullName: e.target.value })
+                  }
+                  className="border rounded-lg px-4 py-3 w-full"
+                />
+
+                <input
+                  placeholder="Street Address"
+                  value={shippingInfo.address}
+                  onChange={(e) =>
+                    setShippingInfo({ ...shippingInfo, address: e.target.value })
+                  }
+                  className="border rounded-lg px-4 py-3 w-full"
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <select
+  value={shippingInfo.province}
+  onChange={(e) =>
+    setShippingInfo({
+      ...shippingInfo,
+      province: e.target.value,
+      district: "",
+      subdistrict: "",
+      postcode: ""
+    })
+  }
+  className="border rounded-lg px-4 py-3 w-full"
+>
+  <option value="">Province</option>
+
+  {provinces.map((p) => (
+    <option key={p} value={p}>
+      {p}
+    </option>
+  ))}
+</select>
+
+<select
+  value={shippingInfo.district}
+  onChange={(e) =>
+    setShippingInfo({
+      ...shippingInfo,
+      district: e.target.value,
+      subdistrict: "",
+      postcode: ""
+    })
+  }
+  disabled={!shippingInfo.province}
+  className="border rounded-lg px-4 py-3 w-full"
+>
+  <option value="">District</option>
+
+  {districts.map((d) => (
+    <option key={d} value={d}>
+      {d}
+    </option>
+  ))}
+</select>
+<select
+  value={shippingInfo.subdistrict}
+  onChange={(e) => {
+    const selected = subdistricts.find(
+      s => s.name_th === e.target.value
+    )
+
+    setShippingInfo({
+      ...shippingInfo,
+      subdistrict: e.target.value,
+      postcode: selected.zip_code
+    })
+  }}
+  disabled={!shippingInfo.district}
+  className="border rounded-lg px-4 py-3 w-full"
+>
+  <option value="" >Subdistrict</option>
+
+  {subdistricts.map((s) => (
+    <option key={s.id} value={s.name_th}>
+      {s.name_th}
+    </option>
+  ))}
+</select>
+                 <input
+  value={shippingInfo.postcode}
+  readOnly
+  className="border rounded-lg px-4 py-3 w-full bg-gray-100"
+  placeholder="Postal Code"
+/>
+                
+</div>
+                <input
+                  placeholder="Phone"
+                  value={shippingInfo.phone}
+                  onChange={(e) =>
+                    setShippingInfo({ ...shippingInfo, phone: e.target.value })
+                  }
+                  className="border rounded-lg px-4 py-3 w-full mb-12"
+                />
+                
+              </div>
+<div className="mb-12">
+              <h2 className="text-2xl mb-6 font-serif">Shipping Method</h2>
+
+              <div className="space-y-3">
+                <label className="flex justify-between border p-4 rounded-lg cursor-pointer">
+                  <span>
+                    <input
+                      type="radio"
+                      checked={shipping === "Bank Transfer (Free Shipping)"}
+                      onChange={() => setShipping("Bank Transfer (Free Shipping)")}
+                    />{" "}
+                    Bank Transfer (Free Shipping)
+                  </span>
+                  <span>฿0</span>
+                </label>
+
+                <label className="flex justify-between border p-4 rounded-lg cursor-pointer">
+                  <span>
+                    <input
+                      type="radio"
+                      checked={shipping === "Cash on Delivery (+$30 Fee)"}
+                      onChange={() => setShipping("Cash on Delivery (+$30 Fee)")}
+                    />{" "}
+                    Cash on Delivery (+฿30 Fee)
+                  </span>
+                  <span>฿30</span>
+                </label>
+              </div>
+            </div>
+              </div>
+              
+      )}
+
+      {country === "international" && (
+        <div>
+        <div className="space-y-4">
+                <input
+                  placeholder="Full Name"
+                  value={shippingInfo.fullName}
+                  onChange={(e) =>
+                    setShippingInfo({ ...shippingInfo, fullName: e.target.value })
+                  }
+                  className="border rounded-lg px-4 py-3 w-full"
+                />
+
+                <input
+                  placeholder="Street Address"
+                  value={shippingInfo.address}
+                  onChange={(e) =>
+                    setShippingInfo({ ...shippingInfo, address: e.target.value })
+                  }
+                  className="border rounded-lg px-4 py-3 w-full"
+                />
+
+               <div className="grid grid-cols-2 gap-4">
+  <input
+    placeholder="Province / State"
+    value={shippingInfo.province}
+    onChange={(e) =>
+      setShippingInfo({ ...shippingInfo, province: e.target.value })
+    }
+    className="border rounded-lg px-4 py-3 w-full"
+  />
+
+  <input
+    placeholder="City"
+    value={shippingInfo.district}
+    onChange={(e) =>
+      setShippingInfo({ ...shippingInfo, district: e.target.value })
+    }
+    className="border rounded-lg px-4 py-3 w-full"
+  />
+
+  <input
+    placeholder="Address / Area"
+    value={shippingInfo.subdistrict}
+    onChange={(e) =>
+      setShippingInfo({ ...shippingInfo, subdistrict: e.target.value })
+    }
+    className="border rounded-lg px-4 py-3 w-full"
+  />
+
+  <input
+    placeholder="Postal Code"
+    value={shippingInfo.postcode}
+    onChange={(e) =>
+      setShippingInfo({ ...shippingInfo, postcode: e.target.value })
+    }
+    className="border rounded-lg px-4 py-3 w-full"
+  />
+</div>
+                <input
+                  placeholder="Phone"
+                  value={shippingInfo.phone}
+                  onChange={(e) =>
+                    setShippingInfo({ ...shippingInfo, phone: e.target.value })
+                  }
+                  className="border rounded-lg px-4 py-3 w-full mb-12"
+                />
+                
+              </div>
+<div className="mb-12">
+              <h2 className="text-2xl mb-6 font-serif">Shipping Method</h2>
+
+              <div className="space-y-3">
+                <label className="flex justify-between border p-4 rounded-lg cursor-pointer">
+                  <span>
+                    <input
+                      type="radio"
+                      checked={shipping === "Bank Transfer (Free Shipping)"}
+                      onChange={() => setShipping("Bank Transfer (Free Shipping)")}
+                    />{" "}
+                    Bank Transfer (Free Shipping)
+                  </span>
+                  <span>฿0</span>
+                </label>
+
+                
+              </div>
+            </div>
+              </div>
+      )}
+                
+              {/* <div className="space-y-4">
                 <input
                   placeholder="Full Name"
                   value={shippingInfo.fullName}
@@ -366,15 +618,15 @@ if (!lineRes.ok) {
                   className="border rounded-lg px-4 py-3 w-full"
                 />
                 
-              </div>
+              </div> */}
             </div>
 
             {/* Shipping Method */}
-            <div className="mb-12">
+            {/* <div className="mb-12">
               <h2 className="text-2xl mb-6 font-serif">Shipping Method</h2>
 
               <div className="space-y-3">
-                {/* <label className="flex justify-between border p-4 rounded-lg cursor-pointer">
+                <label className="flex justify-between border p-4 rounded-lg cursor-pointer">
                   <span>
                     <input
                       type="radio"
@@ -384,7 +636,7 @@ if (!lineRes.ok) {
                     Bank Transfer (Free Shipping)
                   </span>
                   <span>฿0</span>
-                </label> */}
+                </label>
 
                 <label className="flex justify-between border p-4 rounded-lg cursor-pointer">
                   <span>
@@ -398,7 +650,7 @@ if (!lineRes.ok) {
                   <span>฿30</span>
                 </label>
               </div>
-            </div>
+            </div> */}
           </section>
 
           {/* RIGHT - SUMMARY */}
