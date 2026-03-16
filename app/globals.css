@@ -1,49 +1,44 @@
 @import "tailwindcss";
 
-/* ---------- CSS Variables ---------- */
+/* ---------- Theme Variables ---------- */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
   --primary: #b88b8d;
   --off-white: #faf9f8;
   --dusty-rose: #c49293;
   --rose-gold: #d4a3a5;
   --rose-gold-dark: #b88b8d;
+
   --text-main: #2d2425;
   --luxury-white: #ffffff;
-  
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-/* ---------- Base styles ---------- */
+/* ---------- Base ---------- */
 body {
   background: var(--background);
-
+  color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
 }
 
-/* Heading ใช้ serif */
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display), serif;
 }
 
-/* ---------- Material Symbols ---------- */
+/* ---------- Icons ---------- */
 .material-symbols-outlined {
   font-variation-settings:
-    'FILL' 0,
-    'wght' 300,
-    'GRAD' 0,
-    'opsz' 24;
+    "FILL" 0,
+    "wght" 200,
+    "GRAD" 0,
+    "opsz" 24;
+
+  @apply text-2xl md:text-3xl;
 }
 
-/* ---------- Custom backgrounds ---------- */
+/* ---------- Background Effects ---------- */
 .skin-glow-gradient {
   background: linear-gradient(
     135deg,
@@ -52,36 +47,31 @@ h1, h2, h3, h4, h5, h6 {
     #f7f7f7 100%
   );
 }
-.font-display {
-  font-family: var(--font-display), serif;
-}
-
 
 .hero-mesh {
   background-color: #f7f7f7;
   background-image:
-    radial-gradient(at 0% 0%, rgba(195, 162, 171, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(201, 169, 97, 0.1) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(195,162,171,0.15), transparent 50%),
+    radial-gradient(at 100% 100%, rgba(201,169,97,0.1), transparent 50%);
 }
 
 /* ---------- Utilities ---------- */
+.font-display {
+  font-family: var(--font-display), serif;
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-.material-symbols-outlined {
-  font-variation-settings:
-    'FILL' 0,
-    'wght' 200,
-    'GRAD' 0,
-    'opsz' 24;
-  @apply text-2xl md:text-3xl;
-}
 
 .social-link {
-  @apply flex flex-col items-center justify-center space-y-4 py-12
-         transition-opacity duration-500 hover:opacity-50;
+  @apply flex flex-col items-center justify-center
+         space-y-4 py-12
+         transition-opacity duration-500
+         hover:opacity-50;
 }
