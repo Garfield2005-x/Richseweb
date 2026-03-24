@@ -2,8 +2,14 @@
 
 import { createContext, useContext, useState } from "react"
 import toast from "react-hot-toast"
-import type { Product as OldProduct } from "@/data/products"
-type Product = OldProduct & { stock?: number };
+export type Product = {
+  id: number
+  name: string
+  price: number
+  image: string
+  taxe: string
+  stock?: number
+};
 
 type CartItem = Product & { quantity: number }
 

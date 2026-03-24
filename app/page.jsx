@@ -80,14 +80,14 @@ export default function Home() {
     <div>
       <title>Richse | Luxury Skincare - Radiance Refined</title>
       <Navbar />
-      
+
       {/* --- HERO SECTION --- */}
       <section className="hero-mesh dark:bg-background-dark py-12 md:py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            
+
             {/* Context Side */}
-            <motion.div 
+            <motion.div
               className="order-2 lg:order-1 space-y-8"
               initial="hidden" animate="visible" variants={staggerContainer}
             >
@@ -96,14 +96,14 @@ export default function Home() {
                   New Collection: L éclat
                 </motion.span>
                 <motion.h1 variants={fadeInUp} className="font-display text-5xl md:text-7xl font-bold leading-[1.1] text-[#161314] dark:text-white">
-                  Radiance <br/>
+                  Radiance <br />
                   <span className="text-[#C9A961] font-display italic font-medium">Refined.</span>
                 </motion.h1>
                 <motion.p variants={fadeInUp} className="text-lg text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
                   Thoughtfully crafted skincare that blends refined formulation with a modern approach to skin wellness, designed to support a naturally radiant and healthy-looking complexion.
                 </motion.p>
-              </div> 
-              
+              </div>
+
               <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
                 <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wide hover:opacity-90 transition-all shadow-lg shadow-primary/20" href="/ProductAll">
                   The Collection
@@ -112,7 +112,7 @@ export default function Home() {
                   Take Skin Quiz
                 </Link>
               </motion.div>
-              
+
               <motion.div variants={fadeInUp} className="pt-8 flex items-center gap-6">
                 <div className="flex -space-x-3">
                   <div className="size-10 rounded-full border-2 border-white bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOkU_KsqoSbhbtjJ5OK9CLJa6qSuYp3FafH-5nN4-H_9gRQAwdEge5ePpZlee9flZzUHCC5Eqg5W-PocN0GRdG-6eYGM0CtwOHiaZtCPmghKObx7bLetYpi-upa72L4tRUipvZVaBED4KGN31iBxkekVRd14csqj41oXrqCnFYDhL0Q1aEInkrj_s4Q9i-wjyGpzBmUDJpMb1gEkQ7PqFeht3_H4uYGOKXz39j_WZJpCKIIJS7Alfg1cSmsWuFW1sfy5NvAGJoqCU')" }} />
@@ -125,7 +125,7 @@ export default function Home() {
 
             {/* Image Side */}
             <div className="order-1 lg:order-2">
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, ease: "easeOut" }}
@@ -133,20 +133,20 @@ export default function Home() {
               >
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
-                  style={{ backgroundImage: "url('https://i.postimg.cc/PqnMmmvZ/IMG-8008.png')" }}
+                  style={{ backgroundImage: "url('/Toy.png')" }}
                 ></div>
                 <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 hidden md:block">
                   <div className="flex justify-between items-center">
                     <div>
                       <p className="text-white font-bold">Featured Product</p>
                       <p className="text-white/80 text-sm">Richse Night Cream</p>
-                    </div>  
+                    </div>
                     <div className="text-white font-display text-xl">฿290</div>
                   </div>
                 </div>
               </motion.div>
             </div>
-            
+
           </div>
         </div>
       </section>
@@ -158,15 +158,15 @@ export default function Home() {
             <motion.h2 variants={fadeInUp} className="font-display text-3xl md:text-4xl font-bold">Why Richse</motion.h2>
             <motion.div variants={fadeInUp} className="w-16 h-0.5 bg-[#c3a2ab] mx-auto"></motion.div>
           </motion.div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {[
               { icon: "shield_with_heart", title: "Dermatologist Tested", desc: "Developed with professional skincare insight and thoughtfully tested to ensure it is gentle and suitable for everyday use, including sensitive skin." },
               { icon: "eco", title: "Ethical Beauty", desc: "Created with a mindful approach to beauty, focusing on thoughtful formulation and carefully chosen packaging that reflects a commitment to responsible and refined skincare." },
               { icon: "auto_awesome", title: "Clinical Results", desc: "Developed with insights from modern skincare research, focusing on formulas designed to support hydration, comfort, and a smoother-looking complexion with consistent use." }
             ].map((feature, i) => (
-              <motion.div 
-                key={i} 
+              <motion.div
+                key={i}
                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.15 }}
                 className="p-8 rounded-2xl border border-[#dfd8da] dark:border-white/10 hover:shadow-xl hover:-translate-y-1 transition-all group"
               >
@@ -197,7 +197,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        
+
         <div className="flex gap-6 px-6 md:px-20 overflow-x-auto no-scrollbar pb-10">
           <div className="overflow-x-auto">
             <div className="flex gap-6 w-max px-6">
@@ -205,8 +205,8 @@ export default function Home() {
                 <div className="py-10 px-6 text-gray-500 tracking-widest uppercase text-sm">Loading Best Sellers...</div>
               ) : products.length > 0 ? (
                 products.map((product, i) => (
-                  <motion.div 
-                    key={product.id} 
+                  <motion.div
+                    key={product.id}
                     initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.1 }}
                     className="min-w-[280px] group"
                   >
@@ -232,11 +232,11 @@ export default function Home() {
                           e.stopPropagation()
                           const now = new Date();
                           const isFlashSale = product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && now >= new Date(product.flashSaleStart) && now <= new Date(product.flashSaleEnd);
-                          addToCart({ 
-                            ...product, 
+                          addToCart({
+                            ...product,
                             price: isFlashSale ? product.flashSalePrice : product.price,
                             originalPrice: product.price,
-                            taxe: product.description 
+                            taxe: product.description
                           })
                         }}
                         className="absolute bottom-4 left-4 right-4 bg-white text-[#161314] py-3 rounded-xl font-bold text-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl text-center"
@@ -310,12 +310,12 @@ export default function Home() {
               animation-play-state: paused;
             }
           `}</style>
-          
+
           {/* We use multiple identical blocks animating at -100% of their own width. 4 blocks ensures no gaps even on Ultrawide screens */}
           {[...Array(4)].map((_, containerIndex) => (
             <div key={containerIndex} className="animate-marquee flex gap-6 pr-6" aria-hidden={containerIndex === 1}>
               {[1, 2, 3, 4, 5].map((item, idx) => (
-                <div 
+                <div
                   key={`${containerIndex}-${idx}`}
                   className="w-[260px] h-[460px] md:w-[280px] md:h-[520px] bg-[#f8f6f4] rounded-[2rem] overflow-hidden outline outline-1 outline-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.06)] shrink-0 cursor-pointer relative group/video hover:shadow-[0_20px_40px_rgba(195,162,171,0.2)] transition-all duration-700 hover:-translate-y-2"
                   onClick={(e) => {
@@ -356,13 +356,13 @@ export default function Home() {
                   }}
                 >
                   {/* Note: Insert actual vertical .mp4 paths here */}
-                  <video 
+                  <video
                     className="w-full h-full object-cover scale-[1.02] group-hover/video:scale-100 transition-transform duration-700 ease-out"
                     src={`/videos/tiktok-${item}.mp4`}
                     loop
                     playsInline
                   />
-                  
+
                   {/* Elegant Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-60 group-hover/video:opacity-80 transition-opacity duration-500 pointer-events-none"></div>
 
@@ -373,16 +373,16 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <a 
-                    href="https://www.tiktok.com/@richse.888?_r=1&_t=ZS-94v5EesyoiY" 
-                    target="_blank" 
+                  <a
+                    href="https://www.tiktok.com/@richse.888?_r=1&_t=ZS-94v5EesyoiY"
+                    target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                     className="absolute bottom-6 left-6 right-6 text-white z-10 block w-fit"
                   >
-                     <p className="font-serif text-[10px] md:text-[11px] tracking-[0.15em] uppercase bg-white/10 backdrop-blur-md w-fit px-5 py-2.5 rounded-full border border-white/20 hover:bg-white hover:text-[#161314] transition-colors duration-500">
-                        @richse.888
-                     </p>
+                    <p className="font-serif text-[10px] md:text-[11px] tracking-[0.15em] uppercase bg-white/10 backdrop-blur-md w-fit px-5 py-2.5 rounded-full border border-white/20 hover:bg-white hover:text-[#161314] transition-colors duration-500">
+                      @richse.888
+                    </p>
                   </a>
                 </div>
               ))}
@@ -405,8 +405,8 @@ export default function Home() {
               { text: "“ผลิตภัณฑ์นี้ให้ผลลัพธ์เชิงประจักษ์ภายในระยะเวลาอันสั้น โดยไม่ก่อให้เกิดการระคายเคืองต่อผิวแพ้ง่าย ถือเป็นอีกมาตรฐานที่น่าชื่นชมในกลุ่มสกินแคร์ระดับสูง”", name: "ธีรภัทร วัฒนศิริ", title: "Skincare Specialist", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAFadPtDcIKL6h9YR-z6iN2Y0Q2-NKdEg6D9JRA0uYotIU6tglfx2MzmFOSUAAwV1A4dmj17g1WS4jf6z93h8sFp8ny-fGMzrG5SHOZNwmwDdxK_Qhg3yVH3_6RJTKFTdJP7MfDc8J4GQltptoVUuFhOLLUyYzWr6Un6GBgJcqFLFtppIz0-z_8Dcdk26F_NMzkBDTPC9_giJraKCnfVohUfpLDyrYCAmHWbKdbpMO7XriaB471Bv6VOhUUP2C3BjaoF7MCZJb3f_E" },
               { text: "“ในที่สุดก็พบผลิตภัณฑ์ระดับพรีเมียมที่อ่อนโยนต่อผิวบอบบางอย่างแท้จริง เห็นการเปลี่ยนแปลงของผิวอย่างชัดเจนภายในสองสัปดาห์ ประสิทธิภาพน่าประทับใจมากค่ะ”", name: "โสภี จันทร์เพ็ญ", title: "Lifestyle Influencer", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAyqQzej49jQsMHMfWBUzE3zrxHX6wOli8fQCT7Z1G-hZct04vc2qXRHX84sl_OVfjNj8ARr4ifUFWND9RH-oaFcgLlOXdn_g1i5a9M8Nnc--xOelDgAqQb9wHVqgOEFaWzGOIV8TK7SsQhZyFRiZ9Pu_1L1uPZWBMoNlPT2V8J4D2Uo5L_lfueV_fWDy4zwh_h_K1jDlrsVQwOnKz6T7dmGG69pBR7Q5oZSIdLgqioHSVI_M4g7heHOa4EeqNz_fY0tP1dOJxpohw" }
             ].map((quote, i) => (
-              <motion.div 
-                key={i} 
+              <motion.div
+                key={i}
                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.15 }}
                 className="hero-mesh dark:bg-white/5 p-8 rounded-2xl relative"
               >
