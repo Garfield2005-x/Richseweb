@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useCart } from "@/context/CartContext"
 import { useState, useEffect } from "react";
@@ -133,7 +133,7 @@ export default function Home() {
               >
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
-                  style={{ backgroundImage: "url('/Toy.png')" }}
+                  style={{ backgroundImage: "url('/toy.png')" }}
                 ></div>
                 <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 hidden md:block">
                   <div className="flex justify-between items-center">
