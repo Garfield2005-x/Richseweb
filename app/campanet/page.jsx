@@ -1,18 +1,47 @@
-"use client"
-
-import { useRef } from "react"
+"use client";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function CustomerForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
+    try {
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
 
-const handleSubmit = async (e)=>{
+      // Save to our DB
+      const res = await fetch('/api/campanet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
 
+      if (!res.ok) {
+        throw new Error("Failed to save to database");
+      }
 
+      // Send to Google Sheets (silent)
+      await fetch("https://script.google.com/a/macros/richseofficial.com/s/AKfycbz5J4aFQq2U8VqYGU8vuKPNDfSBXB8XZ6heKzo2kOcTen4GcyBRUJnVtSU1N9Lf1qaO/exec", {
+        method: "POST",
+        body: formData,
+        mode: "no-cors"
+      });
 
-alert("ลงทะเบียนสำเร็จ ✅")
-
-}
+      alert("ลงทะเบียนสำเร็จ ✅");
+      e.target.reset(); // clear form
+      router.push("/");
+    } catch (error) {
+      console.error(error);
+      alert("เกิดข้อผิดพลาดในการลงทะเบียน กรุณาลองใหม่อีกครั้ง");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
     
   return (
     <div className="bg-brand-beige  min-h-screen flex items-center justify-center p-4">
@@ -35,12 +64,8 @@ alert("ลงทะเบียนสำเร็จ ✅")
           </div>
 
           <form 
-          
-onSubmit={handleSubmit}
-            action="https://script.google.com/a/macros/richseofficial.com/s/AKfycbz5J4aFQq2U8VqYGU8vuKPNDfSBXB8XZ6heKzo2kOcTen4GcyBRUJnVtSU1N9Lf1qaO/exec"
-method="POST"
-            
-          className="w-full space-y-6">
+            onSubmit={handleSubmit}
+            className="w-full space-y-6">
 
 
             {/* Name */}
@@ -114,17 +139,20 @@ method="POST"
              
 <button
   type="submit"
-  className="w-full bg-[#c3a2ab] text-white font-medium py-5 rounded-lg
-  transition-all duration-300 ease-out
-  hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#c3a2ab]/30
-  active:scale-[0.97]
-  flex items-center justify-center gap-3 group"
+  disabled={isSubmitting}
+  className={`w-full bg-[#c3a2ab] text-white font-medium py-5 rounded-lg
+  transition-all duration-300 ease-out flex items-center justify-center gap-3 group
+  ${isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#c3a2ab]/30 active:scale-[0.97]"}`}
 >
-  <span className="tracking-wide">Submit Information</span>
-
-  <span className="material-symbols-outlined text-[20px] transition-all duration-300 group-hover:translate-x-2">
-    arrow_forward
+  <span className="tracking-wide">
+    {isSubmitting ? "Submitting..." : "Submit Information"}
   </span>
+
+  {!isSubmitting && (
+    <span className="material-symbols-outlined text-[20px] transition-all duration-300 group-hover:translate-x-2">
+      arrow_forward
+    </span>
+  )}
 </button>
             </div>
 

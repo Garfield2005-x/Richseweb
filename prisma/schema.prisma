@@ -8,15 +8,35 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
-  id            String        @id @default(cuid())
+  id            String   @id @default(cuid())
   name          String?
-  email         String?       @unique
+  email         String?  @unique
+  password      String?
   emailVerified DateTime?
   image         String?
+  role          Role     @default(USER)
+
+  phone         String?
+  address       String?
+  province      String?
+  district      String?
+  subdistrict   String?
+  postal_code   String?
+
   accounts      Account[]
   loginDevices  LoginDevice[]
   sessions      Session[]
+  orders        Order[]
+  wishlist      Wishlist[]
+  rewardRedemptions RewardRedemption[]
+  reviews       ProductReview[]
+  points        Int      @default(0)
 }
 
 model Account {
@@ -65,14 +85,23 @@ model Order {
   postal_code     String
 
   shipping_method String
+  status          String      @default("PENDING")
+  tracking_number String?
 
   subtotal        Float
   tax             Float
   total           Float
 
+  points_used     Int         @default(0)
+  points_discount Float       @default(0)
+
   created_at      DateTime    @default(now())
 
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
+
   order_items     OrderItem[]
+  reviews         ProductReview[]
 
   @@map("orders")
 }
@@ -93,10 +122,34 @@ model DiscountCode {
   id               String   @id @default(uuid())
   code             String   @unique
   discount_percent Int
+  min_purchase     Float?
+  max_usage        Int?
+  current_usage    Int      @default(0)
   active           Boolean  @default(true)
   created_at       DateTime @default(now())
 
   @@map("discount_codes")
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  price       Float
+  image       String
+  description String
+  stock       Int      @default(0)
+  isActive       Boolean  @default(true)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt @default(now())
+
+  flashSalePrice Float?
+  flashSaleStart DateTime?
+  flashSaleEnd   DateTime?
+
+  wishlist       Wishlist[]
+  reviews        ProductReview[]
+
+  @@map("products")
 }
 
 model DiscountUsage {
@@ -118,4 +171,84 @@ model LoginDevice {
   os        String
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  productId Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("wishlists")
+}
+
+model Reward {
+  id              String             @id @default(cuid())
+  name            String
+  points_required Int
+  image           String?
+  stock           Int                @default(0)
+  active          Boolean            @default(true)
+  created_at      DateTime           @default(now())
+  
+  redemptions     RewardRedemption[]
+
+  @@map("rewards")
+}
+
+model RewardRedemption {
+  id              String   @id @default(cuid())
+  userId          String
+  rewardId        String
+  status          String   @default("PENDING") // PENDING, SHIPPED, CANCELLED
+  tracking_number String?
+  created_at      DateTime @default(now())
+  
+  user            User     @relation(fields: [userId], references: [id])
+  reward          Reward   @relation(fields: [rewardId], references: [id])
+
+  @@map("reward_redemptions")
+}
+
+model ProductReview {
+  id          String   @id @default(cuid())
+  productId   Int
+  userId      String
+  orderId     String   // The order this review belongs to
+  rating      Int      // 1-5
+  comment     String?  @db.Text
+  isHidden    Boolean  @default(false)
+  created_at  DateTime @default(now())
+
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId, orderId]) // Each purchase can only be reviewed once
+  @@map("product_reviews")
+}
+
+model CampanetForm {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String
+  order     String
+  createdAt DateTime @default(now())
+
+  @@map("campanet_forms")
+}
+
+model AdvancedTrackingLog {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String
+  order     String
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@map("advanced_tracking_logs")
 }

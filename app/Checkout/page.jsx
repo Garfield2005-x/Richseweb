@@ -1,8 +1,9 @@
-"use client"
+﻿"use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase"
+import { useSession } from "next-auth/react"
+// import { supabase } from "@/lib/supabase" // Removed since we moved to backend API
 import { useCart } from "@/context/CartContext"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
@@ -10,24 +11,51 @@ import ReCAPTCHA from "react-google-recaptcha"
 import thaiAddress from "@/data/sub_district_with_district_and_province.json";
 
 export default function Checkout() {
-  const [verified,setVerified] = useState(false)
-const provinces = [...new Set(thaiAddress.map(i => i.district.province.name_th))]
-  const [discountCode, setDiscountCode] = useState("");
-  const [discountAmount, setDiscountAmount] = useState(0);
+  const { data: session, status } = useSession()
+  const [verified, setVerified] = useState(false)
+  const [discountCode, setDiscountCode] = useState("")
+  const [discountAmount, setDiscountAmount] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [shipping, setShipping] = useState("Bank Transfer (Free Shipping)")
+  const [shippingInfo, setShippingInfo] = useState({
+    fullName: "",
+    address: "",
+    phone: "",
+    province: "",
+    district: "",
+    subdistrict: "",
+    postcode: "",
+    country: "Thailand"
+  })
+  const [shippingCountry, setShippingCountry] = useState("Thailand")
+  const [availablePoints, setAvailablePoints] = useState(0)
+  const [pointsToUse, setPointsToUse] = useState("")
   const router = useRouter()
   const { cart, clearCart } = useCart()
   const tax = 0
-  const [country, setCountry] = useState("thailand")
 
-const [shippingInfo, setShippingInfo] = useState({
-  fullName: "",
-  address: "",
-  phone: "",
-  province: "",
-  district: "",
-  subdistrict: "",
-  postcode: ""
-})
+  const provinces = [...new Set(thaiAddress.map(i => i.district.province.name_th))]
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login?callbackUrl=/Checkout")
+    } else if (status === "authenticated") {
+      // Fetch available points
+      fetch("/api/account/points")
+        .then(res => res.json())
+        .then(data => setAvailablePoints(data.points || 0))
+        .catch(err => console.error("Error fetching points:", err))
+    }
+  }, [status, router])
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c3a2ab]"></div>
+      </div>
+    )
+  }
+
 
   const districts = [
   ...new Set(
@@ -53,7 +81,8 @@ const [shippingInfo, setShippingInfo] = useState({
 const handlePurchase = async () => {
   await handleCheckout()
 }
-  const [shipping, setShipping] = useState("Bank Transfer (Free Shipping)")
+
+
 
   // ===== คำนวณราคา =====
 const subtotal = cart.reduce(
@@ -66,8 +95,11 @@ const shippingCost =
 
 const totalBeforeDiscount = subtotal + shippingCost
 
+const parsedPoints = Math.min(Number(pointsToUse) || 0, availablePoints, totalBeforeDiscount - discountAmount);
+const pointsDiscountAmount = parsedPoints; // 1 Point = 1 Baht
+
 const finalTotal = Math.max(
-  totalBeforeDiscount - discountAmount,
+  totalBeforeDiscount - discountAmount - pointsDiscountAmount,
   0
 )
 const checkDiscount = async () => {
@@ -76,58 +108,30 @@ const checkDiscount = async () => {
     return
   }
 
-  const cleanCode = discountCode.trim().toUpperCase()
-  const cleanPhone = shippingInfo.phone.trim()
+  try {
+    const res = await fetch("/api/checkout/validate-discount", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        code: discountCode,
+        phone: shippingInfo.phone,
+        totalBeforeDiscount
+      })
+    });
 
-  console.log("===== CHECK DISCOUNT =====")
-  console.log("Code:", cleanCode)
-  console.log("Phone:", cleanPhone)
+    const data = await res.json();
 
-  // 🔎 1. เช็คโค้ดว่ามีและ active ไหม
-  const { data, error } = await supabase
-    .from("discount_codes")
-    .select("*")
-    .eq("code", cleanCode)
-    .eq("active", true)
-    .maybeSingle()
+    if (!res.ok) {
+      alert(data.error || "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์");
+      return;
+    }
 
-  if (error) {
-    console.log("DB ERROR:", error)
-    alert("เกิดข้อผิดพลาด ดู console")
-    return
+    setDiscountAmount(data.discountAmount);
+    alert("ใช้โค้ดสำเร็จ 🎉");
+  } catch (error) {
+    console.error(error);
+    alert("เกิดข้อผิดพลาดในการตรวจสอบโค้ด");
   }
-
-  if (!data) {
-    alert("โค้ดไม่ถูกต้อง")
-    return
-  }
-
-  // 🔎 2. เช็คว่าเบอร์นี้เคยใช้โค้ดนี้หรือยัง
-  const { data: usage, error: usageError } = await supabase
-    .from("discount_usage")
-    .select("*")
-    .eq("phone", cleanPhone)
-    .eq("code", cleanCode)
-    .maybeSingle()
-
-  if (usageError) {
-    console.log("USAGE ERROR:", usageError)
-    alert("เกิดข้อผิดพลาด ดู console")
-    return
-  }
-
-  if (usage) {
-    alert("เบอร์นี้ใช้โค้ดไปแล้ว")
-    return
-  }
-
-  // 💰 3. คำนวณส่วนลด
-  const discount =
-    (totalBeforeDiscount * data.discount_percent) / 100
-
-  setDiscountAmount(discount)
-
-  alert("ใช้โค้ดสำเร็จ 🎉")
 }
   // ===== กดสั่งซื้อ =====
   const handleCheckout = async () => {
@@ -142,95 +146,36 @@ const checkDiscount = async () => {
   !shippingInfo.address ||
   !shippingInfo.province ||
   !shippingInfo.district ||
-  !shippingInfo.subdistrict ||
+  (shippingCountry === "Thailand" && !shippingInfo.subdistrict) || // Subdistrict optional for Int
   !shippingInfo.postcode ||
-  !shippingInfo.phone
+  !shippingInfo.phone ||
+  (shippingCountry === "International" && !shippingInfo.country)
 ) {
-  alert("Please fill in all shipping information")
+  alert("Please fill in all required shipping information")
   return
 }
      
       setLoading(true)
 
-      // 1️⃣ สร้าง order
-      const { data: order, error } = await supabase
-  .from("orders")
-  .insert([
-  {
-    full_name: shippingInfo.fullName,
-    address: shippingInfo.address,
-    province: shippingInfo.province,
-    district: shippingInfo.district,
-    subdistrict: shippingInfo.subdistrict,
-    postal_code: shippingInfo.postcode, // ต้อง map ตรงนี้
-    phone: shippingInfo.phone,
-    shipping_method: shipping,
-    subtotal,
-    tax,
-    total: finalTotal
-  }
-])
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cart,
+          shippingInfo,
+          shippingMethod: shipping,
+          discountCode: discountCode || null,
+          pointsToUse: parsedPoints,
+          userId: session?.user?.id || null,
+          isInternational: shippingCountry === "International"
+        })
+      });
 
-  .select()
-  .single()
+      const data = await res.json();
 
-if (error) {
-  console.error("Order insert error:", error)
-  alert(error.message)
-  return
-}
-      // 2️⃣ สร้าง order_items
-      const items = cart.map(item => ({
-        order_id: order.id,
-        product_id: item.id,
-        product_name: item.name,
-        quantity: item.quantity,
-        price: item.price
-      }))
-
-      const { error: itemsError } = await supabase
-  .from("order_items")
-  .insert(items)
-
-if (itemsError) {
-  console.error("Order items error:", itemsError)
-  alert(itemsError.message)
-  return
-}
-if (discountAmount > 0) {
-  await supabase.from("discount_usage").insert([
-    {
-      phone: shippingInfo.phone,
-      code: discountCode
-    }
-  ])
-}
-const lineRes = await fetch("/api/line", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
- body: JSON.stringify({
-  order_number: order.order_number,
-  fullName: shippingInfo.fullName,
-  phone: shippingInfo.phone,
-  address: shippingInfo.address,
-  province: shippingInfo.province,
-  district: shippingInfo.district,
-  subdistrict: shippingInfo.subdistrict,
-  postcode: shippingInfo.postcode,
-  shippingMethod: shipping,
-  subtotal,
-  shippingCost,
-  total: finalTotal,
-  cart,
-  discountAmount,
-  discountCode
-})
-})
-
-if (!lineRes.ok) {
-  const errText = await lineRes.text()
-  console.error("LINE notify failed:", errText)
-}
+      if (!res.ok) {
+        throw new Error(data.error || "Checkout failed. Please try again.");
+      }
 
       // 3️⃣ สำเร็จ
       clearCart()
@@ -250,7 +195,7 @@ if (!lineRes.ok) {
     <div>
       <Navbar />
 
-      <main className="max-w-6xl mx-auto px-4 py-10">
+      <main className="max-w-6xl mx-auto px-4 pt-32 pb-10 md:pt-40">
         <h1 className="text-4xl mb-10 font-serif">Checkout</h1>
 
         <div className="grid lg:grid-cols-12 gap-12">
@@ -533,82 +478,144 @@ if (!lineRes.ok) {
                   className="border rounded-lg px-4 py-3 w-full"
                 />
 
-                <div className="grid grid-cols-2 gap-4">
-                  <select
-  value={shippingInfo.province}
-  onChange={(e) =>
-    setShippingInfo({
-      ...shippingInfo,
-      province: e.target.value,
-      district: "",
-      subdistrict: "",
-      postcode: ""
-    })
-  }
-  className="border rounded-lg px-4 py-3 w-full"
->
-  <option value="">Province</option>
+                <div className="flex gap-4 mb-2">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setShippingCountry("Thailand");
+                      setShippingInfo({ ...shippingInfo, country: "Thailand", province: "", district: "", subdistrict: "", postcode: "" });
+                    }}
+                    className={`flex-1 py-3 rounded-lg font-bold border transition-colors ${shippingCountry === "Thailand" ? "bg-[#c3a2ab] text-white border-[#c3a2ab]" : "bg-white text-gray-500 border-gray-200"}`}
+                  >
+                    Thailand
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setShippingCountry("International");
+                      setShippingInfo({ ...shippingInfo, country: "", province: "", district: "", subdistrict: "", postcode: "" });
+                    }}
+                    className={`flex-1 py-3 rounded-lg font-bold border transition-colors ${shippingCountry === "International" ? "bg-[#c3a2ab] text-white border-[#c3a2ab]" : "bg-white text-gray-500 border-gray-200"}`}
+                  >
+                    International
+                  </button>
+                </div>
 
-  {provinces.map((p) => (
-    <option key={p} value={p}>
-      {p}
-    </option>
-  ))}
-</select>
+                {shippingCountry === "International" && (
+                  <input
+                    placeholder="Country"
+                    value={shippingInfo.country}
+                    onChange={(e) =>
+                      setShippingInfo({ ...shippingInfo, country: e.target.value })
+                    }
+                    className="border rounded-lg px-4 py-3 w-full"
+                  />
+                )}
 
-<select
-  value={shippingInfo.district}
-  onChange={(e) =>
-    setShippingInfo({
-      ...shippingInfo,
-      district: e.target.value,
-      subdistrict: "",
-      postcode: ""
-    })
-  }
-  disabled={!shippingInfo.province}
-  className="border rounded-lg px-4 py-3 w-full"
->
-  <option value="">District</option>
+                {shippingCountry === "Thailand" ? (
+                  <div className="grid grid-cols-2 gap-4">
+                    <select
+    value={shippingInfo.province}
+    onChange={(e) =>
+      setShippingInfo({
+        ...shippingInfo,
+        province: e.target.value,
+        district: "",
+        subdistrict: "",
+        postcode: ""
+      })
+    }
+    className="border rounded-lg px-4 py-3 w-full"
+  >
+    <option value="">Province</option>
 
-  {districts.map((d) => (
-    <option key={d} value={d}>
-      {d}
-    </option>
-  ))}
-</select>
-<select
-  value={shippingInfo.subdistrict}
-  onChange={(e) => {
-    const selected = subdistricts.find(
-      s => s.name_th === e.target.value
-    )
+    {provinces.map((p) => (
+      <option key={p} value={p}>
+        {p}
+      </option>
+    ))}
+  </select>
 
-    setShippingInfo({
-      ...shippingInfo,
-      subdistrict: e.target.value,
-      postcode: selected.zip_code
-    })
-  }}
-  disabled={!shippingInfo.district}
-  className="border rounded-lg px-4 py-3 w-full"
->
-  <option value="" >Subdistrict</option>
+  <select
+    value={shippingInfo.district}
+    onChange={(e) =>
+      setShippingInfo({
+        ...shippingInfo,
+        district: e.target.value,
+        subdistrict: "",
+        postcode: ""
+      })
+    }
+    disabled={!shippingInfo.province}
+    className="border rounded-lg px-4 py-3 w-full"
+  >
+    <option value="">District</option>
 
-  {subdistricts.map((s) => (
-    <option key={s.id} value={s.name_th}>
-      {s.name_th}
-    </option>
-  ))}
-</select>
-                 <input
-  value={shippingInfo.postcode}
-  readOnly
-  className="border rounded-lg px-4 py-3 w-full bg-gray-100"
-  placeholder="Postal Code"
-/>
-                
-</div>
+    {districts.map((d) => (
+      <option key={d} value={d}>
+        {d}
+      </option>
+    ))}
+  </select>
+  <select
+    value={shippingInfo.subdistrict}
+    onChange={(e) => {
+      const selected = subdistricts.find(
+        s => s.name_th === e.target.value
+      )
+
+      setShippingInfo({
+        ...shippingInfo,
+        subdistrict: e.target.value,
+        postcode: selected.zip_code
+      })
+    }}
+    disabled={!shippingInfo.district}
+    className="border rounded-lg px-4 py-3 w-full"
+  >
+    <option value="" >Subdistrict</option>
+
+    {subdistricts.map((s) => (
+      <option key={s.id} value={s.name_th}>
+        {s.name_th}
+      </option>
+    ))}
+  </select>
+                  <input
+    value={shippingInfo.postcode}
+    readOnly
+    className="border rounded-lg px-4 py-3 w-full bg-gray-100"
+    placeholder="Postal Code"
+  />
+  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-4">
+                    <input
+                      placeholder="State / Province"
+                      value={shippingInfo.province}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, province: e.target.value })}
+                      className="border rounded-lg px-4 py-3 w-full"
+                    />
+                    <input
+                      placeholder="City / District"
+                      value={shippingInfo.district}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, district: e.target.value })}
+                      className="border rounded-lg px-4 py-3 w-full"
+                    />
+                    <input
+                      placeholder="Area / Subdistrict (Optional)"
+                      value={shippingInfo.subdistrict}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, subdistrict: e.target.value })}
+                      className="border rounded-lg px-4 py-3 w-full"
+                    />
+                    <input
+                      placeholder="Postal / Zip Code"
+                      value={shippingInfo.postcode}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, postcode: e.target.value })}
+                      className="border rounded-lg px-4 py-3 w-full"
+                    />
+                  </div>
+                )}
                 <input
                   placeholder="Phone"
                   value={shippingInfo.phone}
@@ -687,8 +694,15 @@ if (!lineRes.ok) {
 
   {discountAmount > 0 && (
     <div className="flex justify-between text-green-600">
-      <span>Discount</span>
+      <span>Discount Code</span>
       <span>- ฿{discountAmount.toFixed(2)}</span>
+    </div>
+  )}
+  
+  {pointsDiscountAmount > 0 && (
+    <div className="flex justify-between text-[#c3a2ab]">
+      <span>Points Used ({parsedPoints} Pts)</span>
+      <span>- ฿{pointsDiscountAmount.toFixed(2)}</span>
     </div>
   )}
 
@@ -715,6 +729,39 @@ if (!lineRes.ok) {
 </button>
 </div>
 
+<div className="mt-6 border-t pt-6">
+  <h3 className="text-lg font-serif mb-2 flex items-center gap-2">
+    🎁 Richse Rewards
+  </h3>
+  <p className="text-sm text-gray-500 mb-4">
+    You have <strong className="text-[#c3a2ab] font-bold">{availablePoints} Points</strong> available. <br/>
+    <span className="text-xs">(10 Baht spent = 1 Point | 1 Point = ฿1 Discount)</span>
+  </p>
+  
+  <div className="flex gap-2">
+    <input
+      type="number"
+      placeholder="Enter points to use"
+      value={pointsToUse}
+      min="0"
+      max={availablePoints}
+      onChange={(e) => {
+        let val = parseInt(e.target.value);
+        if (isNaN(val) || val < 0) setPointsToUse("");
+        else if (val > availablePoints) setPointsToUse(availablePoints.toString());
+        else setPointsToUse(val.toString());
+      }}
+      className="border p-2 rounded w-full"
+    />
+    <button
+      onClick={() => setPointsToUse(Math.floor(Math.min(availablePoints, totalBeforeDiscount - discountAmount)).toString())}
+      className="bg-[#c3a2ab]/10 text-[#c3a2ab] font-medium px-4 py-2 whitespace-nowrap rounded hover:bg-[#c3a2ab]/20 transition-colors"
+    >
+      Max
+    </button>
+  </div>
+</div>
+
               <div>
 
    {!verified && (
@@ -724,12 +771,19 @@ if (!lineRes.ok) {
     />
    )}
 
-   {verified && (
+   {cart.length === 0 && (
+     <div className="w-full mt-6 bg-gray-200 text-gray-500 text-center py-4 rounded-xl">
+       Your cart is empty
+     </div>
+   )}
+
+   {cart.length > 0 && verified && (
   <button
     onClick={handlePurchase}
-    className="w-full mt-6 bg-[#c3a2ab] text-white py-4 rounded-xl"
+    disabled={loading}
+    className="w-full mt-6 bg-[#c3a2ab] text-white py-4 rounded-xl disabled:opacity-50"
   >
-    Complete Purchase
+    {loading ? "Processing..." : "Complete Purchase"}
   </button>
 )}
 

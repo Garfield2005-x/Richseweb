@@ -79,7 +79,7 @@ export async function POST(req) {
 
                 <div style="margin:25px 0;padding:20px;background:#f3ecef;border-radius:12px;text-align:center;">
   <span style="font-size:26px;font-weight:bold;color:#c3a2ab;letter-spacing:2px;">
-    "RICHSEUP88"
+    ${discountCode}
   </span>
   <p style="margin:10px 0 0 0;font-size:14px;color:#666;">
     รับส่วนลด 10% สำหรับคำสั่งซื้อแรกของคุณ

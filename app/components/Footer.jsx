@@ -18,8 +18,8 @@ function Footer() {
                       </a>
                       <p className="text-sm text-gray-500 leading-relaxed">Science-backed luxury for your most luminous skin. Defining the future of premium beauty rituals.</p>
                       <div className="flex gap-4">
-                          <a className="size-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-primary hover:text-white transition-all" href="#"><span className="material-symbols-outlined text-sm">public</span></a>
-                          <a className="size-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-primary hover:text-white transition-all" href="#"><span className="material-symbols-outlined text-sm">camera</span></a>
+                          <a className="size-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-primary hover:text-white transition-all" href="https://www.tiktok.com/@richse.888?_r=1&_t=ZS-94v5EesyoiY" target="_blank" rel="noopener noreferrer" title="TikTok"><span className="material-symbols-outlined text-sm">video_library</span></a>
+                          <a className="size-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-primary hover:text-white transition-all" href="https://www.instagram.com/richse_official?igsh=dmt5Yjc2ZGJudnZk" target="_blank" rel="noopener noreferrer" title="Instagram"><span className="material-symbols-outlined text-sm">camera</span></a>
                       </div>
                   </div>
                   <div>

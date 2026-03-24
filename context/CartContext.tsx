@@ -1,7 +1,9 @@
 "use client"
 
 import { createContext, useContext, useState } from "react"
-import type { Product } from "@/data/products"
+import toast from "react-hot-toast"
+import type { Product as OldProduct } from "@/data/products"
+type Product = OldProduct & { stock?: number };
 
 type CartItem = Product & { quantity: number }
 
@@ -21,27 +23,58 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([])
 
  const addToCart = (product: Product, quantity: number = 1) => {
-  setCart(prev => {
-    const exist = prev.find(item => item.id === product.id)
+    const exist = cart.find(item => item.id === product.id)
+    const stockLimit = product.stock ?? 999;
 
     if (exist) {
-      return prev.map(item =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + quantity }
-          : item
-      )
+      if (exist.quantity + quantity > stockLimit) {
+        toast.error(`Cannot add more. Only ${stockLimit} left in stock.`);
+        return;
+      }
+    } else if (quantity > stockLimit) {
+      toast.error(`Cannot add more. Only ${stockLimit} left in stock.`);
+      return;
     }
 
-    return [...prev, { ...product, quantity }]
-  })
-}
+    toast.success("Added to cart!");
+
+    setCart(prev => {
+      const prevExist = prev.find(item => item.id === product.id)
+      
+      if (prevExist) {
+        if (prevExist.quantity + quantity > stockLimit) return prev;
+        return prev.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        )
+      }
+
+      if (quantity > stockLimit) return prev;
+      return [...prev, { ...product, quantity }]
+    })
+  }
 
   const increaseQty = (id: number) => {
-    setCart(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    )
+    const item = cart.find(i => i.id === id);
+    if (item) {
+      const stockLimit = item.stock ?? 999;
+      if (item.quantity + 1 > stockLimit) {
+        toast.error(`Cannot increase. Only ${stockLimit} left in stock.`);
+        return;
+      }
+    }
+
+    setCart(prev => {
+      return prev.map(item => {
+        if (item.id === id) {
+          const stockLimit = item.stock ?? 999;
+          if (item.quantity + 1 > stockLimit) return item;
+          return { ...item, quantity: item.quantity + 1 };
+        }
+        return item;
+      })
+    })
   }
 
   const decreaseQty = (id: number) => {
