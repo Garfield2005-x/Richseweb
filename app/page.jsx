@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Link from 'next/link';
 import CountdownTimer from "./components/CountdownTimer";
+import NewsletterPopup from "./components/NewsletterPopup";
 
 // Fade upwards animations
 const fadeInUp = {
@@ -80,6 +81,7 @@ export default function Home() {
     <div>
       <title>Richse | Luxury Skincare - Radiance Refined</title>
       <Navbar />
+      <NewsletterPopup />
 
       {/* --- HERO SECTION --- */}
       <section className="hero-mesh dark:bg-background-dark py-12 md:py-20 overflow-hidden">

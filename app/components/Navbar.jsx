@@ -6,6 +6,7 @@ import { useCart } from "@/context/CartContext"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import PromoBanner from "./PromoBanner"
 
 function Navbar() {
   const { data: session } = useSession();
@@ -36,6 +37,7 @@ function Navbar() {
             : "bg-transparent border-b border-transparent py-5"
         }`}
       >
+        {!scrolled && <PromoBanner />}
         <div className="max-w-[100rem] mx-auto px-6 md:px-12 flex items-center justify-between">
           
           {/* LEFT: Menu / Links */}
