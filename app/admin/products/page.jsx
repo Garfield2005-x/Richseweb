@@ -50,8 +50,24 @@ export default function AdminProducts() {
         stock: product.stock.toString(),
         isActive: product.isActive,
         flashSalePrice: product.flashSalePrice ? product.flashSalePrice.toString() : "",
-        flashSaleStart: product.flashSaleStart ? new Date(product.flashSaleStart).toISOString().slice(0, 16) : "",
-        flashSaleEnd: product.flashSaleEnd ? new Date(product.flashSaleEnd).toISOString().slice(0, 16) : "",
+        flashSaleStart: product.flashSaleStart ? (() => {
+          const d = new Date(product.flashSaleStart);
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          const hours = String(d.getHours()).padStart(2, '0');
+          const minutes = String(d.getMinutes()).padStart(2, '0');
+          return `${year}-${month}-${day}T${hours}:${minutes}`;
+        })() : "",
+        flashSaleEnd: product.flashSaleEnd ? (() => {
+          const d = new Date(product.flashSaleEnd);
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          const hours = String(d.getHours()).padStart(2, '0');
+          const minutes = String(d.getMinutes()).padStart(2, '0');
+          return `${year}-${month}-${day}T${hours}:${minutes}`;
+        })() : "",
       });
     } else {
       setEditingId(null);
@@ -84,10 +100,16 @@ export default function AdminProducts() {
       
       const method = editingId ? "PUT" : "POST";
 
+      const dataToSave = {
+        ...formData,
+        flashSaleStart: formData.flashSaleStart ? new Date(formData.flashSaleStart).toISOString() : "",
+        flashSaleEnd: formData.flashSaleEnd ? new Date(formData.flashSaleEnd).toISOString() : "",
+      };
+
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSave),
       });
 
       if (res.ok) {
