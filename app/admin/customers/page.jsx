@@ -89,7 +89,7 @@ export default function AdminCustomers() {
                             {customer.image ? (
                               <img src={customer.image} alt={customer.name} className="w-full h-full object-cover" />
                             ) : (
-                              <span className="material-symbols-outlined text-gray-400 text-lg">person</span>
+                              <span className="material-symbols-outlined notranslate text-gray-400 text-lg">person</span>
                             )}
                           </div>
                           <Link href={`/admin/customers/${customer.id}`} className="flex flex-col group block">

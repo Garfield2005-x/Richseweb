@@ -238,7 +238,7 @@ export default function ProductDetailPage(props) {
               </div>
               <div className="grid grid-cols-3 gap-4 pt-8 border-t border-gray-100 dark:border-gray-800">
                 <div className="flex flex-col items-center text-center gap-2">
-                  <span className="material-symbols-outlined text-[#C9A961] text-3xl">
+                  <span className="material-symbols-outlined notranslate text-[#C9A961] text-3xl">
                     local_shipping
                   </span>
                   <span className="text-[10px] uppercase font-bold tracking-tighter">
@@ -246,7 +246,7 @@ export default function ProductDetailPage(props) {
                   </span>
                 </div>
                 <div className="flex flex-col items-center text-center gap-2">
-                  <span className="material-symbols-outlined text-[#C9A961] text-3xl">
+                  <span className="material-symbols-outlined notranslate text-[#C9A961] text-3xl">
                     eco
                   </span>
                   <span className="text-[10px] uppercase font-bold tracking-tighter">
@@ -254,7 +254,7 @@ export default function ProductDetailPage(props) {
                   </span>
                 </div>
                 <div className="flex flex-col items-center text-center gap-2">
-                  <span className="material-symbols-outlined text-[#C9A961] text-3xl">
+                  <span className="material-symbols-outlined notranslate text-[#C9A961] text-3xl">
                     verified_user
                   </span>
                   <span className="text-[10px] uppercase font-bold tracking-tighter">
@@ -280,7 +280,7 @@ export default function ProductDetailPage(props) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
                 <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <span className="material-symbols-outlined text-[#c3a2ab] text-4xl">
+                  <span className="material-symbols-outlined notranslate text-[#c3a2ab] text-4xl">
                     water_drop
                   </span>
                 </div>
@@ -291,7 +291,7 @@ export default function ProductDetailPage(props) {
               </div>
               <div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
                 <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <span className="material-symbols-outlined text-[#c3a2ab] text-4xl">
+                  <span className="material-symbols-outlined notranslate text-[#c3a2ab] text-4xl">
                     shutter_speed
                   </span>
                 </div>
@@ -302,7 +302,7 @@ export default function ProductDetailPage(props) {
               </div>
               <div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
                 <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <span className="material-symbols-outlined text-[#c3a2ab] text-4xl">
+                  <span className="material-symbols-outlined notranslate text-[#c3a2ab] text-4xl">
                     psychology_alt
                   </span>
                 </div>
@@ -394,7 +394,7 @@ export default function ProductDetailPage(props) {
                               {rev.user.image ? (
                                 <img src={rev.user.image} alt={rev.user.name} className="w-full h-full object-cover" />
                               ) : (
-                                <span className="material-symbols-outlined text-gray-400">person</span>
+                                <span className="material-symbols-outlined notranslate text-gray-400">person</span>
                               )}
                             </div>
                             <div>

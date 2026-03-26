@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "@/context/CartContext"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
@@ -31,6 +31,15 @@ export default function Home() {
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [homeVideos, setHomeVideos] = useState(["", "", "", "", ""]);
   const { addToCart } = useCart()
+  const scrollRef = useRef(null);
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const scrollTo = direction === "left" ? scrollLeft - clientWidth / 2 : scrollLeft + clientWidth / 2;
+      scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     async function fetchHomeVideos() {
@@ -186,10 +195,10 @@ export default function Home() {
               <motion.div
                 key={i}
                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.15 }}
-                className="p-8 rounded-2xl border border-[#dfd8da] dark:border-white/10 hover:shadow-xl hover:-translate-y-1 transition-all group"
+                className="p-8 rounded-2xl border border-[#dfd8da] dark:border-white/10 hover:shadow-xl hover:-translate-y-1 transition-all group h-full flex flex-col"
               >
                 <div className="size-12 rounded-xl bg-[#c3a2ab]/10 flex items-center justify-center text-[#c3a2ab] mb-6 group-hover:bg-[#c3a2ab] group-hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">{feature.icon}</span>
+                  <span className="material-symbols-outlined notranslate">{feature.icon}</span>
                 </div>
                 <h3 className="font-display text-xl font-bold mb-3">{feature.title}</h3>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
@@ -204,96 +213,104 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-end mb-10">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer}>
             <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-xs">Curated Selection</motion.span>
-            <motion.h2 variants={fadeInUp} className="font-display text-3xl md:text-4xl font-bold mt-2">Best Sellers</motion.h2>
+            <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold mt-2">Best Sellers</motion.h2>
           </motion.div>
-          <div className="flex gap-2">
-            <button className="size-10 rounded-full border border-[#dfd8da] dark:border-white/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
-              <span className="material-symbols-outlined">chevron_left</span>
+          <div className="flex gap-3">
+            <button 
+              onClick={() => scroll('left')}
+              className="size-12 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm bg-white/50 backdrop-blur-sm"
+            >
+              <span className="material-symbols-outlined notranslate text-xl">chevron_left</span>
             </button>
-            <button className="size-10 rounded-full border border-[#dfd8da] dark:border-white/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
-              <span className="material-symbols-outlined">chevron_right</span>
+            <button 
+              onClick={() => scroll('right')}
+              className="size-12 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm bg-white/50 backdrop-blur-sm"
+            >
+              <span className="material-symbols-outlined notranslate text-xl">chevron_right</span>
             </button>
           </div>
         </div>
 
-        <div className="flex gap-6 px-6 md:px-20 overflow-x-auto no-scrollbar pb-10">
-          <div className="overflow-x-auto">
-            <div className="flex gap-6 w-max px-6">
-              {loadingProducts ? (
-                <div className="py-10 px-6 text-gray-500 tracking-widest uppercase text-sm">Loading Best Sellers...</div>
-              ) : products.length > 0 ? (
-                products.map((product, i) => (
-                  <motion.div
-                    key={product.id}
-                    initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.1 }}
-                    className="min-w-[280px] group"
+        <div 
+          ref={scrollRef}
+          className="flex gap-6 px-6 md:px-20 overflow-x-auto no-scrollbar pb-10 snap-x snap-mandatory items-stretch"
+        >
+          {loadingProducts ? (
+            <div className="py-10 px-6 text-gray-500 tracking-widest uppercase text-sm w-full text-center">Loading Best Sellers...</div>
+          ) : products.length > 0 ? (
+            products.map((product, i) => (
+              <motion.div
+                key={product.id}
+                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.1 }}
+                className="w-[280px] md:w-[320px] shrink-0 group snap-start flex flex-col"
+              >
+                {/* รูปสินค้า */}
+                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 mb-4 shadow-sm border border-gray-100 shrink-0">
+                  <Link href={`/product/${product.id}`}>
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                      style={{ backgroundImage: `url('${product.image || "/G11.png"}')` }}
+                    />
+                  </Link>
+
+                  {/* ป้าย Limited */}
+                  {product.id === 3 && (
+                    <div className="absolute top-4 left-4 bg-[#c3a2ab] text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                      Limited Edition
+                    </div>
+                  )}
+
+                  {/* Quick Add */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      const now = new Date();
+                      const isFlashSale = product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && now >= new Date(product.flashSaleStart) && now <= new Date(product.flashSaleEnd);
+                      addToCart({
+                        ...product,
+                        price: isFlashSale ? product.flashSalePrice : product.price,
+                        originalPrice: product.price,
+                        taxe: product.description
+                      })
+                    }}
+                    className="absolute bottom-4 left-4 right-4 bg-white text-[#161314] py-3 rounded-xl font-bold text-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl text-center"
                   >
-                    {/* รูปสินค้า */}
-                    <div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-gray-100 mb-4">
-                      <Link href={`/product/${product.id}`}>
-                        <div
-                          className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                          style={{ backgroundImage: `url('${product.image || "/G11.png"}')` }}
-                        />
-                      </Link>
+                    Quick Add
+                  </button>
+                </div>
 
-                      {/* ป้าย Limited */}
-                      {product.id === 3 && (
-                        <div className="absolute top-4 left-4 bg-[#c3a2ab] text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                          Limited Edition
+                {/* รายละเอียด */}
+                <div className="flex-1 flex flex-col justify-between space-y-3">
+                  <div className="space-y-1">
+                    <p className="font-display text-lg font-bold leading-tight line-clamp-1">{product.name}</p>
+                    <p className="text-sm text-gray-500 line-clamp-2 h-10 overflow-hidden">{product.description}</p>
+                  </div>
+                  
+                  <div className="pt-2">
+                    {product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && new Date() >= new Date(product.flashSaleStart) && new Date() <= new Date(product.flashSaleEnd) ? (
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-red-600 text-[18px]">
+                            ฿{product.flashSalePrice.toLocaleString()}
+                          </span>
+                          <span className="text-gray-400 line-through text-xs font-medium">
+                            ฿{product.price.toLocaleString()}
+                          </span>
                         </div>
-                      )}
-
-                      {/* Quick Add */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          const now = new Date();
-                          const isFlashSale = product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && now >= new Date(product.flashSaleStart) && now <= new Date(product.flashSaleEnd);
-                          addToCart({
-                            ...product,
-                            price: isFlashSale ? product.flashSalePrice : product.price,
-                            originalPrice: product.price,
-                            taxe: product.description
-                          })
-                        }}
-                        className="absolute bottom-4 left-4 right-4 bg-white text-[#161314] py-3 rounded-xl font-bold text-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl text-center"
-                      >
-                        Quick Add
-                      </button>
-                    </div>
-
-                    {/* รายละเอียด */}
-                    <div className="space-y-1">
-                      <p className="font-display text-lg font-bold">{product.name}</p>
-                      <p className="text-sm text-gray-500 line-clamp-1 truncate block">{product.description}</p>
-                      <div className="mt-2">
-                        {product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && new Date() >= new Date(product.flashSaleStart) && new Date() <= new Date(product.flashSaleEnd) ? (
-                          <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-bold text-red-600 text-[16px]">
-                                ฿{product.flashSalePrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                              </span>
-                              <span className="text-gray-400 line-through text-xs font-medium">
-                                ฿{product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                              </span>
-                            </div>
-                            <CountdownTimer targetDate={product.flashSaleEnd} />
-                          </div>
-                        ) : (
-                          <p className="font-bold text-[#c3a2ab] text-[16px]">
-                            ฿{product.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                          </p>
-                        )}
+                        <CountdownTimer targetDate={product.flashSaleEnd} />
                       </div>
-                    </div>
-                  </motion.div>
-                ))
-              ) : (
-                <div className="py-10 px-6 text-gray-500">No products available.</div>
-              )}
-            </div>
-          </div>
+                    ) : (
+                      <p className="font-bold text-[#c3a2ab] text-[18px]">
+                        ฿{product.price.toLocaleString()}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="py-10 px-6 text-gray-500 w-full text-center">No products available.</div>
+          )}
         </div>
       </section>
 

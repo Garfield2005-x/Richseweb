@@ -135,7 +135,7 @@ export default function AdminReviews() {
                     <td className="py-4 px-6">
                        <div className="flex items-center justify-end">
                         <button onClick={() => handleDelete(review.id)} className="text-gray-400 hover:text-red-500 transition-colors" title="Delete permanently">
-                          <span className="material-symbols-outlined text-sm">delete</span>
+                          <span className="material-symbols-outlined notranslate text-sm">delete</span>
                         </button>
                       </div>
                     </td>

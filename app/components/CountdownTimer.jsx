@@ -36,7 +36,7 @@ export default function CountdownTimer({ targetDate }) {
 
   return (
     <div className="flex gap-1 items-center text-[10px] md:text-xs font-bold text-[#c3a2ab] bg-[#c3a2ab]/10 border border-[#c3a2ab]/20 px-2 py-1 rounded-md mt-1 mb-2 w-max">
-      <span className="material-symbols-outlined text-[14px]">timer</span>
+      <span className="material-symbols-outlined notranslate text-[14px]">timer</span>
       <span>
         {timeLeft.days > 0 && `${timeLeft.days}d `}
         {String(timeLeft.hours).padStart(2, '0')}:

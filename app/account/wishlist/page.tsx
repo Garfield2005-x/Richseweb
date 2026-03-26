@@ -67,7 +67,7 @@ export default function WishlistPage() {
                 onClick={() => removeWishlist(item.productId)}
                 className="absolute top-2 right-2 bg-white/80 p-2 rounded-full text-red-500 hover:bg-white z-10"
               >
-                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                <span className="material-symbols-outlined notranslate" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
               </button>
               <div className="aspect-square bg-gray-100 relative">
                 <Link href={`/product/${item.productId}`} className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${item.product.image || "/G11.png"}')` }} />

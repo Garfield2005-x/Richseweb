@@ -38,7 +38,7 @@ export default function PromoBanner() {
         onClick={() => setIsVisible(false)}
         className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
       >
-        <span className="material-symbols-outlined text-sm">close</span>
+        <span className="material-symbols-outlined notranslate text-sm">close</span>
       </button>
 
       <style jsx>{`

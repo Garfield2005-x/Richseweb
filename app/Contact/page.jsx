@@ -72,7 +72,7 @@ export default function ContactPage() {
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-[#c3a2ab]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                 
                 <div className="size-16 rounded-full border border-gray-100 mb-8 flex items-center justify-center bg-white shadow-sm group-hover:scale-110 group-hover:border-[#c3a2ab]/20 transition-all duration-700">
-                  <span className="material-symbols-outlined text-2xl text-[#161314] font-light group-hover:text-[#c3a2ab] transition-colors duration-500">
+                  <span className="material-symbols-outlined notranslate text-2xl text-[#161314] font-light group-hover:text-[#c3a2ab] transition-colors duration-500">
                     {link.icon}
                   </span>
                 </div>

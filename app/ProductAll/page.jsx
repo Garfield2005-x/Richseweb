@@ -249,7 +249,7 @@ export default function Page() {
           ) : (
             <div className="col-span-full py-32 text-center space-y-4">
               <div className="size-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="material-symbols-outlined text-gray-300">search_off</span>
+                <span className="material-symbols-outlined notranslate text-gray-300">search_off</span>
               </div>
               <p className="text-gray-500 tracking-widest uppercase text-xs font-bold">No products found matching filters</p>
               <button 

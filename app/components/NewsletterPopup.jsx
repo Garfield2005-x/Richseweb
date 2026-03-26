@@ -77,7 +77,7 @@ export default function NewsletterPopup() {
                 <h3 className="font-serif text-2xl text-[#161314] leading-tight">Get 10% Off</h3>
               </div>
               <button onClick={handleClose} className="text-gray-300 hover:text-gray-600 transition-colors">
-                <span className="material-symbols-outlined text-xl">close</span>
+                <span className="material-symbols-outlined notranslate text-xl">close</span>
               </button>
             </div>
 

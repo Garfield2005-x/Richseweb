@@ -76,7 +76,7 @@ export default function CustomerForm() {
 
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined text-stone-400 group-focus-within:text-primary transition-colors">
+                  <span className="material-symbols-outlined notranslate text-stone-400 group-focus-within:text-primary transition-colors">
                     person
                   </span>
                 </div>
@@ -98,7 +98,7 @@ export default function CustomerForm() {
 
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined text-stone-400 group-focus-within:text-primary transition-colors">
+                  <span className="material-symbols-outlined notranslate text-stone-400 group-focus-within:text-primary transition-colors">
                     call
                   </span>
                 </div>
@@ -120,7 +120,7 @@ export default function CustomerForm() {
 
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined text-stone-400 group-focus-within:text-primary transition-colors">
+                  <span className="material-symbols-outlined notranslate text-stone-400 group-focus-within:text-primary transition-colors">
                     shopping_bag
                   </span>
                 </div>
@@ -149,7 +149,7 @@ export default function CustomerForm() {
   </span>
 
   {!isSubmitting && (
-    <span className="material-symbols-outlined text-[20px] transition-all duration-300 group-hover:translate-x-2">
+    <span className="material-symbols-outlined notranslate text-[20px] transition-all duration-300 group-hover:translate-x-2">
       arrow_forward
     </span>
   )}

@@ -115,7 +115,7 @@ export default function AccountOrders() {
                     </span>
                     {order.tracking_number && (
                       <div className="flex items-center gap-1.5 text-xs text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-md font-mono">
-                        <span className="material-symbols-outlined text-[14px]">local_shipping</span>
+                        <span className="material-symbols-outlined notranslate text-[14px]">local_shipping</span>
                         Tracking: <span className="font-bold text-gray-900">{order.tracking_number}</span>
                       </div>
                     )}

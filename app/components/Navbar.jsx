@@ -37,7 +37,7 @@ function Navbar() {
             : "bg-transparent border-b border-transparent py-5"
         }`}
       >
-        {!scrolled && <PromoBanner />}
+        {!scrolled && !session && <PromoBanner />}
         <div className="max-w-[100rem] mx-auto px-6 md:px-12 flex items-center justify-between">
           
           {/* LEFT: Menu / Links */}
@@ -77,7 +77,7 @@ function Navbar() {
               onClick={() => setMobileMenuOpen(true)}
               className="lg:hidden p-2 text-[#161314]"
             >
-               <span className="material-symbols-outlined font-light text-[26px]">menu</span>
+               <span className="material-symbols-outlined notranslate font-light text-[26px]">menu</span>
             </button>
           </div>
 
@@ -99,7 +99,7 @@ function Navbar() {
                 className="text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 flex items-center"
                 title="My Account"
               >
-                <span className="material-symbols-outlined font-light text-[26px]">person</span>
+                <span className="material-symbols-outlined notranslate font-light text-[26px]">person</span>
               </Link>
             ) : (
               <Link
@@ -107,7 +107,7 @@ function Navbar() {
                 className="text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 flex items-center"
                 title="Login"
               >
-                <span className="material-symbols-outlined font-light text-[26px]">person</span>
+                <span className="material-symbols-outlined notranslate font-light text-[26px]">person</span>
               </Link>
             )}
 
@@ -117,7 +117,7 @@ function Navbar() {
                 onClick={() => setOpen(!open)}
                 className="text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 flex items-center relative"
               >
-                <span className="material-symbols-outlined font-light text-[26px]">
+                <span className="material-symbols-outlined notranslate font-light text-[26px]">
                   shopping_bag
                 </span>
 
@@ -152,13 +152,13 @@ function Navbar() {
                       <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
                         <h3 className="font-serif text-xl tracking-wide text-[#161314]">Your Ritual</h3>
                         <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-[#161314] transition-colors">
-                          <span className="material-symbols-outlined font-light">close</span>
+                          <span className="material-symbols-outlined notranslate font-light">close</span>
                         </button>
                       </div>
 
                       {cart.length === 0 ? (
                         <div className="py-12 text-center text-gray-400">
-                          <span className="material-symbols-outlined text-4xl mb-4 font-light opacity-50">shopping_bag</span>
+                          <span className="material-symbols-outlined notranslate text-4xl mb-4 font-light opacity-50">shopping_bag</span>
                           <p className="text-[11px] uppercase tracking-[0.2em]">Your bag is empty.</p>
                         </div>
                       ) : (
@@ -256,7 +256,7 @@ function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="absolute top-6 right-6 p-2 text-gray-400 hover:text-[#161314] transition-colors"
               >
-                <span className="material-symbols-outlined font-light text-2xl">close</span>
+                <span className="material-symbols-outlined notranslate font-light text-2xl">close</span>
               </button>
 
               <nav className="flex flex-col gap-8">

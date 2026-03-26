@@ -14,7 +14,7 @@ export async function GET(
     });
 
     if (!setting) {
-      return NextResponse.json({ error: "Setting not found" }, { status: 404 });
+      return NextResponse.json({ key, value: null });
     }
 
     // Attempt to parse JSON if possible, otherwise return as string

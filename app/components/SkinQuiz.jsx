@@ -3,79 +3,89 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
+import {
+  ChevronLeft,
+  Sparkles,
+  Droplets,
+  Clock,
+  ShieldCheck,
+  Leaf,
+  ArrowRight,
+  Info,
+  CheckCircle2,
+  RefreshCcw,
+  Zap,
+  Fingerprint
+} from "lucide-react";
 
-/* ─── Quiz Data ─────────────────────────────────────────────── */
+/* ─── Consulting Data ────────────────────────────────────────── */
 const STEPS = [
   {
-    id: "concern",
-    question: "What is your primary skin concern?",
-    sub: "Select the condition you would most like to address.",
+    id: "type",
+    question: "How would you describe your skin's natural baseline?",
+    sub: "This helps us understand your sebum production and moisture retention.",
     options: [
-      { label: "Acne & Blemishes", emoji: "🫧", keywords: ["acne", "blemish", "clearing", "pore"] },
-      { label: "Dryness & Flaking", emoji: "💧", keywords: ["dry", "moisture", "hydrat", "barrier"] },
-      { label: "Excess Oil & Shine", emoji: "✨", keywords: ["oil", "mattif", "sebum", "balance"] },
-      { label: "Uneven Tone & Spots", emoji: "🌤", keywords: ["brightening", "tone", "dark", "vitamin c", "niacin"] },
-      { label: "Fine Lines & Aging", emoji: "⏳", keywords: ["anti-age", "wrinkle", "retinol", "firming", "collagen"] },
-      { label: "Sensitivity & Redness", emoji: "🌸", keywords: ["sensitive", "calm", "soothe", "gentle", "redness"] },
+      { label: "Dry & Parchmented", desc: "Feels tight, looks dull, or shows flaking.", icon: <Droplets className="text-blue-400" />, value: "Dry" },
+      { label: "Oily & Luminous", desc: "Visible shine, enlarged pores, prone to congestion.", icon: <Zap className="text-yellow-400" />, value: "Oily" },
+      { label: "Combination", desc: "Oily T-zone but dry or normal on cheeks.", icon: <RefreshCcw className="text-emerald-400" />, value: "Combination" },
+      { label: "Balanced", desc: "Relatively even texture with no major concerns.", icon: <CheckCircle2 className="text-gray-400" />, value: "All skins" },
     ],
   },
   {
-    id: "feel",
-    question: "How does your skin feel by midday?",
-    sub: "Consider its natural state without touch-ups.",
+    id: "objective",
+    question: "Identify your primary skin ritual objective.",
+    sub: "What is the most important result you want to achieve?",
     options: [
-      { label: "Tight & Dehydrated", emoji: "🏜️", keywords: ["rich", "nourish", "oil", "cream"] },
-      { label: "Oily All Over", emoji: "💦", keywords: ["lightweight", "gel", "oil-free", "matte"] },
-      { label: "Oily T-zone Only", emoji: "⚖️", keywords: ["balance", "light", "hydrat", "toner"] },
-      { label: "Comfortable & Balanced", emoji: "🌿", keywords: ["nourish", "bright", "protect"] },
+      { label: "Deep Hydration", desc: "Restore moisture and plumpness.", icon: <Droplets className="text-indigo-400" />, category: "Moisturizer", keywords: ["hydrate", "moisture", "water", "plump"] },
+      { label: "Youthful Vitality", desc: "Target fine lines and enhance firmness.", icon: <Clock className="text-amber-500" />, category: "Serum", keywords: ["anti-aging", "firming", "wrinkle", "retinol"] },
+      { label: "Pure Radiance", desc: "Brighten tone and fade dark spots.", icon: <Sparkles className="text-yellow-500" />, category: "Serum", keywords: ["brighten", "vitamin c", "glow", "tone"] },
+      { label: "Clarity & Balance", desc: "Minimize pores and control excess oil.", icon: <Fingerprint className="text-emerald-500" />, category: "Mask", keywords: ["pore", "oil", "clear", "clay"] },
     ],
   },
   {
     id: "sensitivity",
-    question: "How sensitive is your skin?",
-    sub: "How often does it react to new formulations?",
+    question: "Assess your skin's reactivity level.",
+    sub: "Does your skin react strongly to environmental changes or products?",
     options: [
-      { label: "Highly Reactive", emoji: "🔴", keywords: ["gentle", "fragrance-free", "sooth", "calm"] },
-      { label: "Occasionally Sensitive", emoji: "🟡", keywords: ["gentle", "nourish"] },
-      { label: "Resilient", emoji: "🟢", keywords: ["active", "retinol", "exfoliat", "vitamin c"] },
+      { label: "Highly Sensitive", desc: "Easily irritated or prone to redness.", icon: <ShieldCheck className="text-rose-400" />, value: "Sensitive" },
+      { label: "Balanced / Resilient", desc: "Rarely reacts, handles most actives well.", icon: <Leaf className="text-emerald-500" />, value: "Normal" },
     ],
   },
 ];
 
 const ANALYSIS_PHRASES = [
-  "Analyzing your unique skin profile...",
-  "Cross-referencing active ingredients...",
-  "Formulating your personalized routine...",
-  "Selecting the perfect matches...",
-  "Finalizing your prescribed ritual...",
+  "Mapping your dermal profile...",
+  "Consulting the Richse ingredient database...",
+  "Curating your personalized ritual...",
+  "Sequencing the perfect formula matches...",
+  "Finalizing your unique skincare prescription...",
 ];
 
 /* ─── Transition Variants ────────────────────────────────────── */
 const slideVariants = {
-  enter: (dir) => ({ x: dir > 0 ? 40 : -40, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir) => ({ x: dir > 0 ? -40 : 40, opacity: 0 }),
+  enter: (dir) => ({ opacity: 0, x: dir > 0 ? 100 : -100, scale: 0.95 }),
+  center: { opacity: 1, x: 0, scale: 1 },
+  exit: (dir) => ({ opacity: 0, x: dir > 0 ? -100 : 100, scale: 1.05 }),
 };
 
 /* ─── Main Component ─────────────────────────────────────────── */
 export default function SkinQuiz() {
-  const [screen, setScreen] = useState("welcome"); // welcome | quiz | analyzing | results
+  const [screen, setScreen] = useState("welcome");
   const [stepIndex, setStepIndex] = useState(0);
   const [direction, setDirection] = useState(1);
-  const [answers, setAnswers] = useState([]); // array of answered option objects
+  const [answers, setAnswers] = useState({});
   const [recommended, setRecommended] = useState([]);
   const [analyzePhrase, setAnalyzePhrase] = useState(0);
 
-  /* Rotate analyzing phrases */
   useEffect(() => {
     if (screen !== "analyzing") return;
     const interval = setInterval(() => {
       setAnalyzePhrase((p) => p + 1);
-    }, 800);
+    }, 1200);
     return () => clearInterval(interval);
   }, [screen]);
 
-  /* Fetch products when we enter the analyzing screen */
   useEffect(() => {
     if (screen !== "analyzing") return;
 
@@ -85,36 +95,79 @@ export default function SkinQuiz() {
         const data = await res.json();
         const all = Array.isArray(data) ? data : (data.products ?? []);
 
-        // Build keyword set from all answers
-        const allKeywords = answers.flatMap((a) => a.keywords).map((k) => k.toLowerCase());
+        // Matching Logic
+        const skinType = answers.type?.value || "All skins";
+        const targetCategory = answers.objective?.category;
+        const keywords = answers.objective?.keywords || [];
+        const isSensitive = answers.sensitivity?.value === "Sensitive";
 
-        // Score each product
-        const scored = all.map((p) => {
-          const haystack = `${p.name} ${p.description}`.toLowerCase();
-          const score = allKeywords.reduce((acc, kw) => {
-            return haystack.includes(kw) ? acc + 1 : acc;
-          }, 0);
-          return { ...p, score };
+        const scored = all.map(p => {
+          let score = 0;
+          let matchReasons = [];
+          
+          const haystack = `${p.name} ${p.description} ${p.category}`.toLowerCase();
+          const pSkinType = (p.skinType || "All skins").toLowerCase();
+
+          // 1. Skin Type Match (High Priority)
+          if (pSkinType.includes(skinType.toLowerCase())) {
+            score += 15;
+            matchReasons.push(`Optimized for ${skinType} skin`);
+          } else if (pSkinType === "all skins") {
+            score += 8;
+            matchReasons.push("Gentle for all skin types");
+          }
+
+          // 2. Category Match
+          if (p.category === targetCategory) {
+            score += 10;
+          }
+
+          // 3. Objective/Keyword Match
+          let keywordMatches = 0;
+          keywords.forEach(kw => {
+            if (haystack.includes(kw.toLowerCase())) {
+              score += 5;
+              keywordMatches++;
+            }
+          });
+          if (keywordMatches > 0) {
+            matchReasons.push(`Targets ${answers.objective?.label}`);
+          }
+
+          // 4. Sensitivity Filter
+          if (isSensitive) {
+            const reactiveKeywords = ["acid", "peel", "retinol", "potent", "strong", "active"];
+            const containsActives = reactiveKeywords.some(kw => haystack.includes(kw));
+            if (containsActives) {
+              score -= 20;
+            } else {
+              score += 5;
+              matchReasons.push("Safe for sensitive profiles");
+            }
+          }
+
+          return { ...p, score, matchReasons: [...new Set(matchReasons)].slice(0, 2) };
         });
 
-        // Sort by score, take top 4
-        const top = scored.sort((a, b) => b.score - a.score || a.price - b.price).slice(0, 4);
+        const top = scored
+          .filter(p => p.isActive !== false && p.score > 0)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 3);
+          
         setRecommended(top);
       } catch (e) {
         console.error(e);
         setRecommended([]);
       }
-
-      // Show results after 4s
-      setTimeout(() => setScreen("results"), 4000);
+      setTimeout(() => setScreen("results"), 4500);
     }
 
     fetchAndFilter();
   }, [screen, answers]);
 
   const handleSelect = (option) => {
-    const newAnswers = [...answers, option];
-    setAnswers(newAnswers);
+    const stepObj = STEPS[stepIndex];
+    setAnswers({ ...answers, [stepObj.id]: option });
 
     if (stepIndex + 1 < STEPS.length) {
       setDirection(1);
@@ -127,46 +180,100 @@ export default function SkinQuiz() {
   const handleBack = () => {
     if (stepIndex === 0) {
       setScreen("welcome");
-      setAnswers([]);
     } else {
       setDirection(-1);
       setStepIndex((i) => i - 1);
-      setAnswers((prev) => prev.slice(0, -1));
     }
   };
 
   const restart = () => {
     setScreen("welcome");
     setStepIndex(0);
-    setAnswers([]);
+    setAnswers({});
     setRecommended([]);
     setAnalyzePhrase(0);
   };
 
-  /* ── Screens ── */
   return (
-    <div className="min-h-screen bg-[#FAFAFA] overflow-hidden relative selection:bg-[#c3a2ab]/30 font-sans text-gray-900">
-      {/* Premium Ambient Background */}
-      <div className="absolute top-[-15%] right-[-10%] w-[60vw] h-[60vw] bg-gradient-to-b from-[#f3e5e8]/50 to-transparent rounded-full blur-[120px] pointer-events-none opacity-80 mix-blend-multiply" />
-      <div className="absolute bottom-[-10%] left-[-15%] w-[70vw] h-[70vw] bg-gradient-to-t from-[#e8d5c4]/40 to-transparent rounded-full blur-[120px] pointer-events-none opacity-60 mix-blend-multiply" />
-      
-      {/* Subtle Texture Overlay */}
-      <div className="absolute inset-0 opacity-[0.015] pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} />
+    <div className="min-h-screen bg-white overflow-hidden relative selection:bg-[#c3a2ab] selection:text-white font-sans selection:bg-black selection:text-white">
+
+      {/* Premium Gradient Overlays */}
+      <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-[#c3a2ab]/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[40vw] h-[40vw] bg-[#e8d5c4]/10 rounded-full blur-[80px] pointer-events-none" />
 
       <AnimatePresence mode="wait">
         {screen === "welcome" && <WelcomeScreen key="welcome" onStart={() => setScreen("quiz")} />}
+
         {screen === "quiz" && (
-          <QuizStep
-            key={`step-${stepIndex}`}
-            step={STEPS[stepIndex]}
-            stepIndex={stepIndex}
-            total={STEPS.length}
-            direction={direction}
-            onSelect={handleSelect}
-            onBack={handleBack}
-          />
+          <motion.div
+            key="quiz-outer"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="relative z-10 max-w-5xl mx-auto px-6 py-20 min-h-screen flex flex-col"
+          >
+            {/* Header / Progress */}
+            <div className="mb-12 flex items-center justify-between">
+              <button onClick={handleBack} className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-gray-400 hover:text-black transition-colors group">
+                <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back
+              </button>
+              <div className="flex flex-col items-end gap-1">
+                <span className="text-[10px] font-black tracking-[0.3em] text-gray-500 uppercase">Consultation Phase</span>
+                <div className="flex gap-1.5">
+                  {STEPS.map((_, i) => (
+                    <div key={i} className={`h-1 rounded-full transition-all duration-500 ${i <= stepIndex ? "w-8 bg-black" : "w-4 bg-gray-100"}`} />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex-1 flex flex-col justify-center max-w-3xl mx-auto w-full">
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={stepIndex}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="space-y-12"
+                >
+                  <div className="space-y-4">
+                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-gray-900 tracking-tight leading-[1.1]">
+                      {STEPS[stepIndex].question}
+                    </h2>
+                    <p className="text-lg text-gray-400 font-medium max-w-xl">{STEPS[stepIndex].sub}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {STEPS[stepIndex].options.map((option) => (
+                      <button
+                        key={option.label}
+                        onClick={() => handleSelect(option)}
+                        className="group flex items-start gap-6 p-8 bg-white border border-gray-100 rounded-[2rem] hover:border-black hover:shadow-2xl hover:shadow-black/5 transition-all text-left relative overflow-hidden active:scale-[0.98]"
+                      >
+                        <div className="p-4 bg-gray-50 rounded-2xl text-black group-hover:bg-black group-hover:text-white transition-colors shrink-0">
+                          {option.icon}
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className="font-bold text-gray-900 tracking-tight">{option.label}</h4>
+                          <p className="text-xs text-gray-400 font-medium leading-relaxed">{option.desc}</p>
+                        </div>
+                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <ArrowRight size={16} className="text-gray-300" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </motion.div>
         )}
+
         {screen === "analyzing" && <AnalyzingScreen key="analyzing" phrase={ANALYSIS_PHRASES[analyzePhrase % ANALYSIS_PHRASES.length]} />}
+
         {screen === "results" && (
           <ResultsScreen key="results" recommended={recommended} answers={answers} onRestart={restart} />
         )}
@@ -180,106 +287,43 @@ function WelcomeScreen({ onStart }) {
   return (
     <motion.div
       className="flex flex-col items-center justify-center min-h-screen px-6 text-center relative z-10"
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, y: -50 }}
+      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.8 }}
-      >
-        <span className="text-[#c3a2ab] text-xs uppercase tracking-[0.4em] font-medium mb-6 block">
-          Personalized Ritual
-        </span>
-      </motion.div>
+      <div className="space-y-8 max-w-4xl">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="flex items-center justify-center gap-3"
+        >
+          <div className="h-px w-8 bg-gray-200" />
+          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#c3a2ab]">Ritual Recommendation</span>
+          <div className="h-px w-8 bg-gray-200" />
+        </motion.div>
 
-      <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-gray-900 mb-6 leading-[1.1] tracking-tight">
-        Discover Your <br />
-        <span className="italic text-[#c3a2ab] font-light">Perfect Routine</span>
-      </h1>
-      
-      <p className="text-gray-500 text-lg md:text-xl max-w-xl mx-auto mb-14 leading-relaxed font-light tracking-wide">
-        Take our expert consultation. Answer three thoughtful questions to curate a skincare ritual tailored precisely to your unique complexion.
-      </p>
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-gray-900 tracking-tighter leading-none">
+          Expert Skin <br />
+          <span className="italic font-normal text-[#C9A961]">Consultation.</span>
+        </h1>
 
-      <motion.button
-        onClick={onStart}
-        whileHover={{ scale: 1.02, backgroundColor: "#000" }}
-        whileTap={{ scale: 0.98 }}
-        className="bg-[#161314] text-white px-12 py-5 rounded-full text-sm uppercase tracking-widest transition-all shadow-2xl hover:shadow-[0_20px_40px_rgba(22,19,20,0.2)]"
-      >
-        Begin Consultation
-      </motion.button>
-    </motion.div>
-  );
-}
+        <p className="text-xl text-gray-400 font-medium max-w-xl mx-auto leading-relaxed">
+          Take a moment with our dermal expert to curate a personalized ritual that speaks to your unique complexion.
+        </p>
 
-/* ─── Quiz Step ──────────────────────────────────────────────── */
-function QuizStep({ step, stepIndex, total, direction, onSelect, onBack }) {
-  return (
-    <motion.div
-      className="min-h-screen flex flex-col items-center justify-center px-4 py-16 relative z-10"
-      custom={direction}
-      variants={slideVariants}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <div className="w-full max-w-4xl mb-16">
-        <div className="flex items-center justify-between mb-6">
-          <button onClick={onBack} className="text-gray-400 hover:text-[#c3a2ab] text-xs uppercase tracking-[0.2em] transition-colors flex items-center gap-2 group">
-            <span className="text-lg transform group-hover:-translate-x-1 transition-transform">←</span> Back
-          </button>
-          <span className="text-xs uppercase tracking-[0.3em] text-gray-400 font-medium">0{stepIndex + 1} / 0{total}</span>
-        </div>
-        <div className="h-[1px] bg-gray-200 w-full overflow-hidden">
-          <motion.div
-            className="h-full bg-[#c3a2ab]"
-            initial={{ width: `${(stepIndex / total) * 100}%` }}
-            animate={{ width: `${((stepIndex + 1) / total) * 100}%` }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          />
-        </div>
+        <button
+          onClick={onStart}
+          className="px-14 py-6 bg-black text-white rounded-[2.5rem] font-black text-xs uppercase tracking-[0.4em] hover:scale-[1.05] active:scale-95 transition-all shadow-2xl shadow-black/20 group flex items-center gap-4 mx-auto"
+        >
+          Begin Discovery <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+        </button>
       </div>
 
-      <div className="w-full max-w-4xl text-center mb-16">
-        <motion.h2
-          className="text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 mb-6 tracking-tight leading-tight"
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-        >
-          {step.question}
-        </motion.h2>
-        <motion.p 
-          className="text-gray-500 text-lg md:text-xl font-light tracking-wide"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-        >
-          {step.sub}
-        </motion.p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
-        {step.options.map((option, i) => (
-           <motion.button
-            key={option.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 * i + 0.4, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ y: -5, backgroundColor: "rgba(255,255,255,0.95)" }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => onSelect(option)}
-            className="group relative flex flex-col items-center justify-center text-center gap-5 p-10 rounded-2xl bg-white/60 backdrop-blur-xl border border-white hover:border-[#c3a2ab]/40 transition-all cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(195,162,171,0.12)]"
-          >
-            <span className="text-4xl lg:text-5xl opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out">{option.emoji}</span>
-            <span className="text-base font-medium text-gray-800 tracking-wide">{option.label}</span>
-          </motion.button>
-        ))}
+      <div className="absolute bottom-12 flex flex-col items-center gap-4 opacity-30">
+        <p className="text-[10px] font-black tracking-widest uppercase">Safe & Science-backed</p>
+        <div className="w-px h-12 bg-gradient-to-b from-black to-transparent" />
       </div>
     </motion.div>
   );
@@ -289,40 +333,40 @@ function QuizStep({ step, stepIndex, total, direction, onSelect, onBack }) {
 function AnalyzingScreen({ phrase }) {
   return (
     <motion.div
-      className="min-h-screen flex flex-col items-center justify-center px-6 text-center relative z-10"
+      className="min-h-screen flex flex-col items-center justify-center px-6 text-center relative z-10 bg-white"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
     >
-      <div className="relative mb-16 flex justify-center items-center h-32 w-32">
-        {/* Minimalist spinning rim */}
-        <motion.div
-          className="absolute inset-0 rounded-full border-[1px] border-t-[#c3a2ab] border-r-transparent border-b-[#c3a2ab] border-l-transparent opacity-60"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-        />
-        <motion.div
-          className="absolute inset-4 rounded-full border-[1px] border-r-[#e8d5c4] border-l-[#e8d5c4] border-t-transparent border-b-transparent opacity-40"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-        />
-        <div className="w-2 h-2 rounded-full bg-[#c3a2ab] shadow-[0_0_15px_rgba(195,162,171,1)]" />
-      </div>
+      <div className="space-y-12 max-w-md w-full">
+        <div className="relative h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+          <motion.div
+            className="absolute inset-0 bg-black"
+            initial={{ x: "-100%" }}
+            animate={{ x: "0%" }}
+            transition={{ duration: 4.5, ease: "easeInOut" }}
+          />
+        </div>
 
-      <div className="h-8 relative overflow-hidden flex items-center justify-center">
-        <AnimatePresence mode="popLayout">
-          <motion.p
-            key={phrase}
-            className="text-xl md:text-2xl font-light tracking-wide text-gray-800 absolute"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {phrase}
-          </motion.p>
-        </AnimatePresence>
+        <div className="space-y-6">
+          <div className="flex items-center justify-center gap-2 text-rose-300">
+            <Sparkles size={20} className="animate-pulse" />
+            <p className="text-[10px] font-black uppercase tracking-[0.3em]">AI Skin Analysis</p>
+          </div>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={phrase}
+              className="text-2xl font-display font-bold text-gray-900"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.6 }}
+            >
+              {phrase}
+            </motion.p>
+          </AnimatePresence>
+        </div>
       </div>
     </motion.div>
   );
@@ -330,91 +374,100 @@ function AnalyzingScreen({ phrase }) {
 
 /* ─── Results Screen ─────────────────────────────────────────── */
 function ResultsScreen({ recommended, answers, onRestart }) {
-  const skinType = answers[0]?.label ?? "Your Profile";
-
   return (
     <motion.div
-      className="min-h-screen px-4 py-24 max-w-6xl mx-auto relative z-10"
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+      className="min-h-screen px-6 py-24 max-w-7xl mx-auto relative z-10"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5 }}
     >
-      <div className="text-center mb-20">
-        <motion.span 
-          className="text-[#c3a2ab] text-xs uppercase tracking-[0.4em] font-medium mb-6 block"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 0.8 }}
-        >
-          The Ritual
-        </motion.span>
-        
-        <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-gray-900 mb-8 tracking-tight leading-tight">
-          Your Curated Routine
+      <header className="mb-20 space-y-4 max-w-3xl">
+        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#c3a2ab]">Your Personalized Ritual</span>
+        <h2 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold text-gray-900 tracking-tight leading-none">
+          The Prescribed <br />
+          <span className="italic font-normal text-[#C9A961]">Collection.</span>
         </h2>
-        
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-gray-500 text-lg font-light tracking-wide">
-          <span>Tailored specifically for</span>
-          <span className="px-4 py-2 bg-white/80 backdrop-blur-md border border-white rounded-full text-sm font-medium text-gray-800 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-            {skinType}
-          </span>
-        </div>
-      </div>
+        <p className="text-lg text-gray-400 font-medium">Bespoke selections crafted for your unique profile: <strong className="text-black">{answers.type?.value}</strong> skin with a focus on <strong className="text-black">{answers.objective?.label}</strong>.</p>
+      </header>
 
       {recommended.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-20">
           {recommended.map((product, i) => (
-             <motion.div
+            <motion.div
               key={product.id}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * i + 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-white/70 backdrop-blur-md rounded-2xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white hover:border-[#c3a2ab]/30 flex flex-col group hover:shadow-[0_20px_40px_rgba(195,162,171,0.1)] transition-all duration-500"
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.2 * i, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="bg-gray-50/50 rounded-[3rem] p-4 border border-gray-100 flex flex-col group hover:shadow-2xl hover:shadow-black/5 transition-all duration-700"
             >
-              <div className="aspect-[4/5] overflow-hidden bg-gray-50/50 relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] bg-white border border-gray-100 p-2">
+                <Image
                   src={product.image || "/placeholder.jpg"}
                   alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
+                  fill
+                  className="object-cover rounded-[2.2rem] group-hover:scale-105 transition-transform duration-1000"
                 />
+                <div className="absolute top-6 left-6 px-4 py-2 bg-white/80 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest border border-white">
+                  {product.category}
+                </div>
               </div>
-              <div className="p-6 flex flex-col flex-1 items-center text-center">
-                <h3 className="text-base font-medium text-gray-900 line-clamp-2 mb-3 tracking-wide">{product.name}</h3>
-                <p className="text-[#c3a2ab] font-light text-sm mt-auto mb-6">
-                  ฿{product.price?.toLocaleString()}
-                </p>
-                <Link
-                  href={`/product/${product.id}`}
-                  className="w-full block border border-gray-200 text-gray-900 hover:bg-[#161314] hover:border-[#161314] hover:text-white text-xs uppercase tracking-widest py-3.5 rounded-full transition-all duration-300"
-                >
-                  Discover
-                </Link>
+
+              <div className="p-8 space-y-8 flex-1 flex flex-col">
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {product.matchReasons?.map(reason => (
+                      <span key={reason} className="text-[9px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 px-2 py-1 rounded-md flex items-center gap-1">
+                        <CheckCircle2 size={10} /> {reason}
+                      </span>
+                    ))}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 tracking-tight group-hover:text-[#c3a2ab] transition-colors">{product.name}</h3>
+                  <p className="text-sm text-gray-400 font-medium line-clamp-3 leading-relaxed">{product.description}</p>
+                </div>
+
+                <div className="pt-8 border-t border-gray-900/5 mt-auto flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Price</p>
+                    <p className="text-2xl font-display font-bold">฿{product.price?.toLocaleString()}</p>
+                  </div>
+                  <Link
+                    href={`/product/${product.id}`}
+                    className="size-14 bg-black text-white rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xl shadow-black/10 group/btn"
+                  >
+                    <ArrowRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-white/50 backdrop-blur-sm border border-white rounded-3xl mb-20 shadow-sm">
-          <p className="text-xl text-gray-500 font-light mb-8">Discover our full collection curated for ultimate skin vitality.</p>
-          <Link href="/ProductAll" className="inline-block px-12 py-4 bg-[#161314] text-white rounded-full text-sm uppercase tracking-widest hover:bg-black transition-colors shadow-xl">
-            View Collection
-          </Link>
+        <div className="p-20 bg-gray-50 rounded-[3rem] text-center space-y-6">
+          <Info size={40} className="mx-auto text-gray-300" />
+          <p className="text-xl text-gray-400 font-medium">We couldn&apos;t find an exact match for your unique profile.</p>
+          <button onClick={onRestart} className="px-10 py-4 bg-black text-white rounded-full text-xs font-black uppercase tracking-widest">Retake Consultation</button>
         </div>
       )}
 
-      <motion.div
-        className="flex justify-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 1 }}
-      >
+      <footer className="flex flex-col md:flex-row items-center justify-between gap-10 border-t border-gray-100 pt-12">
+        <div className="flex gap-12">
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-widest text-[#c3a2ab]">Dermatologist Trusted</p>
+            <p className="text-xs text-gray-400 font-medium">Safe for sensitive skin types.</p>
+          </div>
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-widest text-[#C9A961]">Potent Formulations</p>
+            <p className="text-xs text-gray-400 font-medium">High-efficacy active ingredients.</p>
+          </div>
+        </div>
+
         <button
           onClick={onRestart}
-          className="text-xs uppercase tracking-widest text-gray-400 hover:text-[#c3a2ab] transition-colors pb-1 border-b border-transparent hover:border-[#c3a2ab]"
+          className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] text-gray-400 hover:text-black transition-colors"
         >
-          Retake Consultation
+          <RefreshCcw size={14} /> Retake Discovery
         </button>
-      </motion.div>
+      </footer>
     </motion.div>
   );
 }

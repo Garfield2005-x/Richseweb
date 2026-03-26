@@ -201,10 +201,10 @@ export default function AdminRewards() {
                      </div>
                      <div className="flex gap-2">
                        <button onClick={() => handleEdit(r)} className="p-2 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors" title="Edit">
-                         <span className="material-symbols-outlined text-xl">edit</span>
+                         <span className="material-symbols-outlined notranslate text-xl">edit</span>
                        </button>
                        <button onClick={() => handleDelete(r.id)} className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors" title="Delete">
-                         <span className="material-symbols-outlined text-xl">delete</span>
+                         <span className="material-symbols-outlined notranslate text-xl">delete</span>
                        </button>
                      </div>
                    </div>
@@ -250,7 +250,7 @@ export default function AdminRewards() {
                     </div>
                     {r.tracking_number && (
                       <div className="mt-2 text-xs font-medium text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg inline-flex items-center gap-1 border border-blue-100">
-                        <span className="material-symbols-outlined text-[14px]">local_shipping</span>
+                        <span className="material-symbols-outlined notranslate text-[14px]">local_shipping</span>
                         Tracking: <span className="tracking-wider uppercase">{r.tracking_number}</span>
                       </div>
                     )}
@@ -260,7 +260,7 @@ export default function AdminRewards() {
                       {r.status}
                     </span>
                     <button onClick={() => handleDeleteRedemption(r.id)} className="p-1.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg transition-colors" title="Delete Redemption">
-                      <span className="material-symbols-outlined text-[16px]">delete</span>
+                      <span className="material-symbols-outlined notranslate text-[16px]">delete</span>
                     </button>
                   </div>
                 </div>
@@ -272,7 +272,7 @@ export default function AdminRewards() {
                       onClick={() => handleMarkAsShipped(r.id)}
                       className="text-[#c3a2ab] hover:underline font-bold flex items-center gap-1"
                     >
-                      <span className="material-symbols-outlined text-sm">local_shipping</span>
+                      <span className="material-symbols-outlined notranslate text-sm">local_shipping</span>
                       Mark as Shipped
                     </button>
                   )}

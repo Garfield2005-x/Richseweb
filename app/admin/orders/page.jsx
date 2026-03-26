@@ -134,7 +134,7 @@ export default function AdminOrders() {
         </div>
         <div className="flex items-center gap-2">
            <button onClick={fetchOrders} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500">
-             <span className="material-symbols-outlined text-sm">refresh</span>
+             <span className="material-symbols-outlined notranslate text-sm">refresh</span>
            </button>
         </div>
       </div>
@@ -450,7 +450,7 @@ export default function AdminOrders() {
                   onClick={() => window.print()}
                   className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-100 transition-all flex items-center gap-2"
                  >
-                   <span className="material-symbols-outlined text-sm">print</span> Print Invoice
+                   <span className="material-symbols-outlined notranslate text-sm">print</span> Print Invoice
                  </button>
                </div>
                <div className="flex items-center gap-2">

@@ -123,7 +123,7 @@ export default function RewardsCatalog() {
                   <div className="flex-1">
                     <h4 className="font-bold text-gray-800 text-sm mb-1 leading-tight line-clamp-2" title={r.reward.name}>{r.reward.name}</h4>
                     <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">calendar_today</span>
+                      <span className="material-symbols-outlined notranslate text-[14px]">calendar_today</span>
                       {new Date(r.created_at).toLocaleDateString("th-TH")}
                     </p>
                     <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase ${r.status === 'SHIPPED' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
@@ -131,7 +131,7 @@ export default function RewardsCatalog() {
                     </span>
                     {r.tracking_number && (
                       <div className="mt-2 text-[10px] font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full w-fit flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[12px]">local_shipping</span>
+                        <span className="material-symbols-outlined notranslate text-[12px]">local_shipping</span>
                         <span className="tracking-wider uppercase">{r.tracking_number}</span>
                       </div>
                     )}

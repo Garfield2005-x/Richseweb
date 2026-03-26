@@ -94,7 +94,7 @@ export default function AdminDashboard() {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-              <span className="material-symbols-outlined">payments</span>
+              <span className="material-symbols-outlined notranslate">payments</span>
             </div>
             <div>
               <p className="text-sm text-gray-500 font-medium">Total Sales</p>
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
-              <span className="material-symbols-outlined">shopping_cart_checkout</span>
+              <span className="material-symbols-outlined notranslate">shopping_cart_checkout</span>
             </div>
             <div>
               <p className="text-sm text-gray-500 font-medium">Total Orders</p>
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-              <span className="material-symbols-outlined">inventory_2</span>
+              <span className="material-symbols-outlined notranslate">inventory_2</span>
             </div>
             <div>
               <p className="text-sm text-gray-500 font-medium">Products</p>
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
-              <span className="material-symbols-outlined">mail</span>
+              <span className="material-symbols-outlined notranslate">mail</span>
             </div>
             <div>
               <p className="text-sm text-gray-500 font-medium">Subscribers</p>

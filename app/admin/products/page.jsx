@@ -271,7 +271,7 @@ export default function AdminProducts() {
             <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white">
               <h2 className="text-xl font-bold">{editingId ? "Edit Product" : "Add New Product"}</h2>
               <button onClick={handleCloseModal} className="text-gray-400 hover:text-gray-600">
-                <span className="material-symbols-outlined">close</span>
+                <span className="material-symbols-outlined notranslate">close</span>
               </button>
             </div>
             <div className="p-6">
@@ -318,7 +318,7 @@ export default function AdminProducts() {
 
                 <div className="border border-[#c3a2ab]/30 bg-[#c3a2ab]/5 p-4 rounded-xl space-y-4">
                   <h3 className="text-[#c3a2ab] font-bold text-sm tracking-wider uppercase mb-2 flex items-center gap-2">
-                    <span className="material-symbols-outlined">bolt</span> Flash Sale Settings (Optional)
+                    <span className="material-symbols-outlined notranslate">bolt</span> Flash Sale Settings (Optional)
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>

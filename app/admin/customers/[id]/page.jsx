@@ -323,7 +323,7 @@ export default function CustomerDetail(props) {
               onClick={() => setShowPointsModal(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-900"
             >
-              <span className="material-symbols-outlined">close</span>
+              <span className="material-symbols-outlined notranslate">close</span>
             </button>
             <h2 className="text-xl font-bold mb-4">Adjust Loyalty Points</h2>
             <p className="text-sm text-gray-500 mb-6">Current Balance: <strong className="text-gray-900">{customer.points || 0} pts</strong></p>

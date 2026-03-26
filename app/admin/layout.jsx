@@ -35,7 +35,7 @@ export default async function AdminLayout({ children }) {
               href="/admin"
               className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
             >
-              <span className="material-symbols-outlined">dashboard</span>
+              <span className="material-symbols-outlined notranslate">dashboard</span>
               <span className="font-medium">Dashboard</span>
             </Link>
 
@@ -43,7 +43,7 @@ export default async function AdminLayout({ children }) {
               href="/admin/products"
               className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
             >
-              <span className="material-symbols-outlined">inventory_2</span>
+              <span className="material-symbols-outlined notranslate">inventory_2</span>
               <span className="font-medium">Products</span>
             </Link>
 
@@ -51,7 +51,7 @@ export default async function AdminLayout({ children }) {
               href="/admin/orders"
               className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
             >
-              <span className="material-symbols-outlined">shopping_cart</span>
+              <span className="material-symbols-outlined notranslate">shopping_cart</span>
               <span className="font-medium">Orders</span>
             </Link>
 
@@ -59,7 +59,7 @@ export default async function AdminLayout({ children }) {
               href="/admin/discounts"
               className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
             >
-              <span className="material-symbols-outlined">local_activity</span>
+              <span className="material-symbols-outlined notranslate">local_activity</span>
               <span className="font-medium">Discounts</span>
             </Link>
 
@@ -67,7 +67,7 @@ export default async function AdminLayout({ children }) {
               href="/admin/customers"
               className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
             >
-              <span className="material-symbols-outlined">group</span>
+              <span className="material-symbols-outlined notranslate">group</span>
               <span className="font-medium">Customers</span>
             </Link>
 
@@ -75,7 +75,7 @@ export default async function AdminLayout({ children }) {
               href="/admin/campanet"
               className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
             >
-              <span className="material-symbols-outlined">assignment</span>
+              <span className="material-symbols-outlined notranslate">assignment</span>
               <span className="font-medium">Campanet</span>
             </Link>
 
@@ -83,7 +83,7 @@ export default async function AdminLayout({ children }) {
               href="/admin/reviews"
               className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
             >
-              <span className="material-symbols-outlined">reviews</span>
+              <span className="material-symbols-outlined notranslate">reviews</span>
               <span className="font-medium">Reviews</span>
             </Link>
 
@@ -91,7 +91,7 @@ export default async function AdminLayout({ children }) {
               href="/admin/rewards"
               className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
             >
-              <span className="material-symbols-outlined">redeem</span>
+              <span className="material-symbols-outlined notranslate">redeem</span>
               <span className="font-medium">Rewards</span>
             </Link>
 
@@ -107,7 +107,7 @@ export default async function AdminLayout({ children }) {
               href="/admin/settings"
               className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
             >
-              <span className="material-symbols-outlined">settings</span>
+              <span className="material-symbols-outlined notranslate">settings</span>
               <span className="font-medium">Site Settings</span>
             </Link>
           </nav>

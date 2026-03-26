@@ -218,7 +218,7 @@ export default function AdminDiscounts() {
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white">
               <h2 className="text-xl font-bold">{editMode ? "Edit Discount Code" : "Create Discount Code"}</h2>
               <button onClick={handleCloseModal} className="text-gray-400 hover:text-gray-600">
-                <span className="material-symbols-outlined">close</span>
+                <span className="material-symbols-outlined notranslate">close</span>
               </button>
             </div>
             <div className="p-6">
