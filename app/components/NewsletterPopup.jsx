@@ -82,7 +82,7 @@ export default function NewsletterPopup() {
             </div>
 
             <p className="text-sm text-gray-500 leading-relaxed italic">
-              "ลงทะเบียนรับข่าวสาร และโค้ดส่วนลดพิเศษสำหรับคำสั่งซื้อแรกของคุณ"
+              &quot;ลงทะเบียนรับข่าวสาร และโค้ดส่วนลดพิเศษสำหรับคำสั่งซื้อแรกของคุณ&quot;
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">

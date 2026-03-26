@@ -1,6 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import NextImage from "next/image";
 import { Package, MapPin, Award, Camera, Loader2, User as UserIcon, LayoutDashboard } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
@@ -106,7 +107,7 @@ export default function AccountOverview() {
           <div className="relative group shrink-0">
             <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200 shadow-sm flex items-center justify-center relative">
               {avatar ? (
-                <img src={avatar} alt="Profile" className="w-full h-full object-cover" />
+                <NextImage src={avatar} alt="Profile" fill className="object-cover" />
               ) : (
                 <UserIcon className="w-12 h-12 text-gray-400" />
               )}

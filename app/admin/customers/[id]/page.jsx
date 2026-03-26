@@ -4,6 +4,7 @@ import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { ArrowLeft, User, MapPin, Package, Heart, Laptop, Calendar } from "lucide-react";
+import Image from "next/image";
 
 export default function CustomerDetail(props) {
   const params = use(props.params);
@@ -126,9 +127,9 @@ export default function CustomerDetail(props) {
           
           {/* Profile Card */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
-            <div className="w-24 h-24 bg-[#c3a2ab]/20 text-[#c3a2ab] border-2 border-gray-100 shadow-sm rounded-full overflow-hidden flex items-center justify-center mb-4">
+            <div className="w-24 h-24 bg-[#c3a2ab]/20 text-[#c3a2ab] border-2 border-gray-100 shadow-sm rounded-full overflow-hidden flex items-center justify-center mb-4 relative">
               {customer.image ? (
-                <img src={customer.image} alt={customer.name} className="w-full h-full object-cover" />
+                <Image src={customer.image} alt={customer.name} fill className="object-cover" />
               ) : (
                 <User className="w-12 h-12" />
               )}
@@ -293,12 +294,14 @@ export default function CustomerDetail(props) {
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {customer.wishlist.map((item) => (
                             <div key={item.id} className="border border-gray-100 rounded-xl p-3 flex flex-col items-center text-center gap-2 group hover:border-[#c3a2ab] transition-colors">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img 
-                                    src={item.product?.image || "/placeholder.jpg"} 
-                                    alt={item.product?.name}
-                                    className="w-16 h-16 object-cover rounded-lg group-hover:scale-105 transition-transform"
-                                />
+                                <div className="w-16 h-16 relative">
+                                  <Image 
+                                      src={item.product?.image || "/placeholder.jpg"} 
+                                      alt={item.product?.name}
+                                      fill
+                                      className="object-cover rounded-lg group-hover:scale-105 transition-transform"
+                                  />
+                                </div>
                                 <span className="text-xs font-medium text-gray-900 line-clamp-2">{item.product?.name}</span>
                             </div>
                         ))}

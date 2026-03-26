@@ -6,6 +6,9 @@ import "./globals.css";
 import Providers from "./Providers"
 import { CartProvider } from "@/context/CartContext"
 import { Analytics } from "@vercel/analytics/react";
+import CookieBanner from "./components/cookie/CookieBanner";
+import CookieSettingsTrigger from "./components/cookie/CookieSettingsTrigger";
+import GoogleAnalytics from "./components/analytics/GoogleAnalytics";
 
 const notoSerif = Noto_Serif({
   variable: "--font-display",
@@ -82,6 +85,9 @@ export default function RootLayout({
         <Providers>
           {children}
           <Analytics />
+          <GoogleAnalytics gaId="G-MLP06JQZSJ" />
+          <CookieBanner />
+          <CookieSettingsTrigger />
         </Providers>
         </CartProvider>
       </body>

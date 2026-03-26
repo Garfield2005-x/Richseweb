@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -212,8 +212,8 @@ const checkDiscount = async () => {
     <input
       type="radio"
       value="thailand"
-      checked={country === "thailand"}
-      onChange={(e) => setCountry(e.target.value)}
+      checked={shippingCountry === "thailand"}
+      onChange={(e) => setShippingCountry(e.target.value)}
     />
     Thailand
   </label>
@@ -222,14 +222,14 @@ const checkDiscount = async () => {
     <input
       type="radio"
       value="international"
-      checked={country === "international"}
-      onChange={(e) => setCountry(e.target.value)}
+      checked={shippingCountry === "international"}
+      onChange={(e) => setShippingCountry(e.target.value)}
     />
     International
   </label>
 </div>
  
- {country === "thailand" && (
+ {shippingCountry === "thailand" && (
   <div>
         <div className="space-y-4">
                 <input
@@ -369,7 +369,7 @@ const checkDiscount = async () => {
               
       )}
 
-      {country === "international" && (
+      {shippingCountry === "international" && (
         <div>
         <div className="space-y-4">
                 <input

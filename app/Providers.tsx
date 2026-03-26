@@ -2,6 +2,7 @@
 
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
+import { CookieConsentProvider } from "@/context/CookieConsentContext";
 
 export default function Providers({
   children,
@@ -10,8 +11,10 @@ export default function Providers({
 }) {
   return (
     <SessionProvider>
-      {children}
-      <Toaster position="bottom-right" />
+      <CookieConsentProvider>
+        {children}
+        <Toaster position="bottom-right" />
+      </CookieConsentProvider>
     </SessionProvider>
   );
 }

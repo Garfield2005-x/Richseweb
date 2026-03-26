@@ -1,5 +1,6 @@
 
 "use client";
+/* eslint-disable @next/next/no-img-element */
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import { useState, useEffect, use, useMemo } from "react";

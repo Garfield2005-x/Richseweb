@@ -37,6 +37,7 @@ model User {
   rewardRedemptions RewardRedemption[]
   reviews       ProductReview[]
   points        Int      @default(0)
+  cookiePreferences UserCookiePreference?
 }
 
 model Account {
@@ -251,4 +252,16 @@ model AdvancedTrackingLog {
   createdAt DateTime @default(now())
 
   @@map("advanced_tracking_logs")
+}
+
+model UserCookiePreference {
+  id         String   @id @default(dbgenerated("gen_random_uuid()"))
+  user_id    String   @unique
+  analytics  Boolean  @default(false)
+  marketing  Boolean  @default(false)
+  updated_at DateTime @default(now()) @updatedAt
+
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("user_cookie_preferences")
 }
