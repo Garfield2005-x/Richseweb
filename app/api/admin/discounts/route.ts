@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     if (user?.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const body = await req.json();
-    const { code, discount_percent, max_usage, min_purchase, active } = body;
+    const { code, discount_percent, max_usage, min_purchase, max_discount, active } = body;
 
     const newDiscount = await prisma.discountCode.create({
       data: {
@@ -38,6 +38,7 @@ export async function POST(req: Request) {
         discount_percent: Number(discount_percent),
         min_purchase: min_purchase ? Number(min_purchase) : null,
         max_usage: max_usage ? Number(max_usage) : null,
+        max_discount: max_discount ? Number(max_discount) : null,
         active: Boolean(active),
       },
     });

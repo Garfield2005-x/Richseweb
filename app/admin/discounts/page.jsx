@@ -12,6 +12,7 @@ export default function AdminDiscounts() {
     discount_percent: "",
     min_purchase: "",
     max_usage: "",
+    max_discount: "",
     active: true,
   });
   const [editMode, setEditMode] = useState(false);
@@ -43,6 +44,7 @@ export default function AdminDiscounts() {
         discount_percent: discount.discount_percent,
         min_purchase: discount.min_purchase || "",
         max_usage: discount.max_usage || "",
+        max_discount: discount.max_discount || "",
         active: discount.active,
       });
       setEditMode(true);
@@ -53,6 +55,7 @@ export default function AdminDiscounts() {
         discount_percent: "",
         min_purchase: "",
         max_usage: "",
+        max_discount: "",
         active: true,
       });
       setEditMode(false);
@@ -155,6 +158,7 @@ export default function AdminDiscounts() {
                 <th className="py-4 px-6 font-medium">Code</th>
                 <th className="py-4 px-6 font-medium">Discount (%)</th>
                 <th className="py-4 px-6 font-medium">Min. Purchase</th>
+                <th className="py-4 px-6 font-medium">Max. Discount</th>
                 <th className="py-4 px-6 font-medium">Usage / Limit</th>
                 <th className="py-4 px-6 font-medium">Status</th>
                 <th className="py-4 px-6 font-medium text-right">Actions</th>
@@ -170,8 +174,11 @@ export default function AdminDiscounts() {
                       </span>
                     </td>
                     <td className="py-4 px-6 font-bold text-gray-900">{discount.discount_percent}%</td>
-                    <td className="py-4 px-6">
-                      {discount.min_purchase ? `฿${discount.min_purchase.toLocaleString()}` : <span className="text-gray-400">None</span>}
+                    <td className="py-4 px-6 text-gray-900">
+                      {discount.min_purchase ? `฿${discount.min_purchase.toLocaleString()}` : <span className="text-gray-300">None</span>}
+                    </td>
+                    <td className="py-4 px-6 text-red-600 font-medium">
+                      {discount.max_discount ? `฿${discount.max_discount.toLocaleString()}` : <span className="text-gray-300">None</span>}
                     </td>
                     <td className="py-4 px-6">
                       <span className={`${discount.max_usage && discount.current_usage >= discount.max_usage ? "text-red-500 font-bold" : "text-gray-600"}`}>
@@ -270,6 +277,17 @@ export default function AdminDiscounts() {
                       onChange={(e) => setFormData({ ...formData, max_usage: e.target.value })}
                       className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab]"
                       placeholder="Infinite"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Max. Discount (฿)</label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={formData.max_discount}
+                      onChange={(e) => setFormData({ ...formData, max_discount: e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab]"
+                      placeholder="e.g. 40"
                     />
                   </div>
                 </div>

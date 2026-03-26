@@ -36,7 +36,10 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "เบอร์นี้ใช้โค้ดไปแล้ว" }, { status: 400 });
     }
 
-    const discountAmount = (totalBeforeDiscount * discountDb.discount_percent) / 100;
+    let discountAmount = (totalBeforeDiscount * discountDb.discount_percent) / 100;
+    if (discountDb.max_discount && discountAmount > discountDb.max_discount) {
+      discountAmount = discountDb.max_discount;
+    }
 
     return NextResponse.json({ success: true, discountAmount });
 

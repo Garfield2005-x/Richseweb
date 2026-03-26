@@ -126,6 +126,7 @@ model DiscountCode {
   min_purchase     Float?
   max_usage        Int?
   current_usage    Int      @default(0)
+  max_discount      Float?
   active           Boolean  @default(true)
   created_at       DateTime @default(now())
 
