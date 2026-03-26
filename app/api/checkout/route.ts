@@ -178,11 +178,11 @@ export async function POST(req: Request) {
         }
 
         // Check Phone Usage
-        const usageExist = await tx.discountUsage.findUnique({
-          where: { phone_code: { phone: cleanPhone, code: cleanCode } }
+        const usageCount = await tx.discountUsage.count({
+          where: { phone: cleanPhone, code: cleanCode }
         });
-        if (usageExist) {
-          throw new Error("This phone number has already used this discount code.");
+        if (usageCount >= (discountDb.usage_limit_per_user || 1)) {
+          throw new Error("คุณใช้โค้ดนี้ครบตามจำนวนที่กำหนดแล้ว");
         }
 
         // Apply Discount
