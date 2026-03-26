@@ -127,6 +127,7 @@ model DiscountCode {
   max_usage        Int?
   current_usage    Int      @default(0)
   max_discount      Float?
+  usage_limit_per_user Int    @default(1)
   active           Boolean  @default(true)
   created_at       DateTime @default(now())
 
@@ -162,7 +163,7 @@ model DiscountUsage {
   code       String
   created_at DateTime @default(now())
 
-  @@unique([phone, code])
+  @@index([phone, code])
   @@map("discount_usage")
 }
 

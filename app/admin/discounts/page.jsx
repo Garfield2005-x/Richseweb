@@ -13,6 +13,7 @@ export default function AdminDiscounts() {
     min_purchase: "",
     max_usage: "",
     max_discount: "",
+    usage_limit_per_user: 1,
     active: true,
   });
   const [editMode, setEditMode] = useState(false);
@@ -45,6 +46,7 @@ export default function AdminDiscounts() {
         min_purchase: discount.min_purchase || "",
         max_usage: discount.max_usage || "",
         max_discount: discount.max_discount || "",
+        usage_limit_per_user: discount.usage_limit_per_user || 1,
         active: discount.active,
       });
       setEditMode(true);
@@ -56,6 +58,7 @@ export default function AdminDiscounts() {
         min_purchase: "",
         max_usage: "",
         max_discount: "",
+        usage_limit_per_user: 1,
         active: true,
       });
       setEditMode(false);
@@ -159,7 +162,8 @@ export default function AdminDiscounts() {
                 <th className="py-4 px-6 font-medium">Discount (%)</th>
                 <th className="py-4 px-6 font-medium">Min. Purchase</th>
                 <th className="py-4 px-6 font-medium">Max. Discount</th>
-                <th className="py-4 px-6 font-medium">Usage / Limit</th>
+                <th className="py-4 px-6 font-medium">Limit Per User</th>
+                <th className="py-4 px-6 font-medium">Usage / Total</th>
                 <th className="py-4 px-6 font-medium">Status</th>
                 <th className="py-4 px-6 font-medium text-right">Actions</th>
               </tr>
@@ -179,6 +183,9 @@ export default function AdminDiscounts() {
                     </td>
                     <td className="py-4 px-6 text-red-600 font-medium">
                       {discount.max_discount ? `฿${discount.max_discount.toLocaleString()}` : <span className="text-gray-300">None</span>}
+                    </td>
+                    <td className="py-4 px-6 font-bold text-gray-700">
+                      {discount.usage_limit_per_user || 1} <span className="text-[10px] text-gray-400 font-normal ml-1">times</span>
                     </td>
                     <td className="py-4 px-6">
                       <span className={`${discount.max_usage && discount.current_usage >= discount.max_usage ? "text-red-500 font-bold" : "text-gray-600"}`}>
@@ -243,7 +250,7 @@ export default function AdminDiscounts() {
                   <p className="text-xs text-gray-500 mt-1">Codes will be uppercase without spaces.</p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">Discount (%)</label>
                     <input
@@ -287,7 +294,18 @@ export default function AdminDiscounts() {
                       value={formData.max_discount}
                       onChange={(e) => setFormData({ ...formData, max_discount: e.target.value })}
                       className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab]"
-                      placeholder="e.g. 40"
+                      />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Limit Per User</label>
+                    <input
+                      type="number"
+                      min="1"
+                      required
+                      value={formData.usage_limit_per_user}
+                      onChange={(e) => setFormData({ ...formData, usage_limit_per_user: e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab]"
+                      placeholder="e.g. 1"
                     />
                   </div>
                 </div>

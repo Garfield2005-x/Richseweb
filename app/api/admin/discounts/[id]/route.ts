@@ -11,7 +11,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
     if (user?.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const body = await req.json();
-    const { code, discount_percent, min_purchase, max_usage, max_discount, active } = body;
+    const { code, discount_percent, min_purchase, max_usage, max_discount, usage_limit_per_user, active } = body;
 
     const { id } = await context.params;
 
@@ -21,6 +21,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
       min_purchase?: number | null;
       max_usage?: number | null;
       max_discount?: number | null;
+      usage_limit_per_user?: number;
       active?: boolean;
     } = {};
     if (code !== undefined) data.code = code.trim().toUpperCase();
@@ -28,6 +29,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
     if (min_purchase !== undefined) data.min_purchase = min_purchase === "" ? null : Number(min_purchase);
     if (max_usage !== undefined) data.max_usage = max_usage === "" ? null : Number(max_usage);
     if (max_discount !== undefined) data.max_discount = max_discount === "" ? null : Number(max_discount);
+    if (usage_limit_per_user !== undefined) data.usage_limit_per_user = Number(usage_limit_per_user);
     if (active !== undefined) data.active = Boolean(active);
 
     const updatedDiscount = await prisma.discountCode.update({

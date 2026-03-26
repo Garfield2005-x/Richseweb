@@ -28,12 +28,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: `โค้ดนี้ใช้ได้เมื่อสั่งซื้อครบ ฿${discountDb.min_purchase.toLocaleString()} ขึ้นไป` }, { status: 400 });
     }
 
-    const usageExist = await prisma.discountUsage.findUnique({
-      where: { phone_code: { phone: cleanPhone, code: cleanCode } }
+    const usageCount = await prisma.discountUsage.count({
+      where: { phone: cleanPhone, code: cleanCode }
     });
 
-    if (usageExist) {
-        return NextResponse.json({ error: "เบอร์นี้ใช้โค้ดไปแล้ว" }, { status: 400 });
+    if (usageCount >= (discountDb.usage_limit_per_user || 1)) {
+        return NextResponse.json({ error: "คุณใช้โค้ดนี้ครบตามจำนวนที่กำหนดแล้ว" }, { status: 400 });
     }
 
     let discountAmount = (totalBeforeDiscount * discountDb.discount_percent) / 100;
