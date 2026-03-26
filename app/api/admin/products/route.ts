@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     // if (user?.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const body = await req.json();
-    const { name, price, image, description, stock, isActive, flashSalePrice, flashSaleStart, flashSaleEnd } = body;
+    const { name, price, image, description, stock, isActive, flashSalePrice, flashSaleStart, flashSaleEnd, category, skinType } = body;
 
     const newProduct = await prisma.product.create({
       data: {
@@ -39,6 +39,8 @@ export async function POST(req: Request) {
         flashSalePrice: flashSalePrice && flashSalePrice !== "" ? Number(flashSalePrice) : null,
         flashSaleStart: flashSaleStart && flashSaleStart !== "" ? new Date(flashSaleStart) : null,
         flashSaleEnd: flashSaleEnd && flashSaleEnd !== "" ? new Date(flashSaleEnd) : null,
+        category: category || "Serum",
+        skinType: skinType || "All skins",
       },
     });
 

@@ -18,6 +18,8 @@ export default function AdminProducts() {
     flashSalePrice: "",
     flashSaleStart: "",
     flashSaleEnd: "",
+    category: "Serum",
+    skinType: "All skins",
   });
 
   async function fetchProducts() {
@@ -68,6 +70,8 @@ export default function AdminProducts() {
           const minutes = String(d.getMinutes()).padStart(2, '0');
           return `${year}-${month}-${day}T${hours}:${minutes}`;
         })() : "",
+        category: product.category || "Serum",
+        skinType: product.skinType || "All skins",
       });
     } else {
       setEditingId(null);
@@ -81,6 +85,8 @@ export default function AdminProducts() {
         flashSalePrice: "",
         flashSaleStart: "",
         flashSaleEnd: "",
+        category: "Serum",
+        skinType: "All skins",
       });
     }
     setIsModalOpen(true);
@@ -190,6 +196,8 @@ export default function AdminProducts() {
                 <th className="py-4 px-6 font-medium">Image</th>
                 <th className="py-4 px-6 font-medium">Name</th>
                 <th className="py-4 px-6 font-medium">Price</th>
+                <th className="py-4 px-6 font-medium">Category</th>
+                <th className="py-4 px-6 font-medium">Skin Type</th>
                 <th className="py-4 px-6 font-medium">Stock</th>
                 <th className="py-4 px-6 font-medium">Status</th>
                 <th className="py-4 px-6 font-medium">Actions</th>
@@ -207,6 +215,8 @@ export default function AdminProducts() {
                     </td>
                     <td className="py-4 px-6 font-medium text-gray-900">{product.name}</td>
                     <td className="py-4 px-6">฿{product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td className="py-4 px-6 text-sm text-gray-600">{product.category}</td>
+                    <td className="py-4 px-6 text-sm text-gray-600">{product.skinType}</td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-2">
                         <input
@@ -341,6 +351,37 @@ export default function AdminProducts() {
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] text-sm"
                       />
                     </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
+                    <select
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] bg-white"
+                    >
+                      <option value="Serum">Serum</option>
+                      <option value="Cream">Cream</option>
+                      <option value="Moisturizer">Moisturizer</option>
+                      <option value="Mask">Mask</option>
+                      <option value="Sunscreen">Sunscreen</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Skin Type</label>
+                    <select
+                      value={formData.skinType}
+                      onChange={(e) => setFormData({ ...formData, skinType: e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] bg-white"
+                    >
+                      <option value="All skins">All skins</option>
+                      <option value="Dry skin">Dry skin</option>
+                      <option value="Oily skin">Oily skin</option>
+                      <option value="Combination skin">Combination skin</option>
+                      <option value="Sensitive skin">Sensitive skin</option>
+                    </select>
                   </div>
                 </div>
 

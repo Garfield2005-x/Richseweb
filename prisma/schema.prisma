@@ -140,6 +140,8 @@ model Product {
   description String
   stock       Int      @default(0)
   isActive       Boolean  @default(true)
+  category       String   @default("Serum")
+  skinType       String   @default("All skins")
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt @default(now())
 
@@ -237,6 +239,8 @@ model CampanetForm {
   name      String
   phone     String
   order     String
+  status    String   @default("NEW") // NEW, CONTACTED, SUCCESS, CANCELLED
+  notes     String?  @db.Text
   createdAt DateTime @default(now())
 
   @@map("campanet_forms")
@@ -264,4 +268,13 @@ model UserCookiePreference {
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("user_cookie_preferences")
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt @default(now())
+
+  @@map("site_settings")
 }

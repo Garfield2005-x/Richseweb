@@ -89,10 +89,26 @@ export default async function AdminLayout({ children }) {
 
             <Link
               href="/admin/rewards"
-              className="flex flex-1 items-center gap-3 px-4 py-3 text-indigo-700 hover:bg-indigo-50 bg-indigo-50/50 rounded-xl transition-colors"
+              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
             >
               <span className="material-symbols-outlined">redeem</span>
-              <span className="font-medium font-bold">Rewards</span>
+              <span className="font-medium">Rewards</span>
+            </Link>
+
+            <Link
+              href="/admin/flash-sale"
+              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+            >
+              <span className="material-symbols-outlined text-orange-500">bolt</span>
+              <span className="font-medium">Flash Sale</span>
+            </Link>
+
+            <Link
+              href="/admin/settings"
+              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+            >
+              <span className="material-symbols-outlined">settings</span>
+              <span className="font-medium">Site Settings</span>
             </Link>
           </nav>
 

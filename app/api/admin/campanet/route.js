@@ -62,3 +62,28 @@ export async function DELETE(req) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function PUT(req) {
+  try {
+    const session = await getServerSession();
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id, status, notes } = await req.json();
+    
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
+
+    const updated = await prisma.campanetForm.update({
+      where: { id },
+      data: { status, notes }
+    });
+
+    return NextResponse.json(updated);
+  } catch (error) {
+    console.error("Error updating campanet form:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

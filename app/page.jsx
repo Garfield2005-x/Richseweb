@@ -29,9 +29,25 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  const [homeVideos, setHomeVideos] = useState(["", "", "", "", ""]);
   const { addToCart } = useCart()
 
   useEffect(() => {
+    async function fetchHomeVideos() {
+      try {
+        const res = await fetch("/api/settings/home_videos");
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.value)) {
+            setHomeVideos(data.value);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load home videos", error);
+      }
+    }
+    fetchHomeVideos();
+
     async function fetchProducts() {
       try {
         const res = await fetch("/api/products");
@@ -360,7 +376,7 @@ export default function Home() {
                   {/* Note: Insert actual vertical .mp4 paths here */}
                   <video
                     className="w-full h-full object-cover scale-[1.02] group-hover/video:scale-100 transition-transform duration-700 ease-out"
-                    src={`/videos/tiktok-${item}.mp4`}
+                    src={homeVideos[idx] || `/videos/tiktok-${item}.mp4`}
                     loop
                     playsInline
                   />

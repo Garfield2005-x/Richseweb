@@ -12,7 +12,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
     // if (user?.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const body = await req.json();
-    const { name, price, image, description, stock, isActive, flashSalePrice, flashSaleStart, flashSaleEnd } = body;
+    const { name, price, image, description, stock, isActive, flashSalePrice, flashSaleStart, flashSaleEnd, category, skinType } = body;
 
     const { id } = await context.params;
 
@@ -28,6 +28,8 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
         flashSalePrice: flashSalePrice && flashSalePrice !== "" ? Number(flashSalePrice) : null,
         flashSaleStart: flashSaleStart && flashSaleStart !== "" ? new Date(flashSaleStart) : null,
         flashSaleEnd: flashSaleEnd && flashSaleEnd !== "" ? new Date(flashSaleEnd) : null,
+        category: category,
+        skinType: skinType,
       },
     });
 
