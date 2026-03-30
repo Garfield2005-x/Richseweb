@@ -510,13 +510,16 @@ export default function Checkout() {
                          <span className="text-gray-900 font-bold">฿{subtotal.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center text-sm">
-                         <span className="text-gray-400 font-medium">Shipping Fee
-                            {isFreeShippingPromo && <span className="ml-2 bg-green-50 text-green-600 border border-green-100 px-1.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest">1st Order Free</span>}
+                         <span className="text-gray-400 font-medium flex flex-col items-start gap-1">
+                            <div>Shipping Fee {isFreeShippingPromo && <span className="ml-2 bg-green-50 text-green-600 border border-green-100 px-1.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest">1st Order Free</span>}</div>
                          </span>
-                         <span className={isFreeShippingPromo ? "text-green-500 font-bold uppercase tracking-widest textxs" : "text-gray-900 font-bold"}>
+                         <span className={isFreeShippingPromo ? "text-green-500 font-bold uppercase tracking-widest text-xs" : "text-gray-900 font-bold"}>
                             {shippingCost === 0 ? "Free" : `฿${shippingCost}`}
                          </span>
                       </div>
+                      {isFreeShippingPromo && (
+                         <div className="text-[10px] text-gray-400 text-right mt-1">* สิทธิ์ส่งฟรีสำหรับลูกค้าระบบตรวจสอบจากประวัติเบอร์โทรศัพท์เท่านั้น</div>
+                      )}
                       {tax > 0 && (
                         <div className="flex justify-between items-center text-sm">
                            <span className="text-gray-400 font-medium">VAT (Included)</span>

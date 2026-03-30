@@ -1,9 +1,32 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+// Simple in-memory rate limit: 30 requests per minute per IP
+const rateLimiter = new Map<string, { count: number, resetTime: number }>();
+
 export async function POST(req: Request) {
   try {
     const { phone } = await req.json();
+    const ip = req.headers.get("x-forwarded-for") || "unknown";
+    
+    // Rate Limit Check
+    const now = Date.now();
+    const limit = 30; // 30 requests per minute
+    const windowMs = 60 * 1000;
+    
+    if (ip !== "unknown") {
+      const userRecord = rateLimiter.get(ip);
+      if (!userRecord || now > userRecord.resetTime) {
+        rateLimiter.set(ip, { count: 1, resetTime: now + windowMs });
+      } else {
+        if (userRecord.count >= limit) {
+          return NextResponse.json({ shippingCost: 30, isFreeShippingApplied: false, error: "Too many requests" }, { status: 429 });
+        }
+        userRecord.count++;
+        rateLimiter.set(ip, userRecord);
+      }
+    }
+
     let shippingCost = 30; // Default COD fee
     let isFreeShippingApplied = false;
 

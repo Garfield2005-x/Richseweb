@@ -2,12 +2,14 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import NextImage from "next/image";
-import { Package, MapPin, Award, Camera, Loader2, User as UserIcon, LayoutDashboard } from "lucide-react";
+import { Package, MapPin, Award, Camera, Loader2, User as UserIcon, LayoutDashboard, Ticket } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 
 export default function AccountOverview() {
   const { data: session } = useSession();
   const [profile, setProfile] = useState<{ points?: number } | null>(null);
+  const [discounts, setDiscounts] = useState<{code: string, discount_percent: number, min_purchase: number | null, max_discount: number | null, description: string}[]>([]);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -21,7 +23,21 @@ export default function AccountOverview() {
         console.error("Failed to load profile", e);
       }
     }
+    
+    async function fetchDiscounts() {
+      try {
+        const res = await fetch("/api/account/discounts");
+        if (res.ok) {
+          const data = await res.json();
+          setDiscounts(data);
+        }
+      } catch (e) {
+        console.error("Failed to load discounts", e);
+      }
+    }
+
     fetchProfile();
+    fetchDiscounts();
   }, []);
 
   const [uploading, setUploading] = useState(false);
@@ -215,6 +231,44 @@ export default function AccountOverview() {
             </div>
           </div>
         </Link>
+      </div>
+
+      {/* My Coupons Section */}
+      <div className="pt-6 border-t border-gray-100">
+         <div className="flex items-center gap-2 mb-6">
+            <Ticket className="w-6 h-6 text-[#c3a2ab]" />
+            <h3 className="text-xl font-display font-bold text-gray-900">My Coupons / โค้ดส่วนลดของคุณ</h3>
+         </div>
+         
+         {discounts.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+               {discounts.map((discount) => (
+                  <div key={discount.code} className="border border-gray-100 rounded-2xl p-5 hover:border-[#c3a2ab] hover:shadow-lg hover:shadow-[#c3a2ab]/10 transition-all bg-white flex flex-col justify-between">
+                     <div>
+                        <div className="flex justify-between items-start mb-2">
+                           <span className="bg-[#f8f6f4] text-[#c3a2ab] text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full">{discount.discount_percent}% OFF</span>
+                        </div>
+                        <h4 className="text-lg font-bold text-gray-900 mt-2 tracking-wide break-all">{discount.code}</h4>
+                        <p className="text-sm text-gray-500 mt-1">{discount.description}</p>
+                     </div>
+                     <button
+                        onClick={() => {
+                           navigator.clipboard.writeText(discount.code);
+                           toast.success("คัดลอกโค้ดส่วนลดแล้ว!");
+                        }}
+                        className="mt-4 w-full bg-gray-50 text-gray-700 hover:bg-[#c3a2ab] hover:text-white font-bold py-2 rounded-xl transition-colors text-sm"
+                     >
+                        Copy Code
+                     </button>
+                  </div>
+               ))}
+            </div>
+         ) : (
+            <div className="text-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+               <Ticket className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+               <p className="text-gray-500 font-medium">คุณยังไม่มีโค้ดส่วนลดชั่วคราวในขณะนี้</p>
+            </div>
+         )}
       </div>
 
       <div className="pt-6 border-t border-gray-100">

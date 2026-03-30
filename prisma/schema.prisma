@@ -295,3 +295,14 @@ model SiteSetting {
 
   @@map("site_settings")
 }
+
+model PromotionLog {
+  id         String   @id @default(uuid())
+  phone      String
+  promotion  String
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([phone, promotion])
+  @@map("promotion_logs")
+}

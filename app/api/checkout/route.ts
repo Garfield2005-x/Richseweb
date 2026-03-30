@@ -108,6 +108,7 @@ export async function POST(req: Request) {
 
     let shippingCost = shippingMethod === "Cash on Delivery (+$30 Fee)" ? 30 : 0;
     const cleanPhone = shippingInfo.phone.trim();
+    let isFirstOrderFree = false;
 
     // Check Automation Rule: First Order Free Shipping
     const rule = await prisma.siteSetting.findUnique({
@@ -120,6 +121,7 @@ export async function POST(req: Request) {
        });
        if (prevOrders === 0) {
           shippingCost = 0; // Waive shipping fee
+          isFirstOrderFree = true;
        }
     }
 
@@ -274,6 +276,17 @@ export async function POST(req: Request) {
           }
         }
       });
+
+      // --- C.2 Record First Order Free Shipping Audit ---
+      if (isFirstOrderFree) {
+         await tx.promotionLog.create({
+            data: {
+               phone: cleanPhone,
+               promotion: "first_order_free_shipping",
+               ipAddress: req.headers.get("x-forwarded-for") || "unknown"
+            }
+         });
+      }
 
       // --- D. Deduct Stock ---
       // This is atomic and handles race conditions along with the earlier check
