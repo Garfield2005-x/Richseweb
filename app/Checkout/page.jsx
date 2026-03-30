@@ -31,7 +31,7 @@ export default function Checkout() {
   const [discountCode, setDiscountCode] = useState("")
   const [discountAmount, setDiscountAmount] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [shipping, setShipping] = useState("Bank Transfer (Free Shipping)")
+  const [shipping, setShipping] = useState("Cash on Delivery (+$30 Fee)")
   const [shippingInfo, setShippingInfo] = useState({
     fullName: "",
     address: "",
@@ -337,9 +337,8 @@ export default function Checkout() {
               
               <div className="space-y-4">
                  {[
-                   { id: "Bank Transfer (Free Shipping)", label: "Bank Transfer", desc: "No additional fees, free shipping included.", price: "Free", icon: <CreditCard size={18} /> },
                    { id: "Cash on Delivery (+$30 Fee)", label: "Cash on Delivery", desc: "Pay at your doorstep. Special fee applied.", price: "฿30", icon: <Truck size={18} /> }
-                 ].filter(m => shippingCountry === "Thailand" || m.id !== "Cash on Delivery (+$30 Fee)").map(method => (
+                 ].map(method => (
                    <label 
                      key={method.id}
                      className={`flex items-center justify-between p-6 rounded-[2rem] border-2 cursor-pointer transition-all ${
@@ -428,7 +427,9 @@ export default function Checkout() {
                               )}
                            </div>
                            <div className="flex-1 space-y-1">
-                              <p className="text-sm font-bold text-gray-900 leading-snug">{item.name}</p>
+                               <p className="text-sm font-bold text-gray-900 leading-snug">
+                                 {item.name} {item.variantName ? <span className="text-xs text-gray-500 font-normal">({item.variantName})</span> : ""}
+                               </p>
                               <p className="text-xs text-gray-400 font-medium">Quantity: {item.quantity}</p>
                            </div>
                            <p className="text-sm font-bold text-gray-900">฿{(item.price * item.quantity).toLocaleString()}</p>

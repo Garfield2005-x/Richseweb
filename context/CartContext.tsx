@@ -9,6 +9,8 @@ export type Product = {
   image: string
   taxe: string
   stock?: number
+  variantId?: number
+  variantName?: string
 };
 
 type CartItem = Product & { quantity: number }
@@ -16,8 +18,9 @@ type CartItem = Product & { quantity: number }
 type CartType = {
   cart: CartItem[]
   addToCart: (product: Product, quantity?: number) => void
-  increaseQty: (id: number) => void
-  decreaseQty: (id: number) => void
+  increaseQty: (id: number, variantId?: number) => void
+  decreaseQty: (id: number, variantId?: number) => void
+  removeItem: (id: number, variantId?: number) => void
   clearCart: () => void
 }
 
@@ -28,8 +31,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   
   const [cart, setCart] = useState<CartItem[]>([])
 
+  const isSameItem = (a: { id: number, variantId?: number }, b: { id: number, variantId?: number }) => 
+    a.id === b.id && a.variantId === b.variantId;
+
  const addToCart = (product: Product, quantity: number = 1) => {
-    const exist = cart.find(item => item.id === product.id)
+    const exist = cart.find(item => isSameItem(item, product));
     const stockLimit = product.stock ?? 999;
 
     if (exist) {
@@ -45,12 +51,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     toast.success("Added to cart!");
 
     setCart(prev => {
-      const prevExist = prev.find(item => item.id === product.id)
+      const prevExist = prev.find(item => isSameItem(item, product))
       
       if (prevExist) {
         if (prevExist.quantity + quantity > stockLimit) return prev;
         return prev.map(item =>
-          item.id === product.id
+          isSameItem(item, product)
             ? { ...item, quantity: item.quantity + quantity }
             : item
         )
@@ -61,8 +67,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
-  const increaseQty = (id: number) => {
-    const item = cart.find(i => i.id === id);
+  const increaseQty = (id: number, variantId?: number) => {
+    const target = { id, variantId };
+    const item = cart.find(i => isSameItem(i, target));
     if (item) {
       const stockLimit = item.stock ?? 999;
       if (item.quantity + 1 > stockLimit) {
@@ -73,7 +80,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     setCart(prev => {
       return prev.map(item => {
-        if (item.id === id) {
+        if (isSameItem(item, target)) {
           const stockLimit = item.stock ?? 999;
           if (item.quantity + 1 > stockLimit) return item;
           return { ...item, quantity: item.quantity + 1 };
@@ -83,24 +90,31 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
-  const decreaseQty = (id: number) => {
+  const decreaseQty = (id: number, variantId?: number) => {
+    const target = { id, variantId };
     setCart(prev =>
       prev
         .map(item =>
-          item.id === id
+          isSameItem(item, target)
             ? { ...item, quantity: item.quantity - 1 }
             : item
         )
         .filter(item => item.quantity > 0)
     )
   }
+
+  const removeItem = (id: number, variantId?: number) => {
+    const target = { id, variantId };
+    setCart(prev => prev.filter(item => !isSameItem(item, target)));
+  }
+
   const clearCart = () => {
-  setCart([])
-}
+    setCart([])
+  }
 
   return (
     <CartContext.Provider
-    value={{ cart, addToCart, increaseQty, decreaseQty, clearCart }}
+    value={{ cart, addToCart, increaseQty, decreaseQty, removeItem, clearCart }}
   >
     {children}
   </CartContext.Provider>

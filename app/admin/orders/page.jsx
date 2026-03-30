@@ -14,7 +14,8 @@ import {
   Phone, 
   MapPin, 
   CreditCard,
-  ClipboardList
+  ClipboardList,
+  Trash2
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -72,6 +73,30 @@ export default function AdminOrders() {
       toast.error("Error updating order");
     }
   };
+
+  const handleDeleteOrder = async (id) => {
+    if (!confirm("Are you sure you want to delete this order? This action cannot be undone.")) return;
+    
+    try {
+      const res = await fetch(`/api/admin/orders/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setOrders(orders.filter(o => o.id !== id));
+        if (selectedOrder && selectedOrder.id === id) {
+          setSelectedOrder(null);
+        }
+        toast.success("Order deleted successfully");
+      } else {
+        toast.error("Failed to delete order");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error deleting order");
+    }
+  };
+
 
   // --- Statistics ---
   const stats = useMemo(() => {
@@ -300,6 +325,13 @@ export default function AdminOrders() {
                           <option value="COMPLETED">COMPLETED</option>
                           <option value="CANCELLED">CANCELLED</option>
                         </select>
+                        <button
+                          onClick={() => handleDeleteOrder(order.id)}
+                          className="p-2 hover:bg-rose-100 bg-gray-100 text-rose-500 rounded-lg transition-all"
+                          title="Delete Order"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>

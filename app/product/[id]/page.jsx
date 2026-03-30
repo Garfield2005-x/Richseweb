@@ -18,6 +18,7 @@ export default function ProductDetailPage(props) {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
@@ -40,6 +41,10 @@ export default function ProductDetailPage(props) {
         if (res.ok) {
           const data = await res.json();
           setProduct(data);
+          if (data.variants && data.variants.length > 0) {
+            const firstAvailable = data.variants.find(v => v.stock > 0) || data.variants[0];
+            setSelectedVariant(firstAvailable);
+          }
         } else {
           setProduct(null);
         }
@@ -111,6 +116,15 @@ export default function ProductDetailPage(props) {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   };
 
+  const currentVariant = selectedVariant;
+  const currentStock = currentVariant ? currentVariant.stock : product.stock;
+  
+  const now = new Date();
+  const isFlashSaleActive = !currentVariant && product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && now >= new Date(product.flashSaleStart) && now <= new Date(product.flashSaleEnd);
+  
+  const currentPrice = currentVariant ? currentVariant.price : (isFlashSaleActive ? product.flashSalePrice : product.price);
+  const originalPriceDisplay = isFlashSaleActive ? product.price : null;
+
   return (
     <div>
       <title>Richse | {product.name}</title>
@@ -152,25 +166,25 @@ export default function ProductDetailPage(props) {
                 </div>
               </div>
               <div className="flex items-baseline gap-4">
-                {product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && new Date() >= new Date(product.flashSaleStart) && new Date() <= new Date(product.flashSaleEnd) ? (
+                {isFlashSaleActive ? (
                   <div className="flex flex-col gap-2">
                     <div className="flex items-baseline gap-3">
                       <span className="text-4xl font-light text-red-600">
-                        ฿{product.flashSalePrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        ฿{currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </span>
                       <span className="text-xl text-gray-400 line-through font-medium">
-                        ฿{product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        ฿{originalPriceDisplay.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </span>
                     </div>
                     <CountdownTimer targetDate={product.flashSaleEnd} />
                   </div>
                 ) : (
                   <span className="text-3xl font-light text-[#161314] dark:text-white">
-                    ฿{product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    ฿{currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </span>
                 )}
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {product.stock > 0 ? "In Stock" : "Out of Stock"}
+                  {currentStock > 0 ? "In Stock" : "Out of Stock"}
                 </span>
               </div>
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-sans text-lg whitespace-pre-wrap">
@@ -178,11 +192,41 @@ export default function ProductDetailPage(props) {
                   "RICHSE is a skincare brand dedicated to enhancing natural beauty through thoughtful care and refined formulas. Focused on quality, balance, and skin wellness, RICHSE helps support healthier-looking, radiant skin as part of a modern self-care routine."}
               </p>
               <div className="space-y-4 pt-6 border-t border-gray-100 dark:border-gray-800">
+                {product.variants?.length > 0 && (
+                  <div className="mb-6">
+                    <span className="text-xs uppercase tracking-[0.2em] font-bold text-gray-400 mb-3 block">Select Size</span>
+                    <div className="flex flex-wrap gap-3">
+                      {product.variants.map(v => (
+                        <button
+                          key={v.id}
+                          onClick={() => {
+                            setSelectedVariant(v);
+                            setQuantity(1); // Reset quantity when variant changes
+                          }}
+                          className={`px-4 py-2 border rounded-lg text-sm font-bold transition-all uppercase tracking-wider ${
+                            selectedVariant?.id === v.id 
+                              ? "border-[#161314] bg-[#161314] text-white dark:border-white dark:bg-white dark:text-black" 
+                              : v.stock <= 0 
+                                ? "border-gray-200 bg-gray-50 text-gray-400 opacity-50 relative overflow-hidden"
+                                : "border-gray-200 text-gray-600 hover:border-gray-400"
+                          }`}
+                        >
+                          {v.name}
+                          {v.stock <= 0 && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="w-full h-px bg-gray-400 rotate-[-12deg] transform origin-center"></div>
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <div className="flex items-center gap-4">
                   <div className="flex items-center border border-gray-200 rounded-full bg-gray-50/50">
                     <button
                       onClick={decrease}
-                      disabled={product.stock === 0}
+                      disabled={currentStock === 0}
                       className="px-4 py-3 text-gray-500 hover:text-[#161314] hover:bg-gray-100 rounded-l-full transition-colors disabled:opacity-50"
                     >
                       −
@@ -192,7 +236,7 @@ export default function ProductDetailPage(props) {
                     </span>
                     <button
                       onClick={increase}
-                      disabled={product.stock === 0}
+                      disabled={currentStock === 0 || quantity >= currentStock}
                       className="px-4 py-3 text-gray-500 hover:text-[#161314] hover:bg-gray-100 rounded-r-full transition-colors disabled:opacity-50"
                     >
                       +
@@ -203,20 +247,26 @@ export default function ProductDetailPage(props) {
                 <div className="flex gap-4">
                   <button
                     onClick={() => {
-                      if (product.stock === 0) return;
-                      const now = new Date();
-                      const isFlashSale = product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && now >= new Date(product.flashSaleStart) && now <= new Date(product.flashSaleEnd);
+                      if (currentStock <= 0) return;
+                      if (product.variants?.length > 0 && !selectedVariant) {
+                        toast.error("Please select a size first");
+                        return;
+                      }
+                      
                       addToCart({ 
                         ...product, 
-                        price: isFlashSale ? product.flashSalePrice : product.price,
-                        originalPrice: product.price 
+                        variantId: selectedVariant?.id,
+                        variantName: selectedVariant?.name,
+                        price: currentPrice,
+                        originalPrice: product.price,
+                        stock: currentStock
                       }, quantity);
-                      alert("Added to cart");
+                      // alert is removed as toast.success is handled in CartContext
                     }}
                     className="flex-3 bg-[#c3a2ab] hover:bg-[#c3a2ab]/90 text-white font-bold py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 uppercase tracking-widest text-sm disabled:opacity-50"
-                    disabled={product.stock <= 0}
+                    disabled={currentStock <= 0}
                   >
-                    {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
+                    {currentStock > 0 ? "Add to Cart" : "Out of Stock"}
                   </button>
                   <button
                     onClick={toggleWishlist}
@@ -227,7 +277,7 @@ export default function ProductDetailPage(props) {
                     </span>
                   </button>
                 </div>
-                {product.stock > 0 && (
+                {currentStock > 0 && (
                   <Link
                     href="/Checkout"
                     className="w-full border-2 border-[#161314] dark:border-white text-[#161314] dark:text-white font-bold py-4 rounded-lg hover:bg-[#161314] hover:text-white dark:hover:bg-white dark:hover:text-black transition-all uppercase tracking-widest text-sm block text-center"

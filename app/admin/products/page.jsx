@@ -16,10 +16,10 @@ export default function AdminProducts() {
     stock: "",
     isActive: true,
     flashSalePrice: "",
-    flashSaleStart: "",
     flashSaleEnd: "",
     category: "Serum",
     skinType: "All skins",
+    variants: [],
   });
 
   async function fetchProducts() {
@@ -72,6 +72,7 @@ export default function AdminProducts() {
         })() : "",
         category: product.category || "Serum",
         skinType: product.skinType || "All skins",
+        variants: product.variants || [],
       });
     } else {
       setEditingId(null);
@@ -87,6 +88,7 @@ export default function AdminProducts() {
         flashSaleEnd: "",
         category: "Serum",
         skinType: "All skins",
+        variants: [],
       });
     }
     setIsModalOpen(true);
@@ -95,6 +97,25 @@ export default function AdminProducts() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingId(null);
+  };
+
+  const handleAddVariant = () => {
+    setFormData({
+      ...formData,
+      variants: [...formData.variants, { name: "", price: "", stock: "" }]
+    });
+  };
+
+  const handleVariantChange = (index, field, value) => {
+    const newVariants = [...formData.variants];
+    newVariants[index][field] = value;
+    setFormData({ ...formData, variants: newVariants });
+  };
+
+  const handleRemoveVariant = (index) => {
+    const newVariants = [...formData.variants];
+    newVariants.splice(index, 1);
+    setFormData({ ...formData, variants: newVariants });
   };
 
   const handleSave = async (e) => {
@@ -214,29 +235,43 @@ export default function AdminProducts() {
                       </div>
                     </td>
                     <td className="py-4 px-6 font-medium text-gray-900">{product.name}</td>
-                    <td className="py-4 px-6">฿{product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td className="py-4 px-6">
+                      {product.variants?.length > 0 ? (
+                        <div className="text-sm">
+                          <span className="font-bold text-[#c3a2ab]">Multiple Sizes ({product.variants.length})</span>
+                          <div className="text-xs text-gray-500 mt-1 line-clamp-1">{product.variants.map(v => v.name).join(", ")}</div>
+                        </div>
+                      ) : (
+                        `฿${product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}`
+                      )}
+                    </td>
                     <td className="py-4 px-6 text-sm text-gray-600">{product.category}</td>
                     <td className="py-4 px-6 text-sm text-gray-600">{product.skinType}</td>
                     <td className="py-4 px-6">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          className={`w-20 border rounded-lg px-2 py-1 text-center font-bold outline-none focus:ring-2 focus:ring-[#c3a2ab] ${
-                            product.stock <= 5 ? "border-red-300 text-red-600 bg-red-50" : "border-gray-200 text-gray-700"
-                          }`}
-                          value={product.stock}
-                          onChange={(e) => {
-                            // Local instant update for smooth typing
-                            setProducts(products.map(p => p.id === product.id ? { ...p, stock: e.target.value } : p));
-                          }}
-                          onBlur={(e) => handleQuickStockUpdate(product.id, e.target.value)}
-                        />
-                        {product.stock <= 5 && (
-                          <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest bg-red-100 px-2 py-0.5 rounded-full whitespace-nowrap">
-                            Low Stock
-                          </span>
-                        )}
-                      </div>
+                      {product.variants?.length > 0 ? (
+                        <div className="text-sm">
+                          <span className="text-gray-600 border border-gray-200 px-2 py-1 rounded-md bg-gray-50">Variant Managed</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            className={`w-20 border rounded-lg px-2 py-1 text-center font-bold outline-none focus:ring-2 focus:ring-[#c3a2ab] ${
+                              product.stock <= 5 ? "border-red-300 text-red-600 bg-red-50" : "border-gray-200 text-gray-700"
+                            }`}
+                            value={product.stock}
+                            onChange={(e) => {
+                              setProducts(products.map(p => p.id === product.id ? { ...p, stock: e.target.value } : p));
+                            }}
+                            onBlur={(e) => handleQuickStockUpdate(product.id, e.target.value)}
+                          />
+                          {product.stock <= 5 && (
+                            <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest bg-red-100 px-2 py-0.5 rounded-full whitespace-nowrap">
+                              Low Stock
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </td>
                     <td className="py-4 px-6">
                       <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wider ${product.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
@@ -290,7 +325,7 @@ export default function AdminProducts() {
 
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Price (฿)</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Price (฿) <span className="text-gray-400 font-normal ml-1 text-xs">(Base price if no variants)</span></label>
                     <input
                       type="number"
                       required
@@ -303,7 +338,7 @@ export default function AdminProducts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Stock Quantity</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Stock Quantity <span className="text-gray-400 font-normal ml-1 text-xs">(Base stock if no variants)</span></label>
                     <input
                       type="number"
                       required
@@ -314,6 +349,75 @@ export default function AdminProducts() {
                       placeholder="e.g. 100"
                     />
                   </div>
+                </div>
+
+                <div className="border border-gray-200 bg-gray-50 p-4 rounded-xl space-y-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-gray-700 font-bold text-sm tracking-wider uppercase flex items-center gap-2">
+                      <span className="material-symbols-outlined notranslate">format_list_bulleted</span> Product Variants (Sizes)
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={handleAddVariant}
+                      className="text-xs bg-white border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-gray-100 font-bold transition-colors"
+                    >
+                      + Add Variant
+                    </button>
+                  </div>
+                  
+                  {formData.variants.length > 0 && (
+                    <div className="space-y-3">
+                      {formData.variants.map((variant, index) => (
+                        <div key={index} className="flex items-center gap-3 bg-white p-3 border border-gray-200 rounded-lg">
+                          <div className="flex-1">
+                            <label className="block text-[10px] uppercase font-bold text-gray-400 mb-1">Name / Size</label>
+                            <input
+                              type="text"
+                              required
+                              value={variant.name}
+                              onChange={(e) => handleVariantChange(index, "name", e.target.value)}
+                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
+                              placeholder="e.g. 15ml"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <label className="block text-[10px] uppercase font-bold text-gray-400 mb-1">Price (฿)</label>
+                            <input
+                              type="number"
+                              required
+                              min="0"
+                              step="0.01"
+                              value={variant.price}
+                              onChange={(e) => handleVariantChange(index, "price", e.target.value)}
+                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
+                              placeholder="0.00"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <label className="block text-[10px] uppercase font-bold text-gray-400 mb-1">Stock</label>
+                            <input
+                              type="number"
+                              required
+                              min="0"
+                              value={variant.stock}
+                              onChange={(e) => handleVariantChange(index, "stock", e.target.value)}
+                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
+                              placeholder="0"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveVariant(index)}
+                            className="text-red-400 hover:text-red-600 self-end mb-2 ml-2"
+                            title="Remove Variant"
+                          >
+                            <span className="material-symbols-outlined text-sm">delete</span>
+                          </button>
+                        </div>
+                      ))}
+                      <p className="text-xs text-gray-500 italic">When variants exist, base price/stock will be ignored. Customers must select a variant.</p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="border border-[#c3a2ab]/30 bg-[#c3a2ab]/5 p-4 rounded-xl space-y-4">

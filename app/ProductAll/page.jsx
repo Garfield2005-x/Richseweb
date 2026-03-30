@@ -239,7 +239,7 @@ export default function Page() {
                       </div>
                     ) : (
                       <p className="text-lg font-medium text-[#c3a2ab]">
-                        ฿{product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        {product.variants?.length > 0 ? "Starting from " : ""}฿{product.variants?.length > 0 ? Math.min(...product.variants.map(v => v.price)).toLocaleString(undefined, { minimumFractionDigits: 2 }) : product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </p>
                     )}
                   </div>

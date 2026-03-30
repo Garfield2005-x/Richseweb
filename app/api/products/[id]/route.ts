@@ -9,6 +9,9 @@ export async function GET(req: Request, context: { params: Promise<{ id: string 
       where: {
         id: parseInt(id),
       },
+      include: {
+        variants: true,
+      },
     });
 
     if (!product || !product.isActive) {

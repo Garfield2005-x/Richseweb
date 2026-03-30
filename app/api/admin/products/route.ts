@@ -8,6 +8,7 @@ export async function GET() {
     // but this is /api/admin/products so let's auth it, or just use another route for public space
     const products = await prisma.product.findMany({
       orderBy: { id: "asc" },
+      include: { variants: true }
     });
     return NextResponse.json(products);
   } catch (error) {
@@ -26,22 +27,37 @@ export async function POST(req: Request) {
     // if (user?.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const body = await req.json();
-    const { name, price, image, description, stock, isActive, flashSalePrice, flashSaleStart, flashSaleEnd, category, skinType } = body;
+    const { name, price, image, description, stock, isActive, flashSalePrice, flashSaleStart, flashSaleEnd, category, skinType, variants } = body;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const productData: any = {
+      name,
+      price: Number(price),
+      image,
+      description,
+      stock: Number(stock),
+      isActive: Boolean(isActive),
+      flashSalePrice: flashSalePrice && flashSalePrice !== "" ? Number(flashSalePrice) : null,
+      flashSaleStart: flashSaleStart && flashSaleStart !== "" ? new Date(flashSaleStart) : null,
+      flashSaleEnd: flashSaleEnd && flashSaleEnd !== "" ? new Date(flashSaleEnd) : null,
+      category: category || "Serum",
+      skinType: skinType || "All skins",
+    };
+
+    if (variants && Array.isArray(variants) && variants.length > 0) {
+      productData.variants = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        create: variants.map((v: any) => ({
+          name: v.name,
+          price: Number(v.price),
+          stock: Number(v.stock) || 0
+        }))
+      };
+    }
 
     const newProduct = await prisma.product.create({
-      data: {
-        name,
-        price: Number(price),
-        image,
-        description,
-        stock: Number(stock),
-        isActive: Boolean(isActive),
-        flashSalePrice: flashSalePrice && flashSalePrice !== "" ? Number(flashSalePrice) : null,
-        flashSaleStart: flashSaleStart && flashSaleStart !== "" ? new Date(flashSaleStart) : null,
-        flashSaleEnd: flashSaleEnd && flashSaleEnd !== "" ? new Date(flashSaleEnd) : null,
-        category: category || "Serum",
-        skinType: skinType || "All skins",
-      },
+      data: productData,
+      include: { variants: true }
     });
 
     return NextResponse.json(newProduct);

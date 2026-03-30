@@ -9,6 +9,8 @@ type CartItem = {
   name: string;
   quantity: number;
   price: number;
+  variantId?: number;
+  variantName?: string;
 };
 
 // Extracted LINE Notify function (External Call - Non-blocking)
@@ -22,7 +24,7 @@ async function sendLineNotify(orderParams: any) {
 
     const productList = cart
       .map(
-        (item: CartItem) => `• ${item.name}
+        (item: CartItem) => `• ${item.name}${item.variantName ? ` (${item.variantName})` : ''}
   จำนวน: ${item.quantity}
   ราคา: ฿${item.price.toFixed(2)}
   รวม: ฿${(item.price * item.quantity).toFixed(2)}`
@@ -124,20 +126,33 @@ export async function POST(req: Request) {
       // and let the subsequent decrement operation throw if constraint violated.
       for (const item of cart) {
         const product = await tx.product.findUnique({
-          where: { id: parseInt(item.id) }
+          where: { id: parseInt(item.id.toString()) }
         });
 
         if (!product || !product.isActive) {
           throw new Error(`Product ${item.name} is unavailable.`);
         }
-        if (product.stock < item.quantity) {
-          throw new Error(`Not enough stock for ${product.name}. Only ${product.stock} left.`);
+
+        let variantDb = null;
+        if (item.variantId) {
+          variantDb = await tx.productVariant.findUnique({
+            where: { id: item.variantId }
+          });
+          if (!variantDb || variantDb.productId !== product.id) {
+            throw new Error(`Variant for ${item.name} is invalid.`);
+          }
+        }
+
+        const stockLimit = variantDb ? variantDb.stock : product.stock;
+        if (stockLimit < item.quantity) {
+          throw new Error(`Not enough stock for ${item.name}${variantDb ? ' (' + variantDb.name + ')' : ''}. Only ${stockLimit} left.`);
         }
 
         // Securely determine the correct price (Flash Sale vs Normal)
-        let finalItemPrice = product.price;
+        let finalItemPrice = variantDb ? variantDb.price : product.price;
         const now = new Date();
         if (
+          !variantDb &&
           product.flashSalePrice && 
           product.flashSaleStart && 
           product.flashSaleEnd && 
@@ -152,7 +167,8 @@ export async function POST(req: Request) {
         
         secureCartItems.push({
           product_id: product.id,
-          product_name: product.name,
+          variant_id: variantDb ? variantDb.id : null,
+          product_name: variantDb ? `${product.name} - ${variantDb.name}` : product.name,
           quantity: item.quantity,
           price: finalItemPrice
         });
@@ -247,10 +263,17 @@ export async function POST(req: Request) {
       // --- D. Deduct Stock ---
       // This is atomic and handles race conditions along with the earlier check
       for (const item of cart) {
-        await tx.product.update({
-          where: { id: parseInt(item.id) },
-          data: { stock: { decrement: item.quantity } }
-        });
+        if (item.variantId) {
+          await tx.productVariant.update({
+            where: { id: item.variantId },
+            data: { stock: { decrement: item.quantity } }
+          });
+        } else {
+          await tx.product.update({
+            where: { id: parseInt(item.id.toString()) },
+            data: { stock: { decrement: item.quantity } }
+          });
+        }
       }
 
       // --- E. Record Discount Usage ---

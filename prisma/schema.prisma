@@ -111,6 +111,7 @@ model OrderItem {
   id           String @id @default(dbgenerated("gen_random_uuid()"))
   order_id     String
   product_id   Int
+  variant_id   Int?   
   product_name String
   quantity     Int
   price        Float
@@ -153,8 +154,21 @@ model Product {
 
   wishlist       Wishlist[]
   reviews        ProductReview[]
+  variants       ProductVariant[]
 
   @@map("products")
+}
+
+model ProductVariant {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  name        String
+  price       Float
+  stock       Int      @default(0)
+  
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_variants")
 }
 
 model DiscountUsage {
