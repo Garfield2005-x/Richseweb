@@ -45,7 +45,8 @@ export async function GET(
           orderBy: {
             createdAt: "desc"
           }
-        }
+        },
+        accounts: { select: { provider: true } }
       }
     });
 
@@ -70,6 +71,7 @@ export async function GET(
       orders: customer.orders,
       wishlist: customer.wishlist,
       loginDevices: customer.loginDevices,
+      accounts: customer.accounts,
       createdAt: customer.emailVerified // A proxy for creation date since base User doesn't have it natively unless using next-auth custom adapters
     });
 

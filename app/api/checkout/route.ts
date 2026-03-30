@@ -106,8 +106,23 @@ export async function POST(req: Request) {
         ? `${shippingInfo.address}, ${shippingInfo.country}`
         : shippingInfo.address;
 
-    const shippingCost = shippingMethod === "Cash on Delivery (+$30 Fee)" ? 30 : 0;
+    let shippingCost = shippingMethod === "Cash on Delivery (+$30 Fee)" ? 30 : 0;
     const cleanPhone = shippingInfo.phone.trim();
+
+    // Check Automation Rule: First Order Free Shipping
+    const rule = await prisma.siteSetting.findUnique({
+       where: { key: "auto_free_shipping_first_order" }
+    });
+    
+    if (rule?.value === "true" && cleanPhone) {
+       const prevOrders = await prisma.order.count({
+          where: { phone: cleanPhone }
+       });
+       if (prevOrders === 0) {
+          shippingCost = 0; // Waive shipping fee
+       }
+    }
+
     const cleanCode = discountCode ? discountCode.trim().toUpperCase() : null;
 
     // 2. Start Database Transaction

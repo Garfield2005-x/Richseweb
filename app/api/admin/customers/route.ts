@@ -31,7 +31,8 @@ export async function GET() {
         subdistrict: true,
         postal_code: true,
         points: true,
-        image: true
+        image: true,
+        accounts: { select: { provider: true } }
       },
       orderBy: {
         role: "asc" // Admins first

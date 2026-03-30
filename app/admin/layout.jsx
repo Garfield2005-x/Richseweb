@@ -72,6 +72,22 @@ export default async function AdminLayout({ children }) {
             </Link>
 
             <Link
+              href="/admin/subscribers"
+              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+            >
+              <span className="material-symbols-outlined notranslate">mail</span>
+              <span className="font-medium">Subscribers</span>
+            </Link>
+
+            <Link
+              href="/admin/marketing"
+              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+            >
+              <span className="material-symbols-outlined notranslate text-[#c3a2ab]">campaign</span>
+              <span className="font-medium text-[#c3a2ab]">Marketing</span>
+            </Link>
+
+            <Link
               href="/admin/campanet"
               className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
             >
@@ -101,6 +117,14 @@ export default async function AdminLayout({ children }) {
             >
               <span className="material-symbols-outlined text-orange-500">bolt</span>
               <span className="font-medium">Flash Sale</span>
+            </Link>
+
+            <Link
+              href="/admin/automations"
+              className="flex items-center gap-3 px-4 py-3 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-colors font-bold"
+            >
+              <span className="material-symbols-outlined notranslate">magic_button</span>
+              <span className="font-bold">Automations</span>
             </Link>
 
             <Link

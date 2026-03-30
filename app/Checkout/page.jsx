@@ -45,6 +45,8 @@ export default function Checkout() {
   const [shippingCountry, setShippingCountry] = useState("Thailand")
   const [availablePoints, setAvailablePoints] = useState(0)
   const [pointsToUse, setPointsToUse] = useState("")
+  const [shippingCost, setShippingCost] = useState(30)
+  const [isFreeShippingPromo, setIsFreeShippingPromo] = useState(false)
   const router = useRouter()
   const { cart, clearCart } = useCart()
   const tax = 0
@@ -61,6 +63,33 @@ export default function Checkout() {
         .catch(err => console.error("Error fetching points:", err))
     }
   }, [status, router])
+
+  useEffect(() => {
+    const baseShipping = shipping === "Cash on Delivery (+$30 Fee)" ? 30 : 0;
+    
+    if (shippingInfo.phone && shippingInfo.phone.length >= 9) {
+      const timer = setTimeout(async () => {
+        try {
+          const res = await fetch("/api/checkout/evaluate-shipping", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phone: shippingInfo.phone })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setShippingCost(data.shippingCost);
+            setIsFreeShippingPromo(data.isFreeShippingApplied || false);
+          }
+        } catch (e) {
+          setShippingCost(baseShipping);
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    } else {
+      setShippingCost(baseShipping);
+      setIsFreeShippingPromo(false);
+    }
+  }, [shippingInfo.phone, shipping]);
 
   if (status === "loading") {
     return (
@@ -91,7 +120,6 @@ export default function Checkout() {
   }
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const shippingCost = shipping === "Cash on Delivery (+$30 Fee)" ? 30 : 0
   const totalBeforeDiscount = subtotal + shippingCost
   const parsedPoints = Math.min(Number(pointsToUse) || 0, availablePoints, totalBeforeDiscount - discountAmount);
   const pointsDiscountAmount = parsedPoints; 
@@ -364,7 +392,9 @@ export default function Checkout() {
                            <p className="text-xs text-gray-400 mt-1">{method.desc}</p>
                         </div>
                      </div>
-                     <span className="text-sm font-bold text-gray-900">{method.price}</span>
+                     <span className="text-sm font-bold text-gray-900">
+                        {isFreeShippingPromo ? <span className="text-green-500 uppercase text-xs tracking-widest">Free</span> : method.price}
+                     </span>
                    </label>
                  ))}
               </div>
@@ -481,8 +511,12 @@ export default function Checkout() {
                          <span className="text-gray-900 font-bold">฿{subtotal.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center text-sm">
-                         <span className="text-gray-400 font-medium">Shipping Fee</span>
-                         <span className="text-gray-900 font-bold">{shippingCost > 0 ? `฿${shippingCost}` : "Free"}</span>
+                         <span className="text-gray-400 font-medium">Shipping Fee
+                            {isFreeShippingPromo && <span className="ml-2 bg-green-50 text-green-600 border border-green-100 px-1.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest">1st Order Free</span>}
+                         </span>
+                         <span className={isFreeShippingPromo ? "text-green-500 font-bold uppercase tracking-widest textxs" : "text-gray-900 font-bold"}>
+                            {shippingCost === 0 ? "Free" : `฿${shippingCost}`}
+                         </span>
                       </div>
                       {tax > 0 && (
                         <div className="flex justify-between items-center text-sm">

@@ -38,7 +38,8 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
         create: variants.map((v: any) => ({
           name: v.name,
           price: Number(v.price),
-          stock: Number(v.stock) || 0
+          stock: Number(v.stock) || 0,
+          image: v.image || null
         }))
       };
     }

@@ -165,6 +165,7 @@ model ProductVariant {
   name        String
   price       Float
   stock       Int      @default(0)
+  image       String?
   
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 

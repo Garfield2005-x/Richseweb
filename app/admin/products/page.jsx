@@ -102,7 +102,7 @@ export default function AdminProducts() {
   const handleAddVariant = () => {
     setFormData({
       ...formData,
-      variants: [...formData.variants, { name: "", price: "", stock: "" }]
+      variants: [...formData.variants, { name: "", price: "", stock: "", image: "" }]
     });
   };
 
@@ -403,6 +403,16 @@ export default function AdminProducts() {
                               onChange={(e) => handleVariantChange(index, "stock", e.target.value)}
                               className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
                               placeholder="0"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <label className="block text-[10px] uppercase font-bold text-gray-400 mb-1">Image URL</label>
+                            <input
+                              type="text"
+                              value={variant.image || ""}
+                              onChange={(e) => handleVariantChange(index, "image", e.target.value)}
+                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
+                              placeholder="e.g. /size15.png"
                             />
                           </div>
                           <button

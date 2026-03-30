@@ -42,8 +42,7 @@ export default function ProductDetailPage(props) {
           const data = await res.json();
           setProduct(data);
           if (data.variants && data.variants.length > 0) {
-            const firstAvailable = data.variants.find(v => v.stock > 0) || data.variants[0];
-            setSelectedVariant(firstAvailable);
+            setSelectedVariant(null); // Force user to explicitly select a size to see its specific price/image
           }
         } else {
           setProduct(null);
@@ -138,7 +137,7 @@ export default function ProductDetailPage(props) {
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                 data-alt={product.name}
                 style={{
-                  backgroundImage: `url('${product.image || "/G11.png"}')`,
+                  backgroundImage: `url('${selectedVariant?.image || product.image || "/G11.png"}')`,
                 }}
               />
             </div>
@@ -179,9 +178,17 @@ export default function ProductDetailPage(props) {
                     <CountdownTimer targetDate={product.flashSaleEnd} />
                   </div>
                 ) : (
-                  <span className="text-3xl font-light text-[#161314] dark:text-white">
-                    ฿{currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    {product.variants?.length > 0 && !selectedVariant && (
+                      <span className="text-base text-gray-500 font-medium">Starting from</span>
+                    )}
+                    <span className="text-3xl font-light text-[#161314] dark:text-white">
+                      ฿{product.variants?.length > 0 && !selectedVariant 
+                          ? Math.min(...product.variants.map(v => v.price)).toLocaleString(undefined, { minimumFractionDigits: 2 })
+                          : currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })
+                       }
+                    </span>
+                  </div>
                 )}
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {currentStock > 0 ? "In Stock" : "Out of Stock"}
@@ -316,100 +323,8 @@ export default function ProductDetailPage(props) {
           </div>
         </div>
 
-        <div className="mt-32 space-y-32">
-          <section className="landing-section">
-            <div className="text-center mb-16">
-              <span className="text-xs uppercase tracking-[0.2em] text-[#c3a2ab] font-bold mb-3 block">
-                Purity & Science
-              </span>
-              <h3 className="text-4xl font-display mb-4">Luminous Ingredients</h3>
-              <p className="text-gray-500 max-w-lg mx-auto">
-                Sourced from the heart of the French Alps, refined with modern science to ensure visible results without irritation.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
-                <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <span className="material-symbols-outlined notranslate text-[#c3a2ab] text-4xl">
-                    water_drop
-                  </span>
-                </div>
-                <h4 className="font-display text-2xl mb-4">Balanced Hydration</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                  Thoughtfully developed to support skin hydration and everyday comfort, helping maintain a soft, smooth, and refreshed-looking complexion.
-                </p>
-              </div>
-              <div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
-                <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <span className="material-symbols-outlined notranslate text-[#c3a2ab] text-4xl">
-                    shutter_speed
-                  </span>
-                </div>
-                <h4 className="font-display text-2xl mb-4">Refined Renewal</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                  A carefully balanced approach to skincare designed to support smoother, healthier-looking skin while respecting the skin’s natural balance.
-                </p>
-              </div>
-              <div className="bg-white dark:bg-gray-900 p-10 rounded-2xl border border-gray-100 dark:border-gray-800 text-center hover:shadow-2xl transition-all duration-500">
-                <div className="size-20 bg-[#c3a2ab]/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <span className="material-symbols-outlined notranslate text-[#c3a2ab] text-4xl">
-                    psychology_alt
-                  </span>
-                </div>
-                <h4 className="font-display text-2xl mb-4">Skin Harmony</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                  Formulated with attention to skin harmony, helping maintain a calm, balanced, and naturally radiant appearance.
-                </p>
-              </div>
-            </div>
-          </section>
-          
-          <section className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center bg-[#fdf2f4] dark:bg-primary/5 rounded-[3rem] p-12 lg:p-24 overflow-hidden relative landing-section">
-            <div className="relative z-10">
-              <span className="text-xs uppercase tracking-[0.2em] text-primary font-bold mb-4 block">
-                Application
-              </span>
-              <h3 className="text-4xl font-display mb-10">The Daily Ritual</h3>
-              <div className="space-y-10">
-                <div className="flex gap-8 items-start">
-                  <span className="text-5xl font-display text-primary/20 leading-none">01</span>
-                  <div>
-                    <h5 className="font-bold text-lg mb-2">Treat</h5>
-                    <p className="text-gray-600 dark:text-gray-400">
-                      Apply Richse Milk Hya Serum (Cellular renewal formula) with 2–3 drops onto face and neck to deeply hydrate and support skin renewal.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-8 items-start">
-                  <span className="text-5xl font-display text-primary/20 leading-none">02</span>
-                  <div>
-                    <h5 className="font-bold text-lg mb-2">Moisturize</h5>
-                    <p className="text-gray-600 dark:text-gray-400">
-                      Follow with Richse Moist (Moisturizer) to balance skin and lock in hydration for long-lasting comfort.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-8 items-start">
-                  <span className="text-5xl font-display text-primary/20 leading-none">03</span>
-                  <div>
-                    <h5 className="font-bold text-lg mb-2">Repair & Glow</h5>
-                    <p className="text-gray-600 dark:text-gray-400">
-                      Finish your routine with Richse Night Cream for intensive brightening and lifting while you sleep. Use Richse Gold Mask as a special treatment to boost 24-hour moisture.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="aspect-square bg-cover bg-center rounded-2xl shadow-2xl rotate-2 border-12 border-white dark:border-gray-800"
-              data-alt="Close up of serum being massaged into skin"
-              style={{
-                backgroundImage:
-                  "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCoRUddNASEYEYeCM3lxd_TgP7r3yuKZ4a9XpwkqwoF3YsLcrqY1N-IVB_FsaX7_W_7hVObZ74jUDYLf3Bg-RbTf4Ac2ZIYh2Pxka9lcitvfJlfhfqPXZyCg8aoGrNlXOjM7gqX5FxBqcFp5-MY_LXWZ_QdP8D--SqqKy0P-ucfYb4fVXo_cUoXJghEkLhITSMryHLHXYTThumSkmya7To-y5iba4GYye9vuijR7-Xvz0w8JRF8-2paJwG6VKmoxP4Fd8XMdW0MFhA')",
-              }}
-            />
-          </section>
-
+        <div className="mt-16 sm:mt-32 space-y-16 sm:space-y-32">
+          {reviews.length > 0 && (
           <section className="landing-section">
             <div className="flex flex-col lg:flex-row gap-16 p-12 lg:p-16 bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-xl shadow-primary/5">
               <div className="flex flex-col gap-6 lg:w-1/3">
@@ -468,6 +383,7 @@ export default function ProductDetailPage(props) {
               </div>
             </div>
           </section>
+          )}
         </div>
       </main>
 
