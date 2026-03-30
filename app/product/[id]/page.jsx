@@ -10,6 +10,35 @@ import { useCart } from "@/context/CartContext";
 import Link from "next/link";
 import CountdownTimer from "@/app/components/CountdownTimer";
 
+const AccordionItem = ({ title, defaultOpen = false, children }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+  return (
+    <div className="border-b border-gray-100 dark:border-gray-800">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex justify-between items-center py-5 text-left focus:outline-none focus:ring-none group hover:bg-[#faf9f8] dark:hover:bg-gray-800/50 px-2 -mx-2 rounded-xl transition-all"
+      >
+        <span className="font-display font-medium text-lg tracking-wide text-[#161314] dark:text-white group-hover:text-[#c3a2ab] transition-colors">
+          {title}
+        </span>
+        <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-800 group-hover:bg-[#f3edf0] transition-colors text-[#161314] dark:text-gray-200">
+          {/* Horizontal line */}
+          <span className="absolute w-[14px] h-[1.5px] bg-current rounded-full transition-transform duration-300"></span>
+          {/* Vertical line - hidden when open */}
+          <span className={`absolute w-[1.5px] h-[14px] bg-current rounded-full transition-transform duration-300 ${isOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"}`}></span>
+        </div>
+      </button>
+      <div 
+        className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] px-2 ${isOpen ? "max-h-[800px] opacity-100 pb-6" : "max-h-0 opacity-0 pb-0"}`}
+      >
+        <div className="text-gray-600 dark:text-gray-400 leading-relaxed font-sans text-base whitespace-pre-wrap">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function ProductDetailPage(props) {
   const params = use(props.params);
   const id = params.id;
@@ -163,8 +192,29 @@ export default function ProductDetailPage(props) {
                     </span>
                   </div>
                 </div>
+
+                {/* --- Product Analytics & FOMO Badges --- */}
+                <div className="flex flex-wrap items-center gap-3 mt-4">
+                  {product.totalSold > 0 && (
+                    <div className="flex items-center gap-1.5 bg-red-50 text-red-600 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide">
+                      <span className="material-symbols-outlined notranslate text-sm">local_fire_department</span>
+                      ขายไปแล้ว {product.totalSold.toLocaleString()} ชิ้น
+                    </div>
+                  )}
+                  <div className="flex items-center gap-1.5 bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide">
+                    <span className="material-symbols-outlined notranslate text-sm">visibility</span>
+                    คนกำลังดูสินค้านี้ {product.viewers || 12} คน
+                  </div>
+                  {currentStock > 0 && currentStock <= 10 && (
+                     <div className="flex items-center gap-1.5 bg-amber-50 text-amber-600 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide animate-pulse">
+                        <span className="material-symbols-outlined notranslate text-sm">warning</span>
+                        ด่วน! สินค้าเหลือเพียง {currentStock} ชิ้นสุดท้าย
+                     </div>
+                  )}
+                </div>
+
               </div>
-              <div className="flex items-baseline gap-4">
+              <div className="flex items-baseline gap-4 mt-2">
                 {isFlashSaleActive ? (
                   <div className="flex flex-col gap-2">
                     <div className="flex items-baseline gap-3">
@@ -194,10 +244,56 @@ export default function ProductDetailPage(props) {
                   {currentStock > 0 ? "In Stock" : "Out of Stock"}
                 </span>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-sans text-lg whitespace-pre-wrap">
-                {product.description ||
-                  "RICHSE is a skincare brand dedicated to enhancing natural beauty through thoughtful care and refined formulas. Focused on quality, balance, and skin wellness, RICHSE helps support healthier-looking, radiant skin as part of a modern self-care routine."}
-              </p>
+              {/* Product Information Accordion */}
+              <div className="mt-8 space-y-1">
+                 <AccordionItem title="รายละเอียดติตราสินค้า (Description)" defaultOpen={true}>
+                    {product.description || "RICHSE is a skincare brand dedicated to enhancing natural beauty through thoughtful care and refined formulas. Focused on quality, balance, and skin wellness, RICHSE helps support healthier-looking, radiant skin as part of a modern self-care routine."}
+                 </AccordionItem>
+                 
+                 <AccordionItem title="การดูแลปัญหาผิว (Skin Type)">
+                    <div className="bg-[#fcfaf9] dark:bg-gray-800/50 p-4 rounded-2xl border border-[#f3edf0] dark:border-gray-700 mb-5 inline-flex items-start gap-4 shadow-sm w-full">
+                       <span className="material-symbols-outlined text-[#c3a2ab] text-3xl">verified</span>
+                       <div>
+                          <strong className="block text-[#161314] dark:text-white mb-1">เหมาะสำหรับ</strong>
+                          <span className="text-[#161314] dark:text-white font-medium">{product.skinType || "ทุกสภาพผิว (All Skin Types)"}</span>
+                       </div>
+                    </div>
+                    <strong>✨ วิธีการใช้งาน:</strong><br/>
+                    {product.howToUse || "หยดเนื้อผลิตภัณฑ์ลงบนฝ่ามือ เล็กน้อย จากนั้นค่อยๆ กดประคบลงบนผิวหน้าและลำคออย่างนุ่มนวล แนะนำให้ใช้เป็นประจำทุกเช้าและก่อนนอน"}
+                 </AccordionItem>
+
+                 <AccordionItem title="ข้อมูลจำเพาะ (Product Info)">
+                    <ul className="space-y-5 list-none py-2 m-0">
+                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-colors">
+                          <span className="material-symbols-outlined text-gray-400 text-2xl">category</span>
+                          <div>
+                             <strong className="block text-[#161314] dark:text-white text-sm mb-0.5 uppercase tracking-widest">Category</strong>
+                             <span className="text-gray-600">{product.category || "สกินแคร์ / ความงาม"}</span>
+                          </div>
+                       </li>
+                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-colors">
+                          <span className="material-symbols-outlined text-emerald-500 text-2xl">eco</span>
+                          <div>
+                             <strong className="block text-[#161314] dark:text-white text-sm mb-0.5 uppercase tracking-widest">Clean Beauty Paradigm</strong>
+                             <span className="text-gray-600">100% Vegan & Cruelty-Free ปราศจากการทารุณกรรมสัตว์ ปราศจากพาราเบน ซิลิโคน และสารแต่งกลิ่นสังเคราะห์</span>
+                          </div>
+                       </li>
+                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-colors">
+                          <span className="material-symbols-outlined text-blue-400 text-2xl">health_and_safety</span>
+                          <div>
+                             <strong className="block text-[#161314] dark:text-white text-sm mb-0.5 uppercase tracking-widest">Dermatologically Endorsed</strong>
+                             <span className="text-gray-600">Formula พัฒนาและผ่านการทดสอบโดยผู้เชี่ยวชาญด้านผิวหนัง อ่อนโยนแต่ให้ผลลัพธ์สูง</span>
+                          </div>
+                       </li>
+                    </ul>
+                 </AccordionItem>
+                 
+                 <AccordionItem title="ส่วนผสมหลัก (Key Ingredients)">
+                    <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-5 rounded-xl shadow-inner text-sm text-gray-600 dark:text-gray-400 leading-loose">
+                       {product.ingredients || "Water, Glycerin, Premium Extracts. (กรุณาสอบถามข้อมูลส่วนผสมโดยละเอียดสำหรับสินค้าล็อตปัจจุบันจากแอดมิน)"}
+                    </div>
+                 </AccordionItem>
+              </div>
               <div className="space-y-4 pt-6 border-t border-gray-100 dark:border-gray-800">
                 {product.variants?.length > 0 && (
                   <div className="mb-6">

@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     // if (user?.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const body = await req.json();
-    const { name, price, image, description, stock, isActive, flashSalePrice, flashSaleStart, flashSaleEnd, category, skinType, variants } = body;
+    const { name, price, image, description, stock, isActive, flashSalePrice, flashSaleStart, flashSaleEnd, category, skinType, howToUse, ingredients, variants } = body;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const productData: any = {
@@ -42,6 +42,8 @@ export async function POST(req: Request) {
       flashSaleEnd: flashSaleEnd && flashSaleEnd !== "" ? new Date(flashSaleEnd) : null,
       category: category || "Serum",
       skinType: skinType || "All skins",
+      howToUse: howToUse || null,
+      ingredients: ingredients || null,
     };
 
     if (variants && Array.isArray(variants) && variants.length > 0) {

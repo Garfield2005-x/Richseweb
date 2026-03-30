@@ -120,20 +120,20 @@ export default function Home() {
             >
               <div className="space-y-4">
                 <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-xs">
-                  New Collection: L éclat
+                  The Pinnacle of Skin Rejuvenation
                 </motion.span>
                 <motion.h1 variants={fadeInUp} className="font-display text-5xl md:text-7xl font-bold leading-[1.1] text-[#161314] dark:text-white">
                   Radiance <br />
                   <span className="text-[#C9A961] font-display italic font-medium">Refined.</span>
                 </motion.h1>
                 <motion.p variants={fadeInUp} className="text-lg text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
-                  Thoughtfully crafted skincare that blends refined formulation with a modern approach to skin wellness, designed to support a naturally radiant and healthy-looking complexion.
+                  Thoughtfully crafted skincare blending advanced clinical formulation with a modern approach to skin wellness, designed to support a naturally resilient, glowing, and healthy-looking complexion.
                 </motion.p>
               </div>
 
               <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
                 <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wide hover:opacity-90 transition-all shadow-lg shadow-primary/20" href="/ProductAll">
-                  The Collection
+                  Discover Collection
                 </Link>
                 <Link href="/skin-quiz" className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wide hover:bg-white dark:hover:bg-white/5 transition-all">
                   Take Skin Quiz
@@ -146,7 +146,7 @@ export default function Home() {
                   <div className="size-10 rounded-full border-2 border-white bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDszfLbZT1XnVheqbKqCnnJvupr51auXLy8rZ_dvzHG157egPBmPKxb7WT-_cHGSqLMExoNRLiFIRww8HhXiX_MZq2hpr22pscgo1fzgY0bLrcacqJJCdctMfyb7Z_fWfKnyWY9iVQxSht9YnIFWje2A27e5NfRoqVnj6bJu7yFJxnzFJXV_Ly6A00t9rbXf5YQ9yGBU20jriE_6U0hOl3JGZit5vAmK9WuHAtvMX74FZT_ZiqkT_F3XzPfykhevxTCIZAQEzzU2LA')" }} />
                   <div className="size-10 rounded-full border-2 border-white bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAzAfdMu-3RKvQBQQmbeIFjWUf1wlZXlQhh7P9e4sICbkGiXGKs3s4X_QULfM-xcRQ0PEJ1s8Kytvagkp8RZ9GD7Oj7l1paVsQodOYMyWZTgHLI4r1hQy1w8fbaIYPFXImsAlLUwLPD8qje6En3dZBaZ2_gvJ1oL2YMsNtPn3dkHNRXhaA8AM3lprxZppX0n4fJU4HnljWJVgFF8ozB8oh9aWOng5h-GiZdunpLCqPhFligY32ziY7jDoJ8ftgm-53q8Qj5WObdXnk')" }} />
                 </div>
-                <p className="text-sm font-medium text-gray-500 italic">The most luminous my skin has ever looked. &mdash; Harper&apos;s Bazaar</p>
+                <p className="text-sm font-medium text-gray-500 italic">&quot;The most luminous my skin has ever looked.&quot; &mdash; Beauty Experts</p>
               </motion.div>
             </motion.div>
 
@@ -182,15 +182,15 @@ export default function Home() {
       <section className="py-20 bg-white dark:bg-background-dark/50">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center mb-16 space-y-4">
-            <motion.h2 variants={fadeInUp} className="font-display text-3xl md:text-4xl font-bold">Why Richse</motion.h2>
+            <motion.h2 variants={fadeInUp} className="font-display text-3xl md:text-4xl font-bold">The Philosophy of Richse</motion.h2>
             <motion.div variants={fadeInUp} className="w-16 h-0.5 bg-[#c3a2ab] mx-auto"></motion.div>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {[
-              { icon: "shield_with_heart", title: "Dermatologist Tested", desc: "Developed with professional skincare insight and thoughtfully tested to ensure it is gentle and suitable for everyday use, including sensitive skin." },
-              { icon: "eco", title: "Ethical Beauty", desc: "Created with a mindful approach to beauty, focusing on thoughtful formulation and carefully chosen packaging that reflects a commitment to responsible and refined skincare." },
-              { icon: "auto_awesome", title: "Clinical Results", desc: "Developed with insights from modern skincare research, focusing on formulas designed to support hydration, comfort, and a smoother-looking complexion with consistent use." }
+              { icon: "shield_with_heart", title: "Dermatologist Tested", desc: "Clinically formulated and rigorously tested by dermatology experts. Pure, gentle, and safe for all skin types, including sensitive skin." },
+              { icon: "eco", title: "Clean & Ethical Beauty", desc: "Consciously crafted with 100% Vegan & Cruelty-Free ingredients. Ethical beauty that respects both your skin and the environment." },
+              { icon: "auto_awesome", title: "Proven Clinical Results", desc: "Advanced proprietary formulas delivering visible, transformative results. Restores the skin barrier for lasting strength and radiant clarity." }
             ].map((feature, i) => (
               <motion.div
                 key={i}
@@ -213,7 +213,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-end mb-10">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer}>
             <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-xs">Curated Selection</motion.span>
-            <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold mt-2">Best Sellers</motion.h2>
+            <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold mt-2">The Icons of Richse</motion.h2>
           </motion.div>
           <div className="flex gap-3">
             <button 
@@ -319,10 +319,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 mb-12">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center space-y-4">
             <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-xs">
-              As Seen On
+              Loved By
             </motion.span>
             <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold">
-              TikTok Creators
+              Top Beauty Creators
             </motion.h2>
             <motion.div variants={fadeInUp} className="w-16 h-0.5 bg-[#c3a2ab] mx-auto"></motion.div>
           </motion.div>
@@ -430,15 +430,15 @@ export default function Home() {
       <section className="py-24 bg-white dark:bg-background-dark">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center mb-16">
-            <motion.span variants={fadeInUp} className="text-primary font-bold tracking-widest uppercase text-xs">Community Voices</motion.span>
+            <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-xs">Community Voices</motion.span>
             <motion.h2 variants={fadeInUp} className="font-display text-3xl md:text-4xl font-bold mt-2">Shared Experiences</motion.h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { text: "“ดิฉันประทับใจในมากความอ่อนโยนและประสิทธิภาพที่พิสูจน์ได้จริง ผิวแลดูเรียบเนียนและแข็งแรงขึ้นภายในสองสัปดาห์ นับเป็นผลิตภัณฑ์ที่โดดเด่นอย่างยิ่งค่ะ”", name: "กนกวรรณ ศรีอำไพ", title: "Vogue Contributor", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC0c3DaMxV1mAx2B_8VNuOcVQ89pawk0Z4fBYI1rOC00uDVCHfcEXZG1V-29Lwavf5RGIeEtiFs-YNDJXPxftzTMhBRmyqSrBogpiLDm1gkOGzpK2yDJKtfnt12WjMqeLUAPT4UJlh3HSJXnKXa4B_6lwrSBaLBaVIFxB2xw-4UHXcUdZ4frNI2X-geIKaYo7eetxumNtnLpPMknOWFK8eErg_BSUAOmyc2rHh4ifGOJPrQ_ZGVQPA7yoJv1n_w9SOTohpCcOW2mRM" },
-              { text: "“ผลิตภัณฑ์นี้ให้ผลลัพธ์เชิงประจักษ์ภายในระยะเวลาอันสั้น โดยไม่ก่อให้เกิดการระคายเคืองต่อผิวแพ้ง่าย ถือเป็นอีกมาตรฐานที่น่าชื่นชมในกลุ่มสกินแคร์ระดับสูง”", name: "ธีรภัทร วัฒนศิริ", title: "Skincare Specialist", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAFadPtDcIKL6h9YR-z6iN2Y0Q2-NKdEg6D9JRA0uYotIU6tglfx2MzmFOSUAAwV1A4dmj17g1WS4jf6z93h8sFp8ny-fGMzrG5SHOZNwmwDdxK_Qhg3yVH3_6RJTKFTdJP7MfDc8J4GQltptoVUuFhOLLUyYzWr6Un6GBgJcqFLFtppIz0-z_8Dcdk26F_NMzkBDTPC9_giJraKCnfVohUfpLDyrYCAmHWbKdbpMO7XriaB471Bv6VOhUUP2C3BjaoF7MCZJb3f_E" },
-              { text: "“ในที่สุดก็พบผลิตภัณฑ์ระดับพรีเมียมที่อ่อนโยนต่อผิวบอบบางอย่างแท้จริง เห็นการเปลี่ยนแปลงของผิวอย่างชัดเจนภายในสองสัปดาห์ ประสิทธิภาพน่าประทับใจมากค่ะ”", name: "โสภี จันทร์เพ็ญ", title: "Lifestyle Influencer", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAyqQzej49jQsMHMfWBUzE3zrxHX6wOli8fQCT7Z1G-hZct04vc2qXRHX84sl_OVfjNj8ARr4ifUFWND9RH-oaFcgLlOXdn_g1i5a9M8Nnc--xOelDgAqQb9wHVqgOEFaWzGOIV8TK7SsQhZyFRiZ9Pu_1L1uPZWBMoNlPT2V8J4D2Uo5L_lfueV_fWDy4zwh_h_K1jDlrsVQwOnKz6T7dmGG69pBR7Q5oZSIdLgqioHSVI_M4g7heHOa4EeqNz_fY0tP1dOJxpohw" }
+              { text: "“I'm incredibly impressed by the gentle yet highly effective formulation. My skin felt smoother and stronger within just two weeks. Truly an outstanding luxury product.”", name: "Kanokwan S.", title: "Vogue Contributor", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC0c3DaMxV1mAx2B_8VNuOcVQ89pawk0Z4fBYI1rOC00uDVCHfcEXZG1V-29Lwavf5RGIeEtiFs-YNDJXPxftzTMhBRmyqSrBogpiLDm1gkOGzpK2yDJKtfnt12WjMqeLUAPT4UJlh3HSJXnKXa4B_6lwrSBaLBaVIFxB2xw-4UHXcUdZ4frNI2X-geIKaYo7eetxumNtnLpPMknOWFK8eErg_BSUAOmyc2rHh4ifGOJPrQ_ZGVQPA7yoJv1n_w9SOTohpCcOW2mRM" },
+              { text: "“This delivers visible clinical results in a short period without causing any irritation to sensitive skin. An absolute new benchmark in high-end skincare.”", name: "Teerapat W.", title: "Skincare Specialist", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAFadPtDcIKL6h9YR-z6iN2Y0Q2-NKdEg6D9JRA0uYotIU6tglfx2MzmFOSUAAwV1A4dmj17g1WS4jf6z93h8sFp8ny-fGMzrG5SHOZNwmwDdxK_Qhg3yVH3_6RJTKFTdJP7MfDc8J4GQltptoVUuFhOLLUyYzWr6Un6GBgJcqFLFtppIz0-z_8Dcdk26F_NMzkBDTPC9_giJraKCnfVohUfpLDyrYCAmHWbKdbpMO7XriaB471Bv6VOhUUP2C3BjaoF7MCZJb3f_E" },
+              { text: "“Finally found a premium product that truly respects delicate skin barriers. The transformation is undeniable and long-lasting. Highly recommended.”", name: "Sopee J.", title: "Lifestyle Influencer", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAyqQzej49jQsMHMfWBUzE3zrxHX6wOli8fQCT7Z1G-hZct04vc2qXRHX84sl_OVfjNj8ARr4ifUFWND9RH-oaFcgLlOXdn_g1i5a9M8Nnc--xOelDgAqQb9wHVqgOEFaWzGOIV8TK7SsQhZyFRiZ9Pu_1L1uPZWBMoNlPT2V8J4D2Uo5L_lfueV_fWDy4zwh_h_K1jDlrsVQwOnKz6T7dmGG69pBR7Q5oZSIdLgqioHSVI_M4g7heHOa4EeqNz_fY0tP1dOJxpohw" }
             ].map((quote, i) => (
               <motion.div
                 key={i}
@@ -469,9 +469,9 @@ export default function Home() {
       {/* --- JOIN THE INNER CIRCLE --- */}
       <section className="py-20 bg-[#c3a2ab]/10 border-t border-[#c3a2ab]/20">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="max-w-200 mx-auto px-6 text-center">
-          <motion.h2 variants={fadeInUp} className="font-display text-3xl font-bold mb-4">Join The Inner Circle</motion.h2>
+          <motion.h2 variants={fadeInUp} className="font-display text-3xl font-bold mb-4">Richse Exclusive Club</motion.h2>
           <motion.p variants={fadeInUp} className="text-gray-600 dark:text-gray-400 mb-8">
-            Receive early access to new rituals, exclusive events, and expert skincare advice.
+            Join our inner circle for early access to new rituals, exclusive events, and expert skincare advice.
           </motion.p>
 
           <motion.form variants={fadeInUp} onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4 max-w-lg mx-auto">

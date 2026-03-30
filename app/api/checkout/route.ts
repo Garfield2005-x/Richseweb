@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 
 const prisma = new PrismaClient();
 
@@ -89,9 +91,19 @@ export async function POST(req: Request) {
       shippingMethod, 
       discountCode,
       pointsToUse, 
-      userId,
       isInternational // We pass this from frontend
     } = body;
+
+    // 🚨 SECURE: Never trust the `userId` sent by the client. Always verify via server session!
+    const session = await getServerSession(authOptions);
+    let userId = null;
+    if (session?.user?.email) {
+      const dbUser = await prisma.user.findUnique({
+         where: { email: session.user.email },
+         select: { id: true }
+      });
+      userId = dbUser?.id || null;
+    }
 
     // 1. Validate Input Basics
     if (!cart || cart.length === 0) {

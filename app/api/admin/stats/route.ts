@@ -24,7 +24,10 @@ export async function GET(req: Request) {
     const baseWhere = hasDateFilter ? { created_at: dateFilter } : {};
 
     const totalOrders = await prisma.order.count({
-      where: baseWhere
+      where: {
+        ...baseWhere,
+        status: { not: "CANCELLED" }
+      }
     });
 
     const totalSalesAggr = await prisma.order.aggregate({
@@ -45,8 +48,8 @@ export async function GET(req: Request) {
       where: baseWhere
     });
     
-    // Count all registered users instead as we don't have an email Subscriber model yet
-    const totalSubscribers = await prisma.user.count();
+    // Count actual newsletter subscribers instead of just users
+    const totalSubscribers = await prisma.subscriber.count();
 
     const recentOrders = await prisma.order.findMany({
       where: baseWhere,
@@ -140,29 +143,29 @@ export async function GET(req: Request) {
     
     const validOrderIds = filteredOrders.map(o => o.id);
 
-    const orderItems = await prisma.orderItem.groupBy({
-      by: ['product_id', 'product_name'],
-      where: {
-        order_id: { in: validOrderIds }
-      },
-      _sum: {
-        quantity: true,
-        price: true,
-      },
-      orderBy: {
-        _sum: {
-          quantity: 'desc'
-        }
-      },
-      take: 5,
+    const rawOrderItems = await prisma.orderItem.findMany({
+      where: { order_id: { in: validOrderIds } },
+      select: { product_id: true, product_name: true, quantity: true, price: true }
     });
 
-    const bestSellers = orderItems.map(item => ({
-      id: item.product_id,
-      name: item.product_name,
-      sold: item._sum.quantity || 0,
-      revenue: (item._sum.price || 0) * (item._sum.quantity || 0)
-    }));
+    const bestSellersMap = new Map();
+    for (const item of rawOrderItems) {
+      if (!bestSellersMap.has(item.product_id)) {
+        bestSellersMap.set(item.product_id, {
+          id: item.product_id,
+          name: item.product_name,
+          sold: 0,
+          revenue: 0
+        });
+      }
+      const existing = bestSellersMap.get(item.product_id);
+      existing.sold += item.quantity;
+      existing.revenue += (item.quantity * item.price);
+    }
+
+    const bestSellers = Array.from(bestSellersMap.values())
+      .sort((a, b) => b.sold - a.sold)
+      .slice(0, 5);
 
     return NextResponse.json({
       totalOrders,

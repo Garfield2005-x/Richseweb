@@ -19,6 +19,8 @@ export default function AdminProducts() {
     flashSaleEnd: "",
     category: "Serum",
     skinType: "All skins",
+    howToUse: "",
+    ingredients: "",
     variants: [],
   });
 
@@ -72,6 +74,8 @@ export default function AdminProducts() {
         })() : "",
         category: product.category || "Serum",
         skinType: product.skinType || "All skins",
+        howToUse: product.howToUse || "",
+        ingredients: product.ingredients || "",
         variants: product.variants || [],
       });
     } else {
@@ -88,6 +92,8 @@ export default function AdminProducts() {
         flashSaleEnd: "",
         category: "Serum",
         skinType: "All skins",
+        howToUse: "",
+        ingredients: "",
         variants: [],
       });
     }
@@ -517,9 +523,30 @@ export default function AdminProducts() {
                     required
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] min-h-[100px]"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] min-h-[90px]"
                     placeholder="Short description or tagline for the product..."
                   />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">How to Use (Instructions)</label>
+                    <textarea
+                      value={formData.howToUse}
+                      onChange={(e) => setFormData({ ...formData, howToUse: e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] min-h-[90px]"
+                      placeholder="e.g. Apply 2-3 drops morning and night..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Ingredients</label>
+                    <textarea
+                      value={formData.ingredients}
+                      onChange={(e) => setFormData({ ...formData, ingredients: e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] min-h-[90px]"
+                      placeholder="e.g. Water, Glycerin, Niacinamide..."
+                    />
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-3">
