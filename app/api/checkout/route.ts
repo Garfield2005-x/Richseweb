@@ -110,14 +110,21 @@ export async function POST(req: Request) {
     const cleanPhone = shippingInfo.phone.trim();
     let isFirstOrderFree = false;
 
-    // Check Automation Rule: First Order Free Shipping
+    // Check Automation Rule: First Order Free Shipping (Members Only)
     const rule = await prisma.siteSetting.findUnique({
        where: { key: "auto_free_shipping_first_order" }
     });
     
-    if (rule?.value === "true" && cleanPhone) {
+    // Only apply if user is logged in (userId exists) and phone matches
+    if (rule?.value === "true" && cleanPhone && userId) {
+       // Check if they have ordered before (by phone or user ID)
        const prevOrders = await prisma.order.count({
-          where: { phone: cleanPhone }
+          where: { 
+             OR: [
+                { phone: cleanPhone },
+                { userId: userId }
+             ]
+          }
        });
        if (prevOrders === 0) {
           shippingCost = 0; // Waive shipping fee

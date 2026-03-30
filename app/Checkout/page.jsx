@@ -72,7 +72,7 @@ export default function Checkout() {
           const res = await fetch("/api/checkout/evaluate-shipping", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phone: shippingInfo.phone })
+            body: JSON.stringify({ phone: shippingInfo.phone, shippingMethod: shipping })
           });
           if (res.ok) {
             const data = await res.json();
@@ -518,7 +518,7 @@ export default function Checkout() {
                          </span>
                       </div>
                       {isFreeShippingPromo && (
-                         <div className="text-[10px] text-gray-400 text-right mt-1">* สิทธิ์ส่งฟรีสำหรับลูกค้าระบบตรวจสอบจากประวัติเบอร์โทรศัพท์เท่านั้น</div>
+                         <div className="text-[10px] text-gray-400 text-right mt-1">* สิทธิ์ส่งฟรีสำหรับสมาชิกล็อกอินและเป็นคำสั่งซื้อครั้งแรกเท่านั้น</div>
                       )}
                       {tax > 0 && (
                         <div className="flex justify-between items-center text-sm">
