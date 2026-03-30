@@ -30,7 +30,7 @@ export async function GET() {
     }));
 
     return NextResponse.json(enrichedSubscribers);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Fetch Subscribers Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
@@ -46,7 +46,7 @@ export async function DELETE(req: Request) {
     });
 
     return NextResponse.json({ success: true, message: "Subscriber removed securely" });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Delete Subscriber Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }

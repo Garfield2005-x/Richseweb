@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Mail, Send, AlertCircle, Info, Users, FlaskConical } from "lucide-react";
+import { Mail, Send, AlertCircle, Users, FlaskConical } from "lucide-react";
 
 export default function MarketingBroadcast() {
   const [subject, setSubject] = useState("");

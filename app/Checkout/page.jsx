@@ -12,7 +12,6 @@ import thaiAddress from "@/data/sub_district_with_district_and_province.json";
 import { 
   ShieldCheck, 
   Truck, 
-  CreditCard, 
   MapPin, 
   ChevronRight, 
   Package, 
@@ -80,7 +79,7 @@ export default function Checkout() {
             setShippingCost(data.shippingCost);
             setIsFreeShippingPromo(data.isFreeShippingApplied || false);
           }
-        } catch (e) {
+        } catch (_e) {
           setShippingCost(baseShipping);
         }
       }, 500);

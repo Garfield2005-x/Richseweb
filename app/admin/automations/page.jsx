@@ -2,12 +2,11 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Zap, Truck, CheckCircle2, Save, Activity } from "lucide-react";
+import { Zap, Truck, CheckCircle2, Activity } from "lucide-react";
 
 export default function AutomationsDashboard() {
   const [settings, setSettings] = useState({});
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchSettings();
@@ -20,7 +19,7 @@ export default function AutomationsDashboard() {
         const data = await res.json();
         setSettings(data);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to load automation rules.");
     } finally {
       setLoading(false);
@@ -43,7 +42,7 @@ export default function AutomationsDashboard() {
       
       if (!res.ok) throw new Error("Failed to save");
       toast.success(newValue ? "Rule activated" : "Rule deactivated");
-    } catch (error) {
+    } catch (_error) {
       // Revert on failure
       setSettings(prev => ({ ...prev, [key]: currentValue ? "true" : "false" }));
       toast.error("Failed to update rule");

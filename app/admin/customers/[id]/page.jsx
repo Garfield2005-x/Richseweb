@@ -369,7 +369,7 @@ export default function CustomerDetail(props) {
                 ) : (
                     <div className="py-12 flex flex-col items-center justify-center text-center">
                        <Heart className="w-8 h-8 text-gray-200 mb-3"/>
-                       <p className="text-gray-400 text-sm">Customer hasn't saved any items to their wishlist.</p>
+                       <p className="text-gray-400 text-sm">Customer hasn&apos;t saved any items to their wishlist.</p>
                     </div>
                 )}
              </div>
