@@ -45,28 +45,28 @@ function Navbar() {
             <nav className="hidden lg:flex items-center gap-10">
               <Link
                 href="/ProductAll"
-                className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
+                className="text-[14px] font-medium uppercase tracking-[0.1em] text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
               >
                 The Collection
                 <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-full"></span>
               </Link>
               <Link
                 href="/skin-quiz"
-                className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
+                className="text-[14px] font-medium uppercase tracking-[0.1em] text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
               >
                 Skin Quiz
                 <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-full"></span>
               </Link>
               <Link
                 href="/Contact"
-                className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
+                className="text-[14px] font-medium uppercase tracking-[0.1em] text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
               >
                 Contact
                 <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-full"></span>
               </Link>
               <Link
                 href="/rewards"
-                className="text-[11px] font-medium uppercase tracking-[0.2em] text-indigo-600 hover:text-[#c3a2ab] transition-colors duration-500 relative group flex items-center gap-1"
+                className="text-[14px] font-medium uppercase tracking-[0.1em] text-indigo-600 hover:text-[#c3a2ab] transition-colors duration-500 relative group flex items-center gap-1"
               >
                 <span>REWARDS 🎁</span>
                 <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-full"></span>
@@ -86,7 +86,7 @@ function Navbar() {
             <div className="h-12 md:h-14 max-w-[80px] flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity duration-500">
               <img src="/logo.png" alt="Richse Logo" className="h-full w-auto object-contain"/>
             </div>
-            <span className="font-serif text-3xl md:text-3xl text-[#161314] tracking-wider font-light leading-none">
+            <span className="font-display font-bold text-3xl md:text-3xl text-[#161314] tracking-wider leading-none">
               RICHSE
             </span>
           </Link>
@@ -214,7 +214,7 @@ function Navbar() {
 
                           <Link
                             href="/Checkout"
-                            className="bg-[#161314] text-white block text-center py-4 rounded-full text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-[#c3a2ab] transition-colors duration-500"
+                            className="bg-[#161314] text-white block text-center py-4 rounded-full text-[13px] uppercase tracking-[0.15em] font-medium hover:bg-[#c3a2ab] transition-colors duration-500"
                             onClick={() => setOpen(false)}
                           >
                             Proceed to Checkout

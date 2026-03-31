@@ -18,6 +18,12 @@ export default function AdminDiscounts() {
   });
   const [editMode, setEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [isUsageModalOpen, setIsUsageModalOpen] = useState(false);
+  const [usageHistory, setUsageHistory] = useState([]);
+  const [selectedCode, setSelectedCode] = useState("");
+  const [selectedDiscountId, setSelectedDiscountId] = useState(null);
+  const [fetchingUsage, setFetchingUsage] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   async function fetchDiscounts() {
     try {
@@ -133,6 +139,72 @@ export default function AdminDiscounts() {
     }
   };
 
+  const handleFetchUsage = async (discount) => {
+    try {
+      setFetchingUsage(true);
+      setSelectedCode(discount.code);
+      setSelectedDiscountId(discount.id);
+      setIsUsageModalOpen(true);
+      setUsageHistory([]);
+      const res = await fetch(`/api/admin/discounts/${discount.id}/usage`);
+      if (res.ok) {
+        const data = await res.json();
+        setUsageHistory(data);
+      }
+    } catch (error) {
+       console.error("Failed to fetch usage history", error);
+    } finally {
+       setFetchingUsage(false);
+    }
+  };
+
+  const handleDeleteUsage = async (usageId, discountId) => {
+    if (!confirm("Are you sure you want to delete this usage record? This will allow the user to use the code again.")) return;
+    
+    try {
+      const res = await fetch(`/api/admin/discounts/${discountId}/usage?usageId=${usageId}`, {
+        method: "DELETE"
+      });
+      if (res.ok) {
+        // 1. Refresh the local usage list (modal)
+        setUsageHistory(usageHistory.filter(u => u.id !== usageId));
+        // 2. Decrement the count in the main table
+        setDiscounts(discounts.map(d => d.id === discountId 
+          ? { ...d, current_usage: Math.max(0, d.current_usage - 1) } 
+          : d
+        ));
+      } else {
+        alert("Failed to delete usage record");
+      }
+    } catch (error) {
+       console.error("Error deleting usage", error);
+       alert("Error deleting record");
+    }
+  };
+
+  const handleSyncCounts = async () => {
+    if (!confirm("Recalculate all usage counts based on historical records? This will fix count discrepancies.")) return;
+    
+    try {
+      setIsSyncing(true);
+      const res = await fetch("/api/admin/discounts/sync", {
+        method: "POST"
+      });
+      if (res.ok) {
+        const data = await res.json();
+        alert(`Successfully synced! Updated ${data.syncedCount} discount codes.`);
+        fetchDiscounts();
+      } else {
+        alert("Failed to sync counts");
+      }
+    } catch (error) {
+       console.error("Sync error", error);
+       alert("Error syncing counts");
+    } finally {
+       setIsSyncing(false);
+    }
+  };
+
   if (loading && discounts.length === 0) {
     return <div className="p-8">Loading discounts...</div>;
   }
@@ -144,13 +216,23 @@ export default function AdminDiscounts() {
           <h1 className="text-3xl font-display font-bold mb-2">Discount Codes</h1>
           <p className="text-gray-500">Create and manage promotion codes for your customers.</p>
         </div>
-        <button
-          onClick={() => handleOpenModal()}
-          className="bg-[#c3a2ab] text-white px-6 py-3 rounded-xl font-bold hover:opacity-90 transition-opacity flex items-center gap-2"
-        >
-          <span className="material-symbols-outlined text-sm">add</span>
-          Create Code
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleSyncCounts}
+            disabled={isSyncing}
+            className={`px-4 py-3 rounded-xl font-bold border transition-all flex items-center gap-2 ${isSyncing ? "bg-gray-100 text-gray-400 border-gray-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 active:scale-95"}`}
+          >
+            <span className={`material-symbols-outlined text-sm ${isSyncing ? "animate-spin" : ""}`}>sync</span>
+            {isSyncing ? "Syncing..." : "Sync Counts"}
+          </button>
+          <button
+            onClick={() => handleOpenModal()}
+            className="bg-[#c3a2ab] text-white px-6 py-3 rounded-xl font-bold hover:opacity-90 transition-opacity flex items-center gap-2 shadow-sm"
+          >
+            <span className="material-symbols-outlined text-sm">add</span>
+            Create Code
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -206,11 +288,24 @@ export default function AdminDiscounts() {
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center justify-end gap-3 text-gray-500">
-                        <button onClick={() => handleOpenModal(discount)} className="hover:text-[#c3a2ab] transition-colors" title="Edit">
-                          <span className="material-symbols-outlined text-sm">edit</span>
+                        {/* 1. ปุ่มประวัติ (ย้ายมาข้างหน้าสุด) */}
+                        <button 
+                          onClick={() => handleFetchUsage(discount)} 
+                          className="flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-1.5 rounded-lg hover:bg-amber-100 transition-colors border border-amber-200"
+                          title="View Usage History"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">history</span>
+                          <span className="text-[10px] font-bold uppercase tracking-tighter">Usage</span>
                         </button>
-                        <button onClick={() => handleDelete(discount.id)} className="hover:text-red-600 transition-colors" title="Delete">
-                          <span className="material-symbols-outlined text-sm">delete</span>
+
+                        {/* 2. ปุ่มแก้ไข (ดินสอ) */}
+                        <button onClick={() => handleOpenModal(discount)} className="hover:text-[#c3a2ab] transition-colors p-2 bg-gray-50 rounded-lg hover:bg-gray-100 border border-gray-100" title="Edit">
+                          <span className="material-symbols-outlined text-[18px]">edit</span>
+                        </button>
+                        
+                        {/* 3. ปุ่มลบ (ถังขยะ) */}
+                        <button onClick={() => handleDelete(discount.id)} className="hover:text-red-600 transition-colors p-2 bg-red-50/50 rounded-lg hover:bg-red-50 border border-red-100" title="Delete">
+                          <span className="material-symbols-outlined text-[18px]">delete</span>
                         </button>
                       </div>
                     </td>
@@ -337,6 +432,59 @@ export default function AdminDiscounts() {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Usage History Modal */}
+      {isUsageModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl w-full max-w-lg overflow-y-auto max-h-[80vh]">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white">
+              <div>
+                <h2 className="text-xl font-bold">Usage History</h2>
+                <p className="text-xs text-gray-400 font-mono">Code: {selectedCode}</p>
+              </div>
+              <button onClick={() => setIsUsageModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+                <span className="material-symbols-outlined notranslate">close</span>
+              </button>
+            </div>
+            <div className="p-6">
+               {fetchingUsage ? (
+                 <div className="py-20 text-center text-gray-400 animate-pulse font-black uppercase tracking-widest text-xs">Fetching Usage Data...</div>
+               ) : usageHistory.length > 0 ? (
+                 <table className="w-full text-left">
+                   <thead className="bg-gray-50 text-gray-500 text-[10px] uppercase font-black tracking-widest">
+                     <tr>
+                       <th className="py-3 px-4">User Phone</th>
+                       <th className="py-3 px-4">Date Used</th>
+                       <th className="py-3 px-4 text-right">Delete</th>
+                     </tr>
+                   </thead>
+                   <tbody className="divide-y divide-gray-100 italic">
+                     {usageHistory.map((u, i) => (
+                       <tr key={u.id || i} className="hover:bg-gray-50">
+                          <td className="py-3 px-4 text-sm font-bold text-gray-900">{u.phone}</td>
+                          <td className="py-3 px-4 text-xs text-gray-500">
+                             {new Date(u.created_at).toLocaleString("th-TH")}
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                             <button 
+                               onClick={() => handleDeleteUsage(u.id, selectedDiscountId)}
+                               className="text-red-300 hover:text-red-600 transition-colors"
+                               title="Remove Usage Record"
+                             >
+                                <span className="material-symbols-outlined text-[16px]">delete</span>
+                             </button>
+                          </td>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+               ) : (
+                 <div className="py-20 text-center text-gray-400 italic">No usage records found for this code.</div>
+               )}
             </div>
           </div>
         </div>

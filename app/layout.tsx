@@ -1,27 +1,61 @@
 /* eslint-disable @next/next/no-page-custom-font */
 
 import type { ReactNode } from "react";
-import { Noto_Serif, Noto_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
-import Providers from "./Providers"
-import { CartProvider } from "@/context/CartContext"
+import Providers from "./Providers";
+import { CartProvider } from "@/context/CartContext";
 import { Analytics } from "@vercel/analytics/react";
 import CookieBanner from "./components/cookie/CookieBanner";
 import CookieSettingsTrigger from "./components/cookie/CookieSettingsTrigger";
 import GoogleAnalytics from "./components/analytics/GoogleAnalytics";
 
-const notoSerif = Noto_Serif({
+/**
+ * 🖋️ Montserrat for Branding & Headers
+ */
+const montserrat = localFont({
+  src: [
+    {
+      path: "../public/fonts/Montserrat-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Montserrat-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
   variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["100","300","400","500","600","700","900"],
-  style: ["normal", "italic"],
 });
 
-
-const notoSans = Noto_Sans({
+/**
+ * 🖋️ DB Heavent for Interface & Content
+ */
+const dbHeavent = localFont({
+  src: [
+    {
+      path: "../public/fonts/DB Heavent v3.2.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/DB Heavent Med v3.2.ttf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/DB Heavent Bd v3.2.ttf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/DB Heavent Blk v3.2.ttf",
+      weight: "900",
+      style: "normal",
+    },
+  ],
   variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["100", "300", "400", "500", "600", "700", "900"],
 });
 
 export const metadata = {
@@ -70,7 +104,7 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="th">
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
@@ -80,7 +114,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
-      <body className={`${notoSerif.variable} ${notoSans.variable} antialiased`}>
+      <body className={`${montserrat.variable} ${dbHeavent.variable} font-sans antialiased`}>
         <CartProvider>
         <Providers>
           {children}

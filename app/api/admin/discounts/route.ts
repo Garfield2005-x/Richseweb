@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 export async function GET() {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     
     const user = await prisma.user.findUnique({ where: { email: session.user.email } });
@@ -16,14 +17,14 @@ export async function GET() {
 
     return NextResponse.json(discounts);
   } catch (error) {
-    console.error(error);
+    console.error("GET Discounts API Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     
     const user = await prisma.user.findUnique({ where: { email: session.user.email } });
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(newDiscount);
   } catch (error) {
-    console.error(error);
+    console.error("POST Discount API Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

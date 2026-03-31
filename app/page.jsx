@@ -119,23 +119,23 @@ export default function Home() {
               initial="hidden" animate="visible" variants={staggerContainer}
             >
               <div className="space-y-4">
-                <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-xs">
+                <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-[13px]">
                   The Pinnacle of Skin Rejuvenation
                 </motion.span>
                 <motion.h1 variants={fadeInUp} className="font-display text-5xl md:text-7xl font-bold leading-[1.1] text-[#161314] dark:text-white">
                   Radiance <br />
                   <span className="text-[#C9A961] font-display italic font-medium">Refined.</span>
                 </motion.h1>
-                <motion.p variants={fadeInUp} className="text-lg text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
+                <motion.p variants={fadeInUp} className="text-[19px] text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
                   Thoughtfully crafted skincare blending advanced clinical formulation with a modern approach to skin wellness, designed to support a naturally resilient, glowing, and healthy-looking complexion.
                 </motion.p>
               </div>
 
               <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
-                <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wide hover:opacity-90 transition-all shadow-lg shadow-primary/20" href="/ProductAll">
+                <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wider hover:opacity-90 transition-all shadow-lg shadow-primary/20 text-[15px]" href="/ProductAll">
                   Discover Collection
                 </Link>
-                <Link href="/skin-quiz" className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wide hover:bg-white dark:hover:bg-white/5 transition-all">
+                <Link href="/skin-quiz" className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wider hover:bg-white dark:hover:bg-white/5 transition-all text-[15px]">
                   Take Skin Quiz
                 </Link>
               </motion.div>

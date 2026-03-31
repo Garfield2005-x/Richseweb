@@ -15,16 +15,26 @@
   --luxury-white: #ffffff;
 }
 
+@theme {
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-display); /* Map serif to Montserrat for older header styles */
+}
+
 /* ---------- Base ---------- */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
+  font-family: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
+  font-size: 17px; /* Bumped from default for DB Heavent readability */
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
 }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display), sans-serif;
+  letter-spacing: -0.02em;
 }
 
 /* ---------- Icons ---------- */
