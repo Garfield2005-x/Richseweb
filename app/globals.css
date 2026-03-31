@@ -26,15 +26,16 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
-  font-size: 17px; /* Bumped from default for DB Heavent readability */
+  font-size: 21px; /* Global scale shift for DB Heavent (+25% approx) */
   line-height: 1.6;
   text-rendering: optimizeLegibility;
 }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display), sans-serif;
-  letter-spacing: -0.02em;
+  font-family: var(--font-sans), var(--font-display), sans-serif;
+  letter-spacing: -0.01em;
+  font-weight: 700;
 }
 
 /* ---------- Icons ---------- */
@@ -67,7 +68,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ---------- Utilities ---------- */
 .font-display {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-sans), var(--font-display), serif;
 }
 
 .no-scrollbar::-webkit-scrollbar {

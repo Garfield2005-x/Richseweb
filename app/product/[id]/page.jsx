@@ -18,7 +18,7 @@ const AccordionItem = ({ title, defaultOpen = false, children }) => {
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex justify-between items-center py-5 text-left focus:outline-none focus:ring-none group hover:bg-[#faf9f8] dark:hover:bg-gray-800/50 px-2 -mx-2 rounded-xl transition-all"
       >
-        <span className="font-display font-medium text-lg tracking-wide text-[#161314] dark:text-white group-hover:text-[#c3a2ab] transition-colors">
+        <span className="font-display font-medium text-2xl tracking-wide text-[#161314] dark:text-white group-hover:text-[#c3a2ab] transition-colors">
           {title}
         </span>
         <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-800 group-hover:bg-[#f3edf0] transition-colors text-[#161314] dark:text-gray-200">
@@ -31,7 +31,7 @@ const AccordionItem = ({ title, defaultOpen = false, children }) => {
       <div 
         className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] px-2 ${isOpen ? "max-h-[800px] opacity-100 pb-6" : "max-h-0 opacity-0 pb-0"}`}
       >
-        <div className="text-gray-600 dark:text-gray-400 leading-relaxed font-sans text-base whitespace-pre-wrap">
+        <div className="text-gray-600 dark:text-gray-400 leading-relaxed font-sans text-[20px] whitespace-pre-wrap">
           {children}
         </div>
       </div>
@@ -174,7 +174,7 @@ export default function ProductDetailPage(props) {
           <div className="lg:col-span-5 sticky top-12">
             <div className="flex flex-col gap-6">
               <div>
-                <span className="text-xs uppercase tracking-[0.2em] text-[#c3a2ab] font-bold mb-3 block">
+                <span className="text-[16px] uppercase tracking-[0.2em] text-[#c3a2ab] font-bold mb-3 block">
                   The Radiance Collection
                 </span>
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-[#161314] dark:text-white leading-tight mb-4">
@@ -187,7 +187,7 @@ export default function ProductDetailPage(props) {
                         {s <= Math.floor(avgRating || 5) ? "star" : (s <= Math.round(avgRating || 5) ? "star_half" : "star")}
                       </span>
                     ))}
-                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400 font-sans">
+                    <span className="ml-2 text-[18px] text-gray-600 dark:text-gray-400 font-sans">
                       {avgRating || "5.0"} ({reviews.length} Reviews)
                     </span>
                   </div>
@@ -196,17 +196,17 @@ export default function ProductDetailPage(props) {
                 {/* --- Product Analytics & FOMO Badges --- */}
                 <div className="flex flex-wrap items-center gap-3 mt-4">
                   {product.totalSold > 0 && (
-                    <div className="flex items-center gap-1.5 bg-red-50 text-red-600 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide">
+                    <div className="flex items-center gap-1.5 bg-red-50 text-red-600 px-4 py-2 rounded-full text-[15px] font-bold tracking-wide">
                       <span className="material-symbols-outlined notranslate text-sm">local_fire_department</span>
                       ขายไปแล้ว {product.totalSold.toLocaleString()} ชิ้น
                     </div>
                   )}
-                  <div className="flex items-center gap-1.5 bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide">
+                  <div className="flex items-center gap-1.5 bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-[15px] font-bold tracking-wide">
                     <span className="material-symbols-outlined notranslate text-sm">visibility</span>
                     คนกำลังดูสินค้านี้ {product.viewers || 12} คน
                   </div>
                   {currentStock > 0 && currentStock <= 10 && (
-                     <div className="flex items-center gap-1.5 bg-amber-50 text-amber-600 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide animate-pulse">
+                     <div className="flex items-center gap-1.5 bg-amber-50 text-amber-600 px-4 py-2 rounded-full text-[15px] font-bold tracking-wide animate-pulse">
                         <span className="material-symbols-outlined notranslate text-sm">warning</span>
                         ด่วน! สินค้าเหลือเพียง {currentStock} ชิ้นสุดท้าย
                      </div>
@@ -265,24 +265,24 @@ export default function ProductDetailPage(props) {
                  <AccordionItem title="ข้อมูลจำเพาะ (Product Info)">
                     <ul className="space-y-5 list-none py-2 m-0">
                        <li className="flex items-start gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-colors">
-                          <span className="material-symbols-outlined text-gray-400 text-2xl">category</span>
+                          <span className="material-symbols-outlined text-gray-400 text-3xl">category</span>
                           <div>
-                             <strong className="block text-[#161314] dark:text-white text-sm mb-0.5 uppercase tracking-widest">Category</strong>
-                             <span className="text-gray-600">{product.category || "สกินแคร์ / ความงาม"}</span>
+                             <strong className="block text-[#161314] dark:text-white text-[16px] mb-0.5 uppercase tracking-widest">Category</strong>
+                             <span className="text-[18px] text-gray-600">{product.category || "สกินแคร์ / ความงาม"}</span>
                           </div>
                        </li>
                        <li className="flex items-start gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-colors">
-                          <span className="material-symbols-outlined text-emerald-500 text-2xl">eco</span>
+                          <span className="material-symbols-outlined text-emerald-500 text-3xl">eco</span>
                           <div>
-                             <strong className="block text-[#161314] dark:text-white text-sm mb-0.5 uppercase tracking-widest">Clean Beauty Paradigm</strong>
-                             <span className="text-gray-600">100% Vegan & Cruelty-Free ปราศจากการทารุณกรรมสัตว์ ปราศจากพาราเบน ซิลิโคน และสารแต่งกลิ่นสังเคราะห์</span>
+                             <strong className="block text-[#161314] dark:text-white text-[16px] mb-0.5 uppercase tracking-widest">Clean Beauty Paradigm</strong>
+                             <span className="text-[18px] text-gray-600">100% Vegan & Cruelty-Free ปราศจากการทารุณกรรมสัตว์ ปราศจากพาราเบน ซิลิโคน และสารแต่งกลิ่นสังเคราะห์</span>
                           </div>
                        </li>
                        <li className="flex items-start gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-colors">
-                          <span className="material-symbols-outlined text-blue-400 text-2xl">health_and_safety</span>
+                          <span className="material-symbols-outlined text-blue-400 text-3xl">health_and_safety</span>
                           <div>
-                             <strong className="block text-[#161314] dark:text-white text-sm mb-0.5 uppercase tracking-widest">Dermatologically Endorsed</strong>
-                             <span className="text-gray-600">Formula พัฒนาและผ่านการทดสอบโดยผู้เชี่ยวชาญด้านผิวหนัง อ่อนโยนแต่ให้ผลลัพธ์สูง</span>
+                             <strong className="block text-[#161314] dark:text-white text-[16px] mb-0.5 uppercase tracking-widest">Dermatologically Endorsed</strong>
+                             <span className="text-[18px] text-gray-600">Formula พัฒนาและผ่านการทดสอบโดยผู้เชี่ยวชาญด้านผิวหนัง อ่อนโยนแต่ให้ผลลัพธ์สูง</span>
                           </div>
                        </li>
                     </ul>
@@ -306,7 +306,7 @@ export default function ProductDetailPage(props) {
                             setSelectedVariant(v);
                             setQuantity(1); // Reset quantity when variant changes
                           }}
-                          className={`px-4 py-2 border rounded-lg text-sm font-bold transition-all uppercase tracking-wider ${
+                          className={`px-5 py-3 border rounded-lg text-[17px] font-bold transition-all uppercase tracking-wider ${
                             selectedVariant?.id === v.id 
                               ? "border-[#161314] bg-[#161314] text-white dark:border-white dark:bg-white dark:text-black" 
                               : v.stock <= 0 
@@ -366,7 +366,7 @@ export default function ProductDetailPage(props) {
                       }, quantity);
                       // alert is removed as toast.success is handled in CartContext
                     }}
-                    className="flex-3 bg-[#c3a2ab] hover:bg-[#c3a2ab]/90 text-white font-bold py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 uppercase tracking-widest text-sm disabled:opacity-50"
+                    className="flex-3 bg-[#c3a2ab] hover:bg-[#c3a2ab]/90 text-white font-bold py-5 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 uppercase tracking-widest text-[18px] disabled:opacity-50"
                     disabled={currentStock <= 0}
                   >
                     {currentStock > 0 ? "Add to Cart" : "Out of Stock"}
@@ -383,7 +383,7 @@ export default function ProductDetailPage(props) {
                 {currentStock > 0 && (
                   <Link
                     href="/Checkout"
-                    className="w-full border-2 border-[#161314] dark:border-white text-[#161314] dark:text-white font-bold py-4 rounded-lg hover:bg-[#161314] hover:text-white dark:hover:bg-white dark:hover:text-black transition-all uppercase tracking-widest text-sm block text-center"
+                    className="w-full border-2 border-[#161314] dark:border-white text-[#161314] dark:text-white font-bold py-5 rounded-lg hover:bg-[#161314] hover:text-white dark:hover:bg-white dark:hover:text-black transition-all uppercase tracking-widest text-[18px] block text-center"
                   >
                     Buy It Now
                   </Link>
@@ -394,7 +394,7 @@ export default function ProductDetailPage(props) {
                   <span className="material-symbols-outlined notranslate text-[#C9A961] text-3xl">
                     local_shipping
                   </span>
-                  <span className="text-[10px] uppercase font-bold tracking-tighter">
+                  <span className="text-[14px] uppercase font-bold tracking-tighter">
                     Free Priority Shipping
                   </span>
                 </div>
@@ -402,7 +402,7 @@ export default function ProductDetailPage(props) {
                   <span className="material-symbols-outlined notranslate text-[#C9A961] text-3xl">
                     eco
                   </span>
-                  <span className="text-[10px] uppercase font-bold tracking-tighter">
+                  <span className="text-[14px] uppercase font-bold tracking-tighter">
                     Cruelty-Free
                   </span>
                 </div>
@@ -410,7 +410,7 @@ export default function ProductDetailPage(props) {
                   <span className="material-symbols-outlined notranslate text-[#C9A961] text-3xl">
                     verified_user
                   </span>
-                  <span className="text-[10px] uppercase font-bold tracking-tighter">
+                  <span className="text-[14px] uppercase font-bold tracking-tighter">
                     100% Vegan
                   </span>
                 </div>

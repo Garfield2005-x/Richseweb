@@ -19,10 +19,10 @@ export default function PromoBanner() {
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center gap-3"
         >
-          <span className="bg-[#c3a2ab] text-[#161314] text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-tighter">
+          <span className="bg-[#c3a2ab] text-[#161314] text-[13px] font-bold px-2 py-0.5 rounded uppercase tracking-tighter">
             PROMO
           </span>
-          <p className="text-[13px] md:text-sm font-medium tracking-[0.05em] uppercase">
+          <p className="text-[15px] md:text-base font-medium tracking-normal uppercase">
             ลงทะเบียนตอนนี้ รับโค้ดส่วนลด <span className="text-[#c3a2ab] font-bold">10%</span> ทันที
           </p>
           <Link 

@@ -244,7 +244,7 @@ export default function Checkout() {
                <button onClick={() => router.back()} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors group">
                   <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to Store
                </button>
-               <h1 className="text-4xl md:text-5xl font-display font-bold text-gray-900 tracking-tight">Checkout</h1>
+               <h1 className="text-5xl md:text-6xl font-display font-bold text-gray-900 tracking-tight">Checkout</h1>
                <p className="text-gray-500 font-medium">Securing your premium collection at Richse Official.</p>
             </header>
 
@@ -252,7 +252,7 @@ export default function Checkout() {
             <section className="space-y-6">
               <div className="flex items-center gap-3">
                  <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold">1</div>
-                 <h2 className="text-xl font-display font-bold tracking-tight">Shipping Destination</h2>
+                 <h2 className="text-2xl font-display font-bold tracking-tight">Shipping Destination</h2>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
@@ -285,7 +285,7 @@ export default function Checkout() {
             <section className="space-y-6">
               <div className="flex items-center gap-3">
                  <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold">2</div>
-                 <h2 className="text-xl font-display font-bold tracking-tight">Shipping Details</h2>
+                 <h2 className="text-2xl font-display font-bold tracking-tight">Shipping Details</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -295,7 +295,7 @@ export default function Checkout() {
                       placeholder="Receiver's Full Name"
                       value={shippingInfo.fullName}
                       onChange={(e) => setShippingInfo({ ...shippingInfo, fullName: e.target.value })}
-                      className="w-full px-6 py-5 bg-gray-50/50 border border-gray-100 rounded-[1.5rem] outline-none focus:ring-4 focus:ring-[#c3a2ab]/10 focus:bg-white transition-all text-sm font-medium placeholder:text-gray-300"
+                      className="w-full px-6 py-5 bg-gray-50/50 border border-gray-100 rounded-[1.5rem] outline-none focus:ring-4 focus:ring-[#c3a2ab]/10 focus:bg-white transition-all text-[18px] font-medium placeholder:text-gray-300"
                     />
                  </div>
 
@@ -437,7 +437,7 @@ export default function Checkout() {
             <section className="space-y-6">
                <div className="flex items-center gap-3">
                  <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold">4</div>
-                 <h2 className="text-xl font-display font-bold tracking-tight">One last thing...</h2>
+                 <h2 className="text-2xl font-display font-bold tracking-tight">One last thing...</h2>
               </div>
               
               <div className="p-8 rounded-[2.5rem] bg-gray-50/50 border border-gray-50 space-y-6">
@@ -490,8 +490,8 @@ export default function Checkout() {
                               )}
                            </div>
                            <div className="flex-1 space-y-1">
-                               <p className="text-sm font-bold text-gray-900 leading-snug">
-                                 {item.name} {item.variantName ? <span className="text-xs text-gray-500 font-normal">({item.variantName})</span> : ""}
+                               <p className="text-[18px] font-bold text-gray-900 leading-snug">
+                                 {item.name} {item.variantName ? <span className="text-[15px] text-gray-500 font-normal">({item.variantName})</span> : ""}
                                </p>
                               <p className="text-xs text-gray-400 font-medium">Quantity: {item.quantity}</p>
                            </div>
@@ -580,7 +580,7 @@ export default function Checkout() {
                          <div className="flex justify-between items-end">
                             <div>
                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Total Payable</p>
-                               <p className="text-4xl font-display font-bold text-gray-900">฿{finalTotal.toLocaleString()}</p>
+                               <p className="text-5xl font-display font-bold text-gray-900">฿{finalTotal.toLocaleString()}</p>
                             </div>
                             <Lock size={20} className="text-gray-200 mb-2" />
                          </div>

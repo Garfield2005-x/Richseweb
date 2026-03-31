@@ -45,31 +45,31 @@ function Navbar() {
             <nav className="hidden lg:flex items-center gap-10">
               <Link
                 href="/ProductAll"
-                className="text-[14px] font-medium uppercase tracking-[0.1em] text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
+                className="text-[18px] font-medium uppercase tracking-[0.05em] font-sans text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
               >
                 The Collection
                 <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-full"></span>
               </Link>
               <Link
                 href="/skin-quiz"
-                className="text-[14px] font-medium uppercase tracking-[0.1em] text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
+                className="text-[18px] font-medium uppercase tracking-[0.05em] font-sans text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
               >
                 Skin Quiz
                 <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-full"></span>
               </Link>
               <Link
                 href="/Contact"
-                className="text-[14px] font-medium uppercase tracking-[0.1em] text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
+                className="text-[18px] font-medium uppercase tracking-[0.05em] font-sans text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
               >
                 Contact
                 <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-full"></span>
               </Link>
               <Link
                 href="/rewards"
-                className="text-[14px] font-medium uppercase tracking-[0.1em] text-indigo-600 hover:text-[#c3a2ab] transition-colors duration-500 relative group flex items-center gap-1"
+                className="text-[13px] font-bold uppercase tracking-[0.1em] font-sans text-indigo-600 hover:text-[#c3a2ab] transition-colors duration-500 relative group flex items-center gap-1 bg-indigo-50/50 px-3 py-1 rounded-full border border-indigo-100"
               >
                 <span>REWARDS 🎁</span>
-                <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-full"></span>
+                <span className="absolute -bottom-1 left-3 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-[calc(100%-1.5rem)]"></span>
               </Link>
             </nav>
             {/* Hamburger for mobile */}
@@ -214,7 +214,7 @@ function Navbar() {
 
                           <Link
                             href="/Checkout"
-                            className="bg-[#161314] text-white block text-center py-4 rounded-full text-[13px] uppercase tracking-[0.15em] font-medium hover:bg-[#c3a2ab] transition-colors duration-500"
+                            className="bg-[#161314] text-white block text-center py-4 rounded-full text-[18px] uppercase tracking-[0.1em] font-medium hover:bg-[#c3a2ab] transition-colors duration-500"
                             onClick={() => setOpen(false)}
                           >
                             Proceed to Checkout
@@ -263,28 +263,28 @@ function Navbar() {
                 <Link
                   href="/ProductAll"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-xl font-serif text-[#161314] hover:text-[#c3a2ab] transition-colors border-b border-gray-100 pb-4"
+                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#161314] hover:text-[#c3a2ab] transition-colors border-b border-gray-100 pb-4"
                 >
                   The Collection
                 </Link>
                 <Link
                   href="/skin-quiz"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-xl font-serif text-[#161314] hover:text-[#c3a2ab] transition-colors border-b border-gray-100 pb-4"
+                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#161314] hover:text-[#c3a2ab] transition-colors border-b border-gray-100 pb-4"
                 >
                   Skin Quiz
                 </Link>
                 <Link
                   href="/Contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-xl font-serif text-[#161314] hover:text-[#c3a2ab] transition-colors border-b border-gray-100 pb-4"
+                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#161314] hover:text-[#c3a2ab] transition-colors border-b border-gray-100 pb-4"
                 >
                   Contact
                 </Link>
                 <Link
                   href="/rewards"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-xl font-serif text-[#c3a2ab] tracking-wide flex items-center gap-2 pt-2"
+                  className="text-base font-sans font-bold uppercase tracking-[0.05em] text-[#c3a2ab] flex items-center gap-2 pt-2"
                 >
                   REWARDS 🎁
                 </Link>

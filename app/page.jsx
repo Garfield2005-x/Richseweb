@@ -119,23 +119,23 @@ export default function Home() {
               initial="hidden" animate="visible" variants={staggerContainer}
             >
               <div className="space-y-4">
-                <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-[13px]">
+                <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-[15px]">
                   The Pinnacle of Skin Rejuvenation
                 </motion.span>
-                <motion.h1 variants={fadeInUp} className="font-display text-5xl md:text-7xl font-bold leading-[1.1] text-[#161314] dark:text-white">
+                <motion.h1 variants={fadeInUp} className="font-display text-6xl md:text-8xl font-bold leading-[1.05] text-[#161314] dark:text-white">
                   Radiance <br />
                   <span className="text-[#C9A961] font-display italic font-medium">Refined.</span>
                 </motion.h1>
-                <motion.p variants={fadeInUp} className="text-[19px] text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
+                <motion.p variants={fadeInUp} className="text-[22px] text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
                   Thoughtfully crafted skincare blending advanced clinical formulation with a modern approach to skin wellness, designed to support a naturally resilient, glowing, and healthy-looking complexion.
                 </motion.p>
               </div>
 
               <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
-                <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wider hover:opacity-90 transition-all shadow-lg shadow-primary/20 text-[15px]" href="/ProductAll">
+                <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wider hover:opacity-90 transition-all shadow-lg shadow-primary/20 text-[18px]" href="/ProductAll">
                   Discover Collection
                 </Link>
-                <Link href="/skin-quiz" className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wider hover:bg-white dark:hover:bg-white/5 transition-all text-[15px]">
+                <Link href="/skin-quiz" className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wider hover:bg-white dark:hover:bg-white/5 transition-all text-[18px]">
                   Take Skin Quiz
                 </Link>
               </motion.div>
@@ -200,41 +200,41 @@ export default function Home() {
                 <div className="size-12 rounded-xl bg-[#c3a2ab]/10 flex items-center justify-center text-[#c3a2ab] mb-6 group-hover:bg-[#c3a2ab] group-hover:text-white transition-colors">
                   <span className="material-symbols-outlined notranslate">{feature.icon}</span>
                 </div>
-                <h3 className="font-display text-xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
+                <h3 className="font-display text-2xl font-bold mb-3">{feature.title}</h3>
+                <p className="text-[18px] text-gray-600 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* --- CURATED SELECTION (BEST SELLERS) --- */}
       <section className="py-20 hero-mesh overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 flex justify-between items-end mb-10">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer}>
-            <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-xs">Curated Selection</motion.span>
-            <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold mt-2">The Icons of Richse</motion.h2>
-          </motion.div>
-          <div className="flex gap-3">
-            <button
-              onClick={() => scroll('left')}
-              className="size-12 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm bg-white/50 backdrop-blur-sm"
-            >
-              <span className="material-symbols-outlined notranslate text-xl">chevron_left</span>
-            </button>
-            <button
-              onClick={() => scroll('right')}
-              className="size-12 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm bg-white/50 backdrop-blur-sm"
-            >
-              <span className="material-symbols-outlined notranslate text-xl">chevron_right</span>
-            </button>
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex justify-between items-end mb-10">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer}>
+              <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-[15px]">Curated Selection</motion.span>
+              <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold mt-2">The Icons of Richse</motion.h2>
+            </motion.div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => scroll('left')}
+                className="size-12 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm bg-white/50 backdrop-blur-sm"
+              >
+                <span className="material-symbols-outlined notranslate text-xl">chevron_left</span>
+              </button>
+              <button
+                onClick={() => scroll('right')}
+                className="size-12 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm bg-white/50 backdrop-blur-sm"
+              >
+                <span className="material-symbols-outlined notranslate text-xl">chevron_right</span>
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div
-          ref={scrollRef}
-          className="flex gap-6 px-6 md:px-20 overflow-x-auto no-scrollbar pb-10 snap-x snap-mandatory items-stretch"
-        >
+          <div
+            ref={scrollRef}
+            className="flex gap-8 overflow-x-auto no-scrollbar pb-10 snap-x snap-mandatory items-stretch scroll-smooth"
+          >
           {loadingProducts ? (
             <div className="py-10 px-6 text-gray-500 tracking-widest uppercase text-sm w-full text-center">Loading Best Sellers...</div>
           ) : products.length > 0 ? (
@@ -255,7 +255,7 @@ export default function Home() {
 
                   {/* ป้าย Limited */}
                   {product.id === 3 && (
-                    <div className="absolute top-4 left-4 bg-[#c3a2ab] text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    <div className="absolute top-5 left-5 bg-[#c3a2ab] text-white px-4 py-1.5 rounded-full text-[13px] font-bold uppercase tracking-wider">
                       Limited Edition
                     </div>
                   )}
@@ -273,7 +273,7 @@ export default function Home() {
                         taxe: product.description
                       })
                     }}
-                    className="absolute bottom-4 left-4 right-4 bg-white text-[#161314] py-3 rounded-xl font-bold text-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl text-center"
+                    className="absolute bottom-4 left-4 right-4 bg-white text-[#161314] py-4 rounded-xl font-bold text-[16px] opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl text-center"
                   >
                     Quick Add
                   </button>
@@ -282,25 +282,25 @@ export default function Home() {
                 {/* รายละเอียด */}
                 <div className="flex-1 flex flex-col justify-between space-y-3">
                   <div className="space-y-1">
-                    <p className="font-display text-lg font-bold leading-tight line-clamp-1">{product.name}</p>
-                    <p className="text-sm text-gray-500 line-clamp-2 h-10 overflow-hidden">{product.description}</p>
+                    <p className="font-display text-2xl font-bold leading-tight line-clamp-1">{product.name}</p>
+                    <p className="text-[17px] text-gray-500 line-clamp-2 h-12 overflow-hidden">{product.description}</p>
                   </div>
 
                   <div className="pt-2">
                     {product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && new Date() >= new Date(product.flashSaleStart) && new Date() <= new Date(product.flashSaleEnd) ? (
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-red-600 text-[18px]">
+                          <span className="font-bold text-red-600 text-[21px]">
                             ฿{product.flashSalePrice.toLocaleString()}
                           </span>
-                          <span className="text-gray-400 line-through text-xs font-medium">
+                          <span className="text-gray-400 line-through text-[15px] font-medium">
                             ฿{product.price.toLocaleString()}
                           </span>
                         </div>
                         <CountdownTimer targetDate={product.flashSaleEnd} />
                       </div>
                     ) : (
-                      <p className="font-bold text-[#c3a2ab] text-[18px]">
+                      <p className="font-bold text-[#c3a2ab] text-[21px]">
                         ฿{product.price.toLocaleString()}
                       </p>
                     )}
@@ -312,13 +312,14 @@ export default function Home() {
             <div className="py-10 px-6 text-gray-500 w-full text-center">No products available.</div>
           )}
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* --- AS SEEN ON TIKTOK --- */}
       <section className="py-24 bg-[#fdf2f4] dark:bg-white/5 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 mb-12">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center space-y-4">
-            <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-xs">
+            <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-[15px]">
               Loved By
             </motion.span>
             <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold">
@@ -450,7 +451,7 @@ export default function Home() {
                     <span key={idx} className="material-symbols-outlined fill-1">star</span>
                   ))}
                 </div>
-                <p className="italic text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+                <p className="italic text-gray-700 dark:text-gray-300 mb-6 leading-relaxed text-[19px]">
                   {quote.text}
                 </p>
                 <div className="flex items-center gap-3">

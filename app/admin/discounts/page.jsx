@@ -213,23 +213,23 @@ export default function AdminDiscounts() {
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-display font-bold mb-2">Discount Codes</h1>
-          <p className="text-gray-500">Create and manage promotion codes for your customers.</p>
+          <h1 className="text-4xl font-display font-bold mb-2">Discount Codes</h1>
+          <p className="text-[18px] text-gray-500">Create and manage promotion codes for your customers.</p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={handleSyncCounts}
             disabled={isSyncing}
-            className={`px-4 py-3 rounded-xl font-bold border transition-all flex items-center gap-2 ${isSyncing ? "bg-gray-100 text-gray-400 border-gray-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 active:scale-95"}`}
+            className={`px-6 py-3.5 rounded-xl font-bold border transition-all flex items-center gap-2 ${isSyncing ? "bg-gray-100 text-gray-400 border-gray-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 active:scale-95"}`}
           >
-            <span className={`material-symbols-outlined text-sm ${isSyncing ? "animate-spin" : ""}`}>sync</span>
-            {isSyncing ? "Syncing..." : "Sync Counts"}
+            <span className={`material-symbols-outlined text-[20px] ${isSyncing ? "animate-spin" : ""}`}>sync</span>
+            <span className="text-[17px]">{isSyncing ? "Syncing..." : "Sync Counts"}</span>
           </button>
           <button
             onClick={() => handleOpenModal()}
-            className="bg-[#c3a2ab] text-white px-6 py-3 rounded-xl font-bold hover:opacity-90 transition-opacity flex items-center gap-2 shadow-sm"
+            className="bg-[#c3a2ab] text-white px-8 py-4 rounded-xl font-bold hover:opacity-90 transition-opacity flex items-center gap-2 shadow-sm text-[18px]"
           >
-            <span className="material-symbols-outlined text-sm">add</span>
+            <span className="material-symbols-outlined text-[20px]">add</span>
             Create Code
           </button>
         </div>
@@ -238,38 +238,38 @@ export default function AdminDiscounts() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-gray-50 text-gray-500 text-sm">
+            <thead className="bg-gray-50 text-gray-500 text-[16px] uppercase tracking-wider">
               <tr>
-                <th className="py-4 px-6 font-medium">Code</th>
-                <th className="py-4 px-6 font-medium">Discount (%)</th>
-                <th className="py-4 px-6 font-medium">Min. Purchase</th>
-                <th className="py-4 px-6 font-medium">Max. Discount</th>
-                <th className="py-4 px-6 font-medium">Limit Per User</th>
-                <th className="py-4 px-6 font-medium">Usage / Total</th>
-                <th className="py-4 px-6 font-medium">Status</th>
-                <th className="py-4 px-6 font-medium text-right">Actions</th>
+                <th className="py-5 px-6 font-bold">Code</th>
+                <th className="py-5 px-6 font-bold">Discount</th>
+                <th className="py-5 px-6 font-bold">Min. Purchase</th>
+                <th className="py-5 px-6 font-bold">Max. Discount</th>
+                <th className="py-5 px-6 font-bold">Limit / User</th>
+                <th className="py-5 px-6 font-bold">Usage / Total</th>
+                <th className="py-5 px-6 font-bold">Status</th>
+                <th className="py-5 px-6 font-bold text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {discounts.length > 0 ? (
                 discounts.map((discount) => (
                   <tr key={discount.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="py-4 px-6">
-                      <span className="font-mono font-bold bg-gray-100 px-3 py-1 rounded text-gray-800 tracking-wider">
+                    <td className="py-5 px-6">
+                      <span className="font-mono font-bold bg-gray-100 px-3 py-1.5 rounded text-[18px] text-gray-800 tracking-wider">
                         {discount.code}
                       </span>
                     </td>
-                    <td className="py-4 px-6 font-bold text-gray-900">{discount.discount_percent}%</td>
-                    <td className="py-4 px-6 text-gray-900">
+                    <td className="py-5 px-6 font-bold text-gray-900 text-[20px]">{discount.discount_percent}%</td>
+                    <td className="py-5 px-6 text-[18px] text-gray-900">
                       {discount.min_purchase ? `฿${discount.min_purchase.toLocaleString()}` : <span className="text-gray-300">None</span>}
                     </td>
-                    <td className="py-4 px-6 text-red-600 font-medium">
+                    <td className="py-5 px-6 text-red-600 font-bold text-[18px]">
                       {discount.max_discount ? `฿${discount.max_discount.toLocaleString()}` : <span className="text-gray-300">None</span>}
                     </td>
-                    <td className="py-4 px-6 font-bold text-gray-700">
-                      {discount.usage_limit_per_user || 1} <span className="text-[10px] text-gray-400 font-normal ml-1">times</span>
+                    <td className="py-5 px-6 font-bold text-gray-700 text-[18px]">
+                      {discount.usage_limit_per_user || 1} <span className="text-[12px] text-gray-400 font-normal ml-1">times</span>
                     </td>
-                    <td className="py-4 px-6">
+                    <td className="py-5 px-6 text-[18px]">
                       <span className={`${discount.max_usage && discount.current_usage >= discount.max_usage ? "text-red-500 font-bold" : "text-gray-600"}`}>
                         {discount.current_usage}
                       </span>
@@ -278,34 +278,34 @@ export default function AdminDiscounts() {
                         {discount.max_usage ? discount.max_usage : "∞"}
                       </span>
                     </td>
-                    <td className="py-4 px-6">
+                    <td className="py-5 px-6">
                       <button 
                         onClick={() => handleToggleActive(discount.id, discount.active)}
-                        className={`px-3 py-1 rounded-full text-xs font-bold tracking-wider transition-colors ${discount.active ? "bg-green-100 text-green-800 hover:bg-green-200" : "bg-gray-200 text-gray-600 hover:bg-gray-300"}`}
+                        className={`px-4 py-1.5 rounded-full text-[15px] font-bold tracking-wider transition-colors ${discount.active ? "bg-green-100 text-green-800 hover:bg-green-200" : "bg-gray-200 text-gray-600 hover:bg-gray-300"}`}
                       >
                         {discount.active ? "ACTIVE" : "INACTIVE"}
                       </button>
                     </td>
-                    <td className="py-4 px-6">
+                    <td className="py-5 px-6">
                       <div className="flex items-center justify-end gap-3 text-gray-500">
-                        {/* 1. ปุ่มประวัติ (ย้ายมาข้างหน้าสุด) */}
+                        {/* 1. ปุ่มประวัติ */}
                         <button 
                           onClick={() => handleFetchUsage(discount)} 
-                          className="flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-1.5 rounded-lg hover:bg-amber-100 transition-colors border border-amber-200"
+                          className="flex items-center gap-1.5 bg-amber-50 text-amber-700 px-3 py-2 rounded-lg hover:bg-amber-100 transition-colors border border-amber-200"
                           title="View Usage History"
                         >
-                          <span className="material-symbols-outlined text-[18px]">history</span>
-                          <span className="text-[10px] font-bold uppercase tracking-tighter">Usage</span>
+                          <span className="material-symbols-outlined text-[20px]">history</span>
+                          <span className="text-[13px] font-bold uppercase tracking-tighter">Usage</span>
                         </button>
 
-                        {/* 2. ปุ่มแก้ไข (ดินสอ) */}
-                        <button onClick={() => handleOpenModal(discount)} className="hover:text-[#c3a2ab] transition-colors p-2 bg-gray-50 rounded-lg hover:bg-gray-100 border border-gray-100" title="Edit">
-                          <span className="material-symbols-outlined text-[18px]">edit</span>
+                        {/* 2. ปุ่มแก้ไข */}
+                        <button onClick={() => handleOpenModal(discount)} className="hover:text-[#c3a2ab] transition-colors p-2.5 bg-gray-50 rounded-lg hover:bg-gray-100 border border-gray-100" title="Edit">
+                          <span className="material-symbols-outlined text-[20px]">edit</span>
                         </button>
                         
-                        {/* 3. ปุ่มลบ (ถังขยะ) */}
-                        <button onClick={() => handleDelete(discount.id)} className="hover:text-red-600 transition-colors p-2 bg-red-50/50 rounded-lg hover:bg-red-50 border border-red-100" title="Delete">
-                          <span className="material-symbols-outlined text-[18px]">delete</span>
+                        {/* 3. ปุ่มลบ */}
+                        <button onClick={() => handleDelete(discount.id)} className="hover:text-red-600 transition-colors p-2.5 bg-red-50/50 rounded-lg hover:bg-red-50 border border-red-100" title="Delete">
+                          <span className="material-symbols-outlined text-[20px]">delete</span>
                         </button>
                       </div>
                     </td>

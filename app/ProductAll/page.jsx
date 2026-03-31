@@ -106,7 +106,7 @@ export default function Page() {
                 <button 
                   key={cat}
                   onClick={() => setCategoryFilter(cat)}
-                  className={`text-xs uppercase tracking-[0.2em] font-bold pb-1 transition-all border-b-2 ${
+                  className={`text-[21px] uppercase tracking-[0.05em] font-bold pb-1 transition-all border-b-2 ${
                     categoryFilter === cat ? "border-[#c3a2ab] text-[#161314]" : "border-transparent text-gray-400 hover:text-[#c3a2ab]"
                   }`}
                 >
@@ -118,12 +118,12 @@ export default function Page() {
             {/* Skin Type & Sort Row */}
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-gray-100">
               <div className="flex items-center gap-4 overflow-x-auto no-scrollbar pb-2 w-full md:w-auto">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">Skin Type:</span>
+                <span className="text-[18px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">Skin Type:</span>
                 {["All", "Dry", "Oily", "Sensitive"].map((type) => (
                   <button
                     key={type}
                     onClick={() => setSkinTypeFilter(type)}
-                    className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
+                    className={`px-6 py-2.5 rounded-full text-[17px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
                       skinTypeFilter === type 
                         ? "bg-[#c3a2ab] text-white" 
                         : "bg-gray-100 text-gray-500 hover:bg-gray-200"
@@ -135,11 +135,11 @@ export default function Page() {
               </div>
 
               <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sort By:</span>
+                <span className="text-[18px] font-bold text-gray-400 uppercase tracking-widest">Sort By:</span>
                 <select 
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-transparent text-xs font-bold uppercase tracking-wider outline-none cursor-pointer border-b border-gray-200 pb-1"
+                  className="bg-transparent text-[16px] font-bold uppercase tracking-wider outline-none cursor-pointer border-b border-gray-200 pb-1"
                 >
                   <option value="newest">New Arrivals</option>
                   <option value="price-asc">Price: Low to High</option>
@@ -168,12 +168,12 @@ export default function Page() {
                   {/* Category Tag */}
                   <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
                     {product.category && (
-                      <div className="bg-white/90 backdrop-blur-sm text-[#161314] px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-sm">
+                      <div className="bg-white/90 backdrop-blur-sm text-[#161314] px-3 py-1 rounded-full text-[14px] font-bold uppercase tracking-wider shadow-sm">
                         {product.category}
                       </div>
                     )}
                     {product.id === 3 && (
-                      <div className="bg-[#c3a2ab] text-white px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-sm">
+                      <div className="bg-[#c3a2ab] text-white px-3 py-1 rounded-full text-[14px] font-bold uppercase tracking-wider shadow-sm">
                         Limited
                       </div>
                     )}
@@ -203,7 +203,7 @@ export default function Page() {
                                bg-white/90 backdrop-blur-md
                                text-[#161314]
                                py-4 rounded-xl
-                               font-bold text-[10px] tracking-widest uppercase
+                               font-bold text-[18px] tracking-widest uppercase
                                opacity-0 translate-y-4
                                group-hover:opacity-100 group-hover:translate-y-0
                                transition-all duration-500
@@ -215,14 +215,14 @@ export default function Page() {
 
                 <div className="space-y-1 px-1">
                   <div className="flex justify-between items-start gap-2">
-                    <h3 className="font-display text-xl font-bold line-clamp-1">{product.name}</h3>
+                    <h3 className="font-display text-3xl font-bold line-clamp-1">{product.name}</h3>
                     {product.skinType && (
-                      <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest pt-1.5 whitespace-nowrap">
+                      <span className="text-[15px] font-bold text-gray-400 uppercase tracking-widest pt-1.5 whitespace-nowrap">
                         {product.skinType.replace(" skin", "")}
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-500 font-light line-clamp-1">{product.description}</p>
+                  <p className="text-[20px] text-gray-500 font-light line-clamp-1">{product.description}</p>
                   
                   <div className="mt-3">
                     {product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && new Date() >= new Date(product.flashSaleStart) && new Date() <= new Date(product.flashSaleEnd) ? (
