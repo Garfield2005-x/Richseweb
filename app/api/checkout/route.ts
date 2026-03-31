@@ -122,26 +122,38 @@ export async function POST(req: Request) {
     const cleanPhone = shippingInfo.phone.trim();
     let isFirstOrderFree = false;
 
-    // Check Automation Rule: First Order Free Shipping (Members Only)
-    const rule = await prisma.siteSetting.findUnique({
-       where: { key: "auto_free_shipping_first_order" }
+    // Fetch all automation rules at once
+    const automationRules = await prisma.siteSetting.findMany({
+      where: { key: { in: [
+        "auto_free_shipping_first_order",
+        "auto_min_order_free_shipping",
+        "auto_min_order_threshold",
+        "auto_low_stock_alert",
+        "auto_low_stock_threshold",
+        "auto_loyalty_points_rate",
+      ]}}
     });
-    
-    // Only apply if user is logged in (userId exists) and phone matches
-    if (rule?.value === "true" && cleanPhone && userId) {
-       // Check if they have ordered before (by phone or user ID)
+    const ruleMap: Record<string, string> = {};
+    for (const r of automationRules) ruleMap[r.key] = r.value;
+
+    // Rule 1: First Order Free Shipping (Members Only)
+    if (ruleMap["auto_free_shipping_first_order"] === "true" && cleanPhone && userId) {
        const prevOrders = await prisma.order.count({
-          where: { 
-             OR: [
-                { phone: cleanPhone },
-                { userId: userId }
-             ]
-          }
+          where: { OR: [{ phone: cleanPhone }, { userId: userId }] }
        });
        if (prevOrders === 0) {
-          shippingCost = 0; // Waive shipping fee
+          shippingCost = 0;
           isFirstOrderFree = true;
        }
+    }
+
+    // Rule 2: Min Order Free Shipping (server-side verification)
+    if (!isFirstOrderFree && ruleMap["auto_min_order_free_shipping"] === "true") {
+      const threshold = parseFloat(ruleMap["auto_min_order_threshold"] || "300");
+      const cartSubtotal = cart.reduce((s: number, i: CartItem) => s + i.price * i.quantity, 0);
+      if (cartSubtotal >= threshold) {
+        shippingCost = 0;
+      }
     }
 
     const cleanCode = discountCode ? discountCode.trim().toUpperCase() : null;
@@ -309,18 +321,39 @@ export async function POST(req: Request) {
 
       // --- D. Deduct Stock ---
       // This is atomic and handles race conditions along with the earlier check
+      const lowStockItems: { name: string; remaining: number }[] = [];
       for (const item of cart) {
         if (item.variantId) {
-          await tx.productVariant.update({
+          const updated = await tx.productVariant.update({
             where: { id: item.variantId },
-            data: { stock: { decrement: item.quantity } }
+            data: { stock: { decrement: item.quantity } },
+            select: { stock: true, name: true, product: { select: { name: true } } },
           });
+          // Low stock check
+          const alertThreshold = parseFloat(ruleMap["auto_low_stock_threshold"] || "5");
+          if (ruleMap["auto_low_stock_alert"] === "true" && updated.stock <= alertThreshold) {
+            lowStockItems.push({ name: `${updated.product.name} - ${updated.name}`, remaining: updated.stock });
+          }
         } else {
-          await tx.product.update({
+          const updated = await tx.product.update({
             where: { id: parseInt(item.id.toString()) },
-            data: { stock: { decrement: item.quantity } }
+            data: { stock: { decrement: item.quantity } },
+            select: { stock: true, name: true },
           });
+          const alertThreshold = parseFloat(ruleMap["auto_low_stock_threshold"] || "5");
+          if (ruleMap["auto_low_stock_alert"] === "true" && updated.stock <= alertThreshold) {
+            lowStockItems.push({ name: updated.name, remaining: updated.stock });
+          }
         }
+      }
+
+      // Pass low stock items back from transaction for LINE notification
+      // We store it in a closure variable accessible after .transaction()
+      if (lowStockItems.length > 0) {
+        // Fire-and-forget after transaction completes (stored for use below)
+        (globalThis as Record<string, unknown>).__pendingLowStockAlerts = lowStockItems;
+      } else {
+        (globalThis as Record<string, unknown>).__pendingLowStockAlerts = [];
       }
 
       // --- E. Record Discount Usage ---
@@ -343,8 +376,11 @@ export async function POST(req: Request) {
         });
         userEmail = user?.email ?? null;
 
-        // Earn 1 Point per 10 Baht spent
-        const totalPointsEarned = Math.floor(finalTotal / 10);
+        // Earn points dynamically based on auto_loyalty_points_rate (default: 1 pt per ฿10)
+        const loyaltyRate = parseFloat(ruleMap["auto_loyalty_points_rate"] || "10");
+        const isLoyaltyActive = ruleMap["auto_loyalty_points_rate"] !== undefined; // rate key existing means it's configured
+        const effectiveRate = (loyaltyRate > 0 && isLoyaltyActive) ? loyaltyRate : 10;
+        const totalPointsEarned = Math.floor(finalTotal / effectiveRate);
 
         if (totalPointsEarned > 0) {
           await tx.user.update({
@@ -379,6 +415,27 @@ export async function POST(req: Request) {
       discountAmount: result.discountAmount,
       discountCode: cleanCode
     });
+
+    // 3b. Low Stock Alert (Non-blocking, after transaction)
+    const pendingAlerts = ((globalThis as Record<string, unknown>).__pendingLowStockAlerts || []) as { name: string; remaining: number }[];
+    if (pendingAlerts.length > 0 && process.env.LINE_CHANNEL_ACCESS_TOKEN) {
+      const alertMsg = `⚠️ แจ้งเตือนสินค้าใกล้หมด!\n\n` +
+        pendingAlerts.map(i => `📦 ${i.name}\n   เหลือ: ${i.remaining} ชิ้น`).join("\n\n") +
+        `\n\n🔗 จัดการสต๊อก: /admin/products`;
+      fetch("https://api.line.me/v2/bot/message/push", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.LINE_CHANNEL_ACCESS_TOKEN}`,
+        },
+        body: JSON.stringify({
+          to: "C0b778d20a6877e76023a328f9485b564",
+          messages: [{ type: "text", text: alertMsg }],
+        }),
+        signal: AbortSignal.timeout(5000),
+      }).catch(() => {});
+    }
+
 
     // 4. Send Success Response
     return NextResponse.json({ success: true, orderId: result.order.id });

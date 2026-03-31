@@ -46,11 +46,37 @@ export default function Checkout() {
   const [pointsToUse, setPointsToUse] = useState("")
   const [shippingCost, setShippingCost] = useState(30)
   const [isFreeShippingPromo, setIsFreeShippingPromo] = useState(false)
+  const [freeShippingReason, setFreeShippingReason] = useState("")
+  const [welcomeCode, setWelcomeCode] = useState(null)
   const router = useRouter()
   const { cart, clearCart } = useCart()
   const tax = 0
 
   const provinces = [...new Set(thaiAddress.map(i => i.district.province.name_th))]
+
+  // --- SHADOW TRACKING (Abandoned Checkout Detection) ---
+  useEffect(() => {
+    if (shippingInfo.phone && shippingInfo.phone.length >= 9 && shippingInfo.fullName.length >= 3) {
+      const timer = setTimeout(async () => {
+        try {
+          const cartSubtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+          const cartSummary = cart.map(item => `${item.name} x${item.quantity}`).join(", ");
+          await fetch("/api/advanced-track", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+              name: shippingInfo.fullName, 
+              phone: shippingInfo.phone, 
+              order: `Abandoned [฿${cartSubtotal}]: ${cartSummary}` 
+            })
+          });
+        } catch {
+          // Silent fail for tracking
+        }
+      }, 3000); // 3 second delay for "intent"
+      return () => clearTimeout(timer);
+    }
+  }, [shippingInfo.phone, shippingInfo.fullName, cart]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -60,6 +86,11 @@ export default function Checkout() {
         .then(res => res.json())
         .then(data => setAvailablePoints(data.points || 0))
         .catch(err => console.error("Error fetching points:", err))
+      // Fetch welcome code from automations
+      fetch("/api/checkout/welcome-code")
+        .then(res => res.ok ? res.json() : null)
+        .then(data => { if (data?.code) setWelcomeCode(data.code) })
+        .catch(() => {})
     }
   }, [status, router])
 
@@ -69,17 +100,19 @@ export default function Checkout() {
     if (shippingInfo.phone && shippingInfo.phone.length >= 9) {
       const timer = setTimeout(async () => {
         try {
+          const cartSubtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
           const res = await fetch("/api/checkout/evaluate-shipping", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phone: shippingInfo.phone, shippingMethod: shipping })
+            body: JSON.stringify({ phone: shippingInfo.phone, shippingMethod: shipping, cartSubtotal })
           });
           if (res.ok) {
             const data = await res.json();
             setShippingCost(data.shippingCost);
             setIsFreeShippingPromo(data.isFreeShippingApplied || false);
+            setFreeShippingReason(data.freeShippingReason || "");
           }
-        } catch (_e) {
+        } catch {
           setShippingCost(baseShipping);
         }
       }, 500);
@@ -87,8 +120,9 @@ export default function Checkout() {
     } else {
       setShippingCost(baseShipping);
       setIsFreeShippingPromo(false);
+      setFreeShippingReason("");
     }
-  }, [shippingInfo.phone, shipping]);
+  }, [shippingInfo.phone, shipping, cart]);
 
   if (status === "loading") {
     return (
@@ -468,6 +502,15 @@ export default function Checkout() {
 
                    {/* Points & Discounts */}
                    <div className="space-y-4 pt-10 border-t border-gray-100">
+                       {welcomeCode && (
+                         <div className="flex items-center justify-between bg-[#f9f5f6] border border-[#c3a2ab]/30 rounded-2xl px-4 py-3">
+                           <div>
+                             <p className="text-[10px] font-black uppercase tracking-widest text-[#c3a2ab]">ðŸŽ New Member Offer</p>
+                             <p className="text-xs text-gray-600 mt-0.5">Use code <strong className="font-mono text-gray-900">{welcomeCode}</strong> on your first order!</p>
+                           </div>
+                           <button onClick={() => setDiscountCode(welcomeCode)} className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 bg-[#c3a2ab] text-white rounded-xl hover:scale-105 transition-all ml-3 shrink-0">Apply</button>
+                         </div>
+                       )}
                       <div className="flex flex-col gap-3">
                          <div className="flex items-center justify-between">
                             <label className="text-[10px] font-black uppercase tracking-widest text-[#c3a2ab]">Rewards available</label>
@@ -511,7 +554,7 @@ export default function Checkout() {
                       </div>
                       <div className="flex justify-between items-center text-sm">
                          <span className="text-gray-400 font-medium flex flex-col items-start gap-1">
-                            <div>Shipping Fee {isFreeShippingPromo && <span className="ml-2 bg-green-50 text-green-600 border border-green-100 px-1.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest">1st Order Free</span>}</div>
+                            <div>Shipping Fee {isFreeShippingPromo && <span className="ml-2 bg-green-50 text-green-600 border border-green-100 px-1.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest">{freeShippingReason === "min_order" ? "Min Order Free" : "1st Order Free"}</span>}</div>
                          </span>
                          <span className={isFreeShippingPromo ? "text-green-500 font-bold uppercase tracking-widest text-xs" : "text-gray-900 font-bold"}>
                             {shippingCost === 0 ? "Free" : `฿${shippingCost}`}

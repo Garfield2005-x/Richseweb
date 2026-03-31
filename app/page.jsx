@@ -216,13 +216,13 @@ export default function Home() {
             <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold mt-2">The Icons of Richse</motion.h2>
           </motion.div>
           <div className="flex gap-3">
-            <button 
+            <button
               onClick={() => scroll('left')}
               className="size-12 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm bg-white/50 backdrop-blur-sm"
             >
               <span className="material-symbols-outlined notranslate text-xl">chevron_left</span>
             </button>
-            <button 
+            <button
               onClick={() => scroll('right')}
               className="size-12 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm bg-white/50 backdrop-blur-sm"
             >
@@ -231,7 +231,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div 
+        <div
           ref={scrollRef}
           className="flex gap-6 px-6 md:px-20 overflow-x-auto no-scrollbar pb-10 snap-x snap-mandatory items-stretch"
         >
@@ -285,7 +285,7 @@ export default function Home() {
                     <p className="font-display text-lg font-bold leading-tight line-clamp-1">{product.name}</p>
                     <p className="text-sm text-gray-500 line-clamp-2 h-10 overflow-hidden">{product.description}</p>
                   </div>
-                  
+
                   <div className="pt-2">
                     {product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && new Date() >= new Date(product.flashSaleStart) && new Date() <= new Date(product.flashSaleEnd) ? (
                       <div className="flex flex-col gap-1">

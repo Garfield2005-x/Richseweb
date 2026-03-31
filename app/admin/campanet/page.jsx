@@ -34,6 +34,7 @@ export default function AdminCampanet() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNotes, setEditingNotes] = useState("");
   const [saving, setSaving] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     fetchForms();
@@ -145,24 +146,29 @@ export default function AdminCampanet() {
     setIsModalOpen(true);
   };
 
-  const exportCSV = () => {
-    const headers = ["Date", "Name", "Phone", "Order", "Status", "Notes"];
-    const rows = filteredForms.map(f => [
-      new Date(f.createdAt).toLocaleString(),
-      f.name,
-      f.phone,
-      f.order,
-      f.status,
-      f.notes || ""
-    ]);
-    
-    let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `campanet_leads_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
+  const exportExcel = async () => {
+    setExporting(true);
+    try {
+      const res = await fetch("/api/admin/campanet/export");
+      if (!res.ok) throw new Error("Export failed");
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const cd   = res.headers.get("Content-Disposition") || "";
+      const match = cd.match(/filename="(.+?)"/);
+      link.href     = url;
+      link.download = match ? match[1] : `Richse_CRM_${new Date().toISOString().split("T")[0]}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      toast.success("ส่งออก Excel สำเร็จ! 🎉");
+    } catch (err) {
+      console.error(err);
+      toast.error("ไม่สามารถส่งออกไฟล์ได้");
+    } finally {
+      setExporting(false);
+    }
   };
 
   if (loading && forms.length === 0) return (
@@ -188,10 +194,14 @@ export default function AdminCampanet() {
         
         <div className="flex items-center gap-3 w-full lg:w-auto">
            <button 
-             onClick={exportCSV}
-             className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-100 text-gray-700 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-gray-50 transition-all shadow-sm"
+             onClick={exportExcel}
+             disabled={exporting}
+             className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-100 text-gray-700 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-gray-50 transition-all shadow-sm disabled:opacity-50"
            >
-             <Download size={16} /> Export CSV
+             {exporting
+               ? <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+               : <Download size={16} />}
+             {exporting ? "Exporting..." : "Export Excel"}
            </button>
            <button 
              onClick={fetchForms}

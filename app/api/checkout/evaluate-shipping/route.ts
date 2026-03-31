@@ -8,7 +8,9 @@ const rateLimiter = new Map<string, { count: number, resetTime: number }>();
 
 export async function POST(req: Request) {
   try {
-    const { phone, shippingMethod } = await req.json();
+    const { phone, shippingMethod, cartSubtotal: rawCartSubtotal } = await req.json();
+    const cartSubtotal = parseFloat(rawCartSubtotal || "0");
+
     const ip = req.headers.get("x-forwarded-for") || "unknown";
     
     // Rate Limit Check
@@ -33,32 +35,54 @@ export async function POST(req: Request) {
 
     let shippingCost = baseShippingRate; 
     let isFreeShippingApplied = false;
+    let freeShippingReason = "";
 
     // Retrieve active session securely inside API
     const session = await getServerSession(authOptions);
     const isLoggedIn = !!session?.user;
 
-    // Check if the global rule is enabled
-    const rule = await prisma.siteSetting.findUnique({
-      where: { key: "auto_free_shipping_first_order" }
+    // Fetch all relevant automation settings in one query
+    const allRules = await prisma.siteSetting.findMany({
+      where: { key: { in: [
+        "auto_free_shipping_first_order",
+        "auto_min_order_free_shipping",
+        "auto_min_order_threshold",
+      ]}}
     });
+    const ruleMap: Record<string, string> = {};
+    for (const r of allRules) ruleMap[r.key] = r.value;
 
-    // Enforce Member-Only (must be logged in) for First Order Shipping
-    if (rule?.value === "true" && phone && phone.trim().length >= 9 && isLoggedIn) {
-       // Check if this phone number has any previous orders
+    // Rule 1: First Order Free Shipping (Members Only)
+    if (ruleMap["auto_free_shipping_first_order"] === "true" && phone && phone.trim().length >= 9 && isLoggedIn) {
        const prevOrders = await prisma.order.count({
           where: { phone: phone.trim() }
        });
        if (prevOrders === 0) {
           shippingCost = 0;
           isFreeShippingApplied = true;
+          freeShippingReason = "first_order";
        }
+    }
+
+    // Rule 2: Min Order Free Shipping
+    if (!isFreeShippingApplied && ruleMap["auto_min_order_free_shipping"] === "true") {
+      const threshold = parseFloat(ruleMap["auto_min_order_threshold"] || "300");
+      if (cartSubtotal >= threshold) {
+        shippingCost = 0;
+        isFreeShippingApplied = true;
+        freeShippingReason = "min_order";
+      }
     }
 
     return NextResponse.json({ 
         shippingCost,
         isFreeShippingApplied,
-        message: isFreeShippingApplied ? "First Order Free Shipping applied!" : ""
+        freeShippingReason,
+        message: isFreeShippingApplied 
+          ? freeShippingReason === "first_order" 
+            ? "First Order Free Shipping applied!" 
+            : "Free Shipping — Min Order reached!"
+          : ""
     });
   } catch (error) {
     console.error("Evaluate shipping error:", error);

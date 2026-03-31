@@ -57,6 +57,23 @@ export async function GET(req: Request) {
       take: 5,
     });
 
+    // --- NEW: Abandoned Checkout Stats ---
+    // Tracking logs that start with "Abandoned"
+    const abandonedLogs = await prisma.advancedTrackingLog.findMany({
+      where: {
+        order: { contains: "Abandoned" },
+        ...baseWhere
+      },
+      select: { phone: true }
+    });
+    const uniqueAbandonedPhones = [...new Set(abandonedLogs.map(l => l.phone))];
+    const totalPotentialCustomers = uniqueAbandonedPhones.length;
+    
+    // Conversion Rate calculation
+    const conversionRate = totalPotentialCustomers > 0 
+      ? Math.round((totalOrders / (totalOrders + totalPotentialCustomers)) * 100) 
+      : (totalOrders > 0 ? 100 : 0);
+
     // --- NEW: Chart Data Aggregation ---
     // If a custom date range is provided, group by Day. Otherwise, default to last 6 Months.
     let chartData = [];
@@ -172,6 +189,8 @@ export async function GET(req: Request) {
       totalSales,
       totalProducts,
       totalSubscribers,
+      totalPotentialCustomers, // Abandoned
+      conversionRate,
       recentOrders,
       monthlySales: chartData,
       bestSellers
