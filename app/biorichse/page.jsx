@@ -167,7 +167,7 @@ export default function BiorichsePage() {
                         </a>
 
                         {/* Primary Tile: Official Website (Moved to Bottom) */}
-                        <Link
+                        <a
                             className="md:col-span-2 group relative overflow-hidden bg-white text-[#0e0e13] p-4 md:p-5 rounded-[1rem] flex flex-row md:flex-col items-center md:justify-between min-h-[70px] md:min-h-[120px] active:scale-[0.98] transition-transform hover:bg-[#ff88b4] hover:text-[#4b0027] gap-3 md:gap-0"
                             href="/"
                         >
@@ -183,7 +183,7 @@ export default function BiorichsePage() {
                                     <span className="hidden md:inline">Visit Now</span> <span className="material-symbols-outlined text-sm md:text-base">open_in_new</span>
                                 </div>
                             </div>
-                        </Link>
+                        </a>
                     </div>
                 </div>
 
