@@ -104,6 +104,8 @@ export default function Home() {
     setLoading(false);
   };
 
+  if (!hasMounted) return null;
+
   return (
     <div>
       <Navbar />

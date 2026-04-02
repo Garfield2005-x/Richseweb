@@ -105,7 +105,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="th">
-      <head />
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          rel="stylesheet"
+        />
+        <meta name="theme-color" content="#c3a2ab" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
+      </head>
       <body className={`${montserrat.variable} ${dbHeavent.variable} font-sans antialiased`}>
         <CartProvider>
         <Providers>
