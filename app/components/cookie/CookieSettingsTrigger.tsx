@@ -2,14 +2,16 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { Cookie } from "lucide-react";
 import { useCookieConsent } from "@/lib/hooks/useCookieConsent";
 
 export default function CookieSettingsTrigger() {
+  const pathname = usePathname();
   const { consent, setIsOpen, isInitialized } = useCookieConsent();
 
-  // Don't show until initialized and only if consent is already decided (banner is hidden)
-  if (!isInitialized || consent === null) return null;
+  // Don't show until initialized, only if consent is already decided, and hide on biorichse page
+  if (!isInitialized || consent === null || pathname === "/biorichse") return null;
 
   return (
     <motion.button

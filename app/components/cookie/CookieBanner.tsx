@@ -3,13 +3,17 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Cookie } from "lucide-react";
 import { useCookieConsent } from "@/lib/hooks/useCookieConsent";
 import CookieSettingsModal from "./CookieSettingsModal";
 
 export default function CookieBanner() {
+  const pathname = usePathname();
   const { consent, isInitialized, acceptAll, rejectAll, updateConsent, isOpen, setIsOpen } = useCookieConsent();
   const [shouldShow, setShouldShow] = useState(false);
+
+  if (pathname === "/biorichse") return null;
 
   useEffect(() => {
     // Only show if consent is null (not set yet) and script is initialized

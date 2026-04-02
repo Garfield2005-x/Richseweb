@@ -23,14 +23,6 @@ export default function BiorichsePage() {
 
             {/* Main Content */}
             <main className="flex-grow pt-16 pb-20 px-6 max-w-7xl mx-auto w-full">
-                {/* Logo Section */}
-                <div className="flex justify-center mb-12">
-                    <img
-                        className="w-20 h-20 object-contain rounded-full border-2 border-[#ff88b4]/20 p-1 shadow-lg shadow-[#ff88b4]/5 bg-white"
-                        alt="Richse Brand Logo"
-                        src="/logo.png"
-                    />
-                </div>
 
                 {/* Hero Section */}
                 <div className="grid lg:grid-cols-12 gap-10 items-start">
