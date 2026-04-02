@@ -57,7 +57,7 @@ export default function AdminCustomers() {
       <div className="flex flex-col gap-6 ">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
           <div>
-            <h1 className="text-4xl font-display font-bold mb-2 text-gray-900">Customer Intelligence</h1>
+            <h1 className="text-[48px] font-display font-bold mb-2 text-gray-900">Customer Intelligence</h1>
             <p className="text-gray-500">Manage user profiles, loyalty points, and roles seamlessly.</p>
           </div>
         </div>
@@ -66,8 +66,8 @@ export default function AdminCustomers() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/20 flex items-center justify-between group hover:border-[#c3a2ab] transition-all">
             <div>
-              <p className="text-sm font-bold tracking-wider text-gray-400 uppercase mb-1">Total Users</p>
-              <p className="text-3xl font-display font-bold text-gray-900">{totalCustomers}</p>
+              <p className="text-[22px] font-bold tracking-wider text-gray-400 uppercase mb-1">Total Users</p>
+              <p className="text-[44px] font-display font-bold text-gray-900">{totalCustomers}</p>
             </div>
             <div className="w-14 h-14 bg-gray-50 group-hover:bg-[#c3a2ab]/10 rounded-2xl flex items-center justify-center transition-colors">
               <Users className="w-6 h-6 text-gray-400 group-hover:text-[#c3a2ab] transition-colors" />
@@ -76,8 +76,8 @@ export default function AdminCustomers() {
           
           <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/20 flex items-center justify-between group hover:border-red-200 transition-all">
             <div>
-              <p className="text-sm font-bold tracking-wider text-gray-400 uppercase mb-1">Admins/Staff</p>
-              <p className="text-3xl font-display font-bold text-gray-900">{totalAdmins}</p>
+              <p className="text-[22px] font-bold tracking-wider text-gray-400 uppercase mb-1">Admins/Staff</p>
+              <p className="text-[44px] font-display font-bold text-gray-900">{totalAdmins}</p>
             </div>
             <div className="w-14 h-14 bg-gray-50 group-hover:bg-red-50 rounded-2xl flex items-center justify-center transition-colors">
               <ShieldCheck className="w-6 h-6 text-gray-400 group-hover:text-red-500 transition-colors" />
@@ -86,8 +86,8 @@ export default function AdminCustomers() {
 
           <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/20 flex items-center justify-between group hover:border-purple-200 transition-all">
             <div>
-              <p className="text-sm font-bold tracking-wider text-gray-400 uppercase mb-1">Avg. Loyalty Points</p>
-              <p className="text-3xl font-display font-bold text-gray-900">{avgPoints}</p>
+              <p className="text-[22px] font-bold tracking-wider text-gray-400 uppercase mb-1">Avg. Loyalty Points</p>
+              <p className="text-[44px] font-display font-bold text-gray-900">{avgPoints}</p>
             </div>
             <div className="w-14 h-14 bg-gray-50 group-hover:bg-purple-50 rounded-2xl flex items-center justify-center transition-colors">
               <Award className="w-6 h-6 text-gray-400 group-hover:text-purple-500 transition-colors" />
@@ -104,7 +104,7 @@ export default function AdminCustomers() {
           </div>
           <input
             type="text"
-            className="block w-full pl-11 pr-4 py-3 border-none bg-gray-50 rounded-xl leading-5 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] sm:text-sm transition-shadow"
+            className="block w-full pl-11 pr-4 py-3 border-none bg-gray-50 rounded-xl leading-5 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] sm:text-[22px] transition-shadow"
             placeholder="Search by name, email, or phone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -116,7 +116,7 @@ export default function AdminCustomers() {
              <button
                key={role}
                onClick={() => setFilterRole(role)}
-               className={`px-5 py-2.5 rounded-xl text-sm font-bold tracking-wider transition-all duration-300 ${
+               className={`px-5 py-2.5 rounded-xl text-[22px] font-bold tracking-wider transition-all duration-300 ${
                   filterRole === role 
                    ? "bg-[#161314] text-white shadow-md shadow-black/10" 
                    : "bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-900"
@@ -134,11 +134,11 @@ export default function AdminCustomers() {
           {loading ? (
             <div className="p-20 flex flex-col items-center justify-center text-gray-400 space-y-4">
               <div className="w-10 h-10 border-4 border-gray-200 border-t-[#c3a2ab] rounded-full animate-spin"></div>
-              <p className="font-medium tracking-wider uppercase text-sm">Loading profiles...</p>
+              <p className="font-medium tracking-wider uppercase text-[22px]">Loading profiles...</p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
-              <thead className="bg-gray-50/80 backdrop-blur-md sticky top-0 z-10 border-b border-gray-100 text-gray-400 text-xs uppercase tracking-widest font-bold">
+              <thead className="bg-gray-50/80 backdrop-blur-md sticky top-0 z-10 border-b border-gray-100 text-gray-400 text-[20px] uppercase tracking-widest font-bold">
                 <tr>
                   <th className="py-5 px-8">Customer Profile</th>
                   <th className="py-5 px-8 shrink-0">Contact</th>
@@ -158,7 +158,7 @@ export default function AdminCustomers() {
                             {customer.image ? (
                               <img src={customer.image} alt={customer.name} className="w-full h-full object-cover" />
                             ) : (
-                              <span className="material-symbols-outlined notranslate text-[#c3a2ab]/40 text-2xl">person</span>
+                              <span className="material-symbols-outlined notranslate text-[#c3a2ab]/40 text-[36px]">person</span>
                             )}
                           </div>
                           <div className="flex flex-col">
@@ -168,28 +168,28 @@ export default function AdminCustomers() {
                                     <span className="text-[8px] bg-red-50 text-red-500 border border-red-100 font-bold uppercase tracking-widest px-1.5 py-0.5 rounded ml-2 shadow-sm">Google</span>
                                 )}
                             </div>
-                            <span className="text-xs text-gray-500 mt-0.5 truncate max-w-[150px] md:max-w-xs">{customer.email}</span>
+                            <span className="text-[20px] text-gray-500 mt-0.5 truncate max-w-[150px] md:max-w-xs">{customer.email}</span>
                           </div>
                         </div>
                       </td>
                       <td className="py-5 px-8 whitespace-nowrap">
-                        <span className="text-sm font-medium text-gray-600 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+                        <span className="text-[22px] font-medium text-gray-600 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
                           {customer.phone || "No phone"}
                         </span>
                       </td>
                       <td className="py-5 px-8 max-w-[250px]">
                         {customer.address ? (
-                          <div className="text-xs text-gray-500 line-clamp-2 leading-relaxed" title={`${customer.address} ${customer.subdistrict} ${customer.district} ${customer.province} ${customer.postal_code}`}>
+                          <div className="text-[20px] text-gray-500 line-clamp-2 leading-relaxed" title={`${customer.address} ${customer.subdistrict} ${customer.district} ${customer.province} ${customer.postal_code}`}>
                             {customer.address}, {customer.district}, {customer.province}
                           </div>
                         ) : (
-                          <span className="text-xs font-bold uppercase tracking-wider text-gray-300">Unspecified</span>
+                          <span className="text-[20px] font-bold uppercase tracking-wider text-gray-300">Unspecified</span>
                         )}
                       </td>
                       <td className="py-5 px-8 text-center whitespace-nowrap">
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-purple-50 border border-purple-100 text-purple-700">
                            <Award className="w-3.5 h-3.5" />
-                           <span className="text-sm font-bold">{customer.points?.toLocaleString() || 0}</span>
+                           <span className="text-[22px] font-bold">{customer.points?.toLocaleString() || 0}</span>
                         </div>
                       </td>
                       <td className="py-5 px-8 text-center">
@@ -216,8 +216,8 @@ export default function AdminCustomers() {
                     <td colSpan="6" className="py-20 text-center">
                        <div className="flex flex-col items-center justify-center text-gray-400 space-y-3">
                           <Search className="w-12 h-12 text-gray-200" />
-                          <p className="text-lg font-medium text-gray-500">No customers found</p>
-                          <p className="text-sm">Try adjusting your search or filters.</p>
+                          <p className="text-[26px] font-medium text-gray-500">No customers found</p>
+                          <p className="text-[22px]">Try adjusting your search or filters.</p>
                        </div>
                     </td>
                   </tr>

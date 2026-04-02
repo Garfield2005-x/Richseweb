@@ -203,14 +203,14 @@ export default function AdminProducts() {
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-display font-bold mb-2">Products Management</h1>
+          <h1 className="text-[44px] font-display font-bold mb-2">Products Management</h1>
           <p className="text-gray-500">Add, edit or remove products from your store.</p>
         </div>
         <button
           onClick={() => handleOpenModal()}
           className="bg-[#c3a2ab] text-white px-6 py-3 rounded-xl font-bold hover:opacity-90 transition-opacity flex items-center gap-2"
         >
-          <span className="material-symbols-outlined text-sm">add</span>
+          <span className="material-symbols-outlined text-[22px]">add</span>
           Add Product
         </button>
       </div>
@@ -218,7 +218,7 @@ export default function AdminProducts() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-gray-50 text-gray-500 text-sm">
+            <thead className="bg-gray-50 text-gray-500 text-[22px]">
               <tr>
                 <th className="py-4 px-6 font-medium">Image</th>
                 <th className="py-4 px-6 font-medium">Name</th>
@@ -243,19 +243,19 @@ export default function AdminProducts() {
                     <td className="py-4 px-6 font-medium text-gray-900">{product.name}</td>
                     <td className="py-4 px-6">
                       {product.variants?.length > 0 ? (
-                        <div className="text-sm">
+                        <div className="text-[22px]">
                           <span className="font-bold text-[#c3a2ab]">Multiple Sizes ({product.variants.length})</span>
-                          <div className="text-xs text-gray-500 mt-1 line-clamp-1">{product.variants.map(v => v.name).join(", ")}</div>
+                          <div className="text-[20px] text-gray-500 mt-1 line-clamp-1">{product.variants.map(v => v.name).join(", ")}</div>
                         </div>
                       ) : (
                         `฿${product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}`
                       )}
                     </td>
-                    <td className="py-4 px-6 text-sm text-gray-600">{product.category}</td>
-                    <td className="py-4 px-6 text-sm text-gray-600">{product.skinType}</td>
+                    <td className="py-4 px-6 text-[22px] text-gray-600">{product.category}</td>
+                    <td className="py-4 px-6 text-[22px] text-gray-600">{product.skinType}</td>
                     <td className="py-4 px-6">
                       {product.variants?.length > 0 ? (
-                        <div className="text-sm">
+                        <div className="text-[22px]">
                           <span className="text-gray-600 border border-gray-200 px-2 py-1 rounded-md bg-gray-50">Variant Managed</span>
                         </div>
                       ) : (
@@ -280,17 +280,17 @@ export default function AdminProducts() {
                       )}
                     </td>
                     <td className="py-4 px-6">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wider ${product.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                      <span className={`px-3 py-1 rounded-full text-[20px] font-bold tracking-wider ${product.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
                         {product.isActive ? "ACTIVE" : "HIDDEN"}
                       </span>
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3 text-gray-500">
                         <button onClick={() => handleOpenModal(product)} className="hover:text-blue-600 transition-colors">
-                          <span className="material-symbols-outlined text-sm">edit</span>
+                          <span className="material-symbols-outlined text-[22px]">edit</span>
                         </button>
                         <button onClick={() => handleDelete(product.id)} className="hover:text-red-600 transition-colors">
-                          <span className="material-symbols-outlined text-sm">delete</span>
+                          <span className="material-symbols-outlined text-[22px]">delete</span>
                         </button>
                       </div>
                     </td>
@@ -310,7 +310,7 @@ export default function AdminProducts() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white">
-              <h2 className="text-xl font-bold">{editingId ? "Edit Product" : "Add New Product"}</h2>
+              <h2 className="text-[30px] font-bold">{editingId ? "Edit Product" : "Add New Product"}</h2>
               <button onClick={handleCloseModal} className="text-gray-400 hover:text-gray-600">
                 <span className="material-symbols-outlined notranslate">close</span>
               </button>
@@ -318,7 +318,7 @@ export default function AdminProducts() {
             <div className="p-6">
               <form onSubmit={handleSave} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Product Name</label>
+                  <label className="block text-[22px] font-bold text-gray-700 mb-2">Product Name</label>
                   <input
                     type="text"
                     required
@@ -331,7 +331,7 @@ export default function AdminProducts() {
 
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Price (฿) <span className="text-gray-400 font-normal ml-1 text-xs">(Base price if no variants)</span></label>
+                    <label className="block text-[22px] font-bold text-gray-700 mb-2">Price (฿) <span className="text-gray-400 font-normal ml-1 text-[20px]">(Base price if no variants)</span></label>
                     <input
                       type="number"
                       required
@@ -344,7 +344,7 @@ export default function AdminProducts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Stock Quantity <span className="text-gray-400 font-normal ml-1 text-xs">(Base stock if no variants)</span></label>
+                    <label className="block text-[22px] font-bold text-gray-700 mb-2">Stock Quantity <span className="text-gray-400 font-normal ml-1 text-[20px]">(Base stock if no variants)</span></label>
                     <input
                       type="number"
                       required
@@ -359,13 +359,13 @@ export default function AdminProducts() {
 
                 <div className="border border-gray-200 bg-gray-50 p-4 rounded-xl space-y-4">
                   <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-gray-700 font-bold text-sm tracking-wider uppercase flex items-center gap-2">
+                    <h3 className="text-gray-700 font-bold text-[22px] tracking-wider uppercase flex items-center gap-2">
                       <span className="material-symbols-outlined notranslate">format_list_bulleted</span> Product Variants (Sizes)
                     </h3>
                     <button
                       type="button"
                       onClick={handleAddVariant}
-                      className="text-xs bg-white border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-gray-100 font-bold transition-colors"
+                      className="text-[20px] bg-white border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-gray-100 font-bold transition-colors"
                     >
                       + Add Variant
                     </button>
@@ -382,7 +382,7 @@ export default function AdminProducts() {
                               required
                               value={variant.name}
                               onChange={(e) => handleVariantChange(index, "name", e.target.value)}
-                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
+                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[22px] focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
                               placeholder="e.g. 15ml"
                             />
                           </div>
@@ -395,7 +395,7 @@ export default function AdminProducts() {
                               step="0.01"
                               value={variant.price}
                               onChange={(e) => handleVariantChange(index, "price", e.target.value)}
-                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
+                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[22px] focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
                               placeholder="0.00"
                             />
                           </div>
@@ -407,7 +407,7 @@ export default function AdminProducts() {
                               min="0"
                               value={variant.stock}
                               onChange={(e) => handleVariantChange(index, "stock", e.target.value)}
-                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
+                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[22px] focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
                               placeholder="0"
                             />
                           </div>
@@ -417,7 +417,7 @@ export default function AdminProducts() {
                               type="text"
                               value={variant.image || ""}
                               onChange={(e) => handleVariantChange(index, "image", e.target.value)}
-                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
+                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[22px] focus:outline-none focus:ring-1 focus:ring-[#c3a2ab]"
                               placeholder="e.g. /size15.png"
                             />
                           </div>
@@ -427,48 +427,48 @@ export default function AdminProducts() {
                             className="text-red-400 hover:text-red-600 self-end mb-2 ml-2"
                             title="Remove Variant"
                           >
-                            <span className="material-symbols-outlined text-sm">delete</span>
+                            <span className="material-symbols-outlined text-[22px]">delete</span>
                           </button>
                         </div>
                       ))}
-                      <p className="text-xs text-gray-500 italic">When variants exist, base price/stock will be ignored. Customers must select a variant.</p>
+                      <p className="text-[20px] text-gray-500 italic">When variants exist, base price/stock will be ignored. Customers must select a variant.</p>
                     </div>
                   )}
                 </div>
 
                 <div className="border border-[#c3a2ab]/30 bg-[#c3a2ab]/5 p-4 rounded-xl space-y-4">
-                  <h3 className="text-[#c3a2ab] font-bold text-sm tracking-wider uppercase mb-2 flex items-center gap-2">
+                  <h3 className="text-[#c3a2ab] font-bold text-[22px] tracking-wider uppercase mb-2 flex items-center gap-2">
                     <span className="material-symbols-outlined notranslate">bolt</span> Flash Sale Settings (Optional)
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">Flash Price (฿)</label>
+                      <label className="block text-[20px] font-bold text-gray-700 mb-1">Flash Price (฿)</label>
                       <input
                         type="number"
                         min="0"
                         step="0.01"
                         value={formData.flashSalePrice}
                         onChange={(e) => setFormData({ ...formData, flashSalePrice: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] text-sm"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] text-[22px]"
                         placeholder="0.00"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">Start Time</label>
+                      <label className="block text-[20px] font-bold text-gray-700 mb-1">Start Time</label>
                       <input
                         type="datetime-local"
                         value={formData.flashSaleStart}
                         onChange={(e) => setFormData({ ...formData, flashSaleStart: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] text-sm"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] text-[22px]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">End Time</label>
+                      <label className="block text-[20px] font-bold text-gray-700 mb-1">End Time</label>
                       <input
                         type="datetime-local"
                         value={formData.flashSaleEnd}
                         onChange={(e) => setFormData({ ...formData, flashSaleEnd: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] text-sm"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] text-[22px]"
                       />
                     </div>
                   </div>
@@ -476,7 +476,7 @@ export default function AdminProducts() {
 
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
+                    <label className="block text-[22px] font-bold text-gray-700 mb-2">Category</label>
                     <select
                       value={formData.category}
                       onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -490,7 +490,7 @@ export default function AdminProducts() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Skin Type</label>
+                    <label className="block text-[22px] font-bold text-gray-700 mb-2">Skin Type</label>
                     <select
                       value={formData.skinType}
                       onChange={(e) => setFormData({ ...formData, skinType: e.target.value })}
@@ -506,7 +506,7 @@ export default function AdminProducts() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Image URL</label>
+                  <label className="block text-[22px] font-bold text-gray-700 mb-2">Image URL</label>
                   <input
                     type="text"
                     required
@@ -518,7 +518,7 @@ export default function AdminProducts() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Description / Tagline</label>
+                  <label className="block text-[22px] font-bold text-gray-700 mb-2">Description / Tagline</label>
                   <textarea
                     required
                     value={formData.description}
@@ -530,7 +530,7 @@ export default function AdminProducts() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">How to Use (Instructions)</label>
+                    <label className="block text-[22px] font-bold text-gray-700 mb-2">How to Use (Instructions)</label>
                     <textarea
                       value={formData.howToUse}
                       onChange={(e) => setFormData({ ...formData, howToUse: e.target.value })}
@@ -539,7 +539,7 @@ export default function AdminProducts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Ingredients</label>
+                    <label className="block text-[22px] font-bold text-gray-700 mb-2">Ingredients</label>
                     <textarea
                       value={formData.ingredients}
                       onChange={(e) => setFormData({ ...formData, ingredients: e.target.value })}

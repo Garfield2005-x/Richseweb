@@ -64,7 +64,7 @@ export default function SiteSettings() {
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-display font-bold text-gray-900 uppercase tracking-widest">Site Settings</h1>
+        <h1 className="text-[44px] font-display font-bold text-gray-900 uppercase tracking-widest">Site Settings</h1>
         <p className="text-gray-500 mt-2">Manage global configurations and homepage content.</p>
       </div>
 
@@ -74,12 +74,12 @@ export default function SiteSettings() {
             <div className="p-2 bg-[#c3a2ab]/10 text-[#c3a2ab] rounded-lg">
               <Video size={20} />
             </div>
-            <h2 className="text-lg font-bold text-gray-900">Homepage Creator Videos</h2>
+            <h2 className="text-[26px] font-bold text-gray-900">Homepage Creator Videos</h2>
           </div>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 bg-[#161314] hover:bg-black text-white px-6 py-2 rounded-xl font-bold text-sm transition-all disabled:opacity-50"
+            className="flex items-center gap-2 bg-[#161314] hover:bg-black text-white px-6 py-2 rounded-xl font-bold text-[22px] transition-all disabled:opacity-50"
           >
             <Save size={16} />
             {saving ? "Saving..." : "Save Changes"}
@@ -87,7 +87,7 @@ export default function SiteSettings() {
         </div>
 
         <div className="p-6 space-y-6">
-          <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex gap-3 text-blue-700 text-sm">
+          <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex gap-3 text-blue-700 text-[22px]">
             <HelpCircle size={18} className="shrink-0" />
             <p>
               Enter the URLs for the TikTok creator videos shown on the homepage. 
@@ -99,7 +99,7 @@ export default function SiteSettings() {
           <div className="grid gap-6">
             {videos.map((vid, index) => (
               <div key={index} className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                <label className="text-[20px] font-bold text-gray-500 uppercase tracking-wider">
                   Video Slot {index + 1}
                 </label>
                 <input
@@ -107,7 +107,7 @@ export default function SiteSettings() {
                   value={vid}
                   onChange={(e) => updateVideo(index, e.target.value)}
                   placeholder={`e.g. https://your-storage.com/tiktok-${index + 1}.mp4`}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#c3a2ab] transition-colors font-mono text-sm"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#c3a2ab] transition-colors font-mono text-[22px]"
                 />
               </div>
             ))}

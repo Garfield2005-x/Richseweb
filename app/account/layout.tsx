@@ -47,10 +47,10 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           <aside className="w-full md:w-64 flex-shrink-0">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="p-6 bg-[#f8f6f4] border-b border-gray-100">
-                <h3 className="text-lg font-display font-medium text-gray-900 truncate">
+                <h3 className="text-[26px] font-display font-medium text-gray-900 truncate">
                   Hello, {session.user?.name || "Customer"} 🤍
                 </h3>
-                <p className="text-sm text-gray-500 truncate mt-1">{session.user?.email}</p>
+                <p className="text-[22px] text-gray-500 truncate mt-1">{session.user?.email}</p>
               </div>
               <nav className="p-4 space-y-1">
                 {navItems.map((item) => {
@@ -59,7 +59,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                     <Link
                       key={item.name}
                       href={item.href}
-                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                      className={`flex items-center px-4 py-3 text-[22px] font-medium rounded-lg transition-colors ${
                         isActive
                           ? "bg-[#c3a2ab] text-white"
                           : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
@@ -72,7 +72,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                 })}
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
-                  className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg text-red-600 hover:bg-red-50 transition-colors mt-4"
+                  className="w-full flex items-center px-4 py-3 text-[22px] font-medium rounded-lg text-red-600 hover:bg-red-50 transition-colors mt-4"
                 >
                   <LogOut className="mr-3 h-5 w-5 text-red-400" />
                   Sign Out

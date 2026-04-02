@@ -154,12 +154,12 @@ export default function AdminOrders() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-display font-bold text-gray-900 mb-1">Orders Management</h1>
-          <p className="text-gray-500 text-sm">Monitor sales, track shipments and manage customer fulfillment.</p>
+          <h1 className="text-[44px] font-display font-bold text-gray-900 mb-1">Orders Management</h1>
+          <p className="text-gray-500 text-[22px]">Monitor sales, track shipments and manage customer fulfillment.</p>
         </div>
         <div className="flex items-center gap-2">
            <button onClick={fetchOrders} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500">
-             <span className="material-symbols-outlined notranslate text-sm">refresh</span>
+             <span className="material-symbols-outlined notranslate text-[22px]">refresh</span>
            </button>
         </div>
       </div>
@@ -171,9 +171,9 @@ export default function AdminOrders() {
             <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
               <CreditCard className="w-5 h-5" />
             </div>
-            <span className="text-sm font-medium text-gray-500">Total Revenue</span>
+            <span className="text-[22px] font-medium text-gray-500">Total Revenue</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">฿{stats.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+          <p className="text-[36px] font-bold text-gray-900">฿{stats.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
           <div className="mt-1 text-[10px] text-emerald-600 font-bold uppercase tracking-wider">From completed orders</div>
         </div>
 
@@ -182,9 +182,9 @@ export default function AdminOrders() {
             <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
               <AlertCircle className="w-5 h-5" />
             </div>
-            <span className="text-sm font-medium text-gray-500">Pending</span>
+            <span className="text-[22px] font-medium text-gray-500">Pending</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.pendingCount}</p>
+          <p className="text-[36px] font-bold text-gray-900">{stats.pendingCount}</p>
           <div className="mt-1 text-[10px] text-amber-600 font-bold uppercase tracking-wider">Wait for fulfillment</div>
         </div>
 
@@ -193,9 +193,9 @@ export default function AdminOrders() {
             <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
               <Truck className="w-5 h-5" />
             </div>
-            <span className="text-sm font-medium text-gray-500">Shipped</span>
+            <span className="text-[22px] font-medium text-gray-500">Shipped</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.shippedCount}</p>
+          <p className="text-[36px] font-bold text-gray-900">{stats.shippedCount}</p>
           <div className="mt-1 text-[10px] text-blue-600 font-bold uppercase tracking-wider">In transit</div>
         </div>
 
@@ -204,9 +204,9 @@ export default function AdminOrders() {
             <div className="p-2 bg-purple-50 text-purple-600 rounded-xl">
               <ClipboardList className="w-5 h-5" />
             </div>
-            <span className="text-sm font-medium text-gray-500">All Orders</span>
+            <span className="text-[22px] font-medium text-gray-500">All Orders</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.totalCount}</p>
+          <p className="text-[36px] font-bold text-gray-900">{stats.totalCount}</p>
           <div className="mt-1 text-[10px] text-purple-600 font-bold uppercase tracking-wider">Lifetime total</div>
         </div>
       </div>
@@ -218,7 +218,7 @@ export default function AdminOrders() {
           <input 
             type="text"
             placeholder="Search by order #, customer name or phone..."
-            className="w-full pl-12 pr-4 py-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-[#c3a2ab] outline-none"
+            className="w-full pl-12 pr-4 py-3 bg-gray-50 border-none rounded-xl text-[22px] focus:ring-2 focus:ring-[#c3a2ab] outline-none"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -266,7 +266,7 @@ export default function AdminOrders() {
                             <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" title="New Order" />
                           )}
                         </p>
-                        <p className="text-xs text-gray-400 flex items-center gap-1">
+                        <p className="text-[20px] text-gray-400 flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           {new Date(order.created_at).toLocaleDateString()} {new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </p>
@@ -275,7 +275,7 @@ export default function AdminOrders() {
                     <td className="py-5 px-6">
                       <div className="space-y-1">
                         <p className="font-semibold text-gray-900 underline-offset-4 decoration-[#c3a2ab]/30 group-hover:underline">{order.full_name}</p>
-                        <p className="text-xs text-gray-500 flex items-center gap-1">
+                        <p className="text-[20px] text-gray-500 flex items-center gap-1">
                           <Phone className="w-3 h-3" />
                           {order.phone}
                         </p>
@@ -286,11 +286,11 @@ export default function AdminOrders() {
                         <div className="p-1.5 bg-gray-100 rounded-lg text-gray-600">
                           <Package className="w-4 h-4" />
                         </div>
-                        <span className="text-sm font-medium text-gray-700">{order.order_items.length} สินค้า</span>
+                        <span className="text-[22px] font-medium text-gray-700">{order.order_items.length} สินค้า</span>
                       </div>
                     </td>
                     <td className="py-5 px-6 text-right lg:text-left">
-                      <p className="font-bold text-gray-900 text-lg">฿{order.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                      <p className="font-bold text-gray-900 text-[26px]">฿{order.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                     </td>
                     <td className="py-5 px-6">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider border ${getStatusStyle(order.status)} uppercase`}>
@@ -341,7 +341,7 @@ export default function AdminOrders() {
                   <td colSpan="6" className="py-20 text-center">
                     <div className="flex flex-col items-center gap-2 text-gray-400">
                       <Search className="w-10 h-10 opacity-20" />
-                      <p className="text-sm font-medium">No matches found for your criteria</p>
+                      <p className="text-[22px] font-medium">No matches found for your criteria</p>
                     </div>
                   </td>
                 </tr>
@@ -358,11 +358,11 @@ export default function AdminOrders() {
             {/* Modal Header */}
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <h2 className="text-[30px] font-bold text-gray-900 flex items-center gap-2">
                   Order Details
-                  <span className="text-sm font-normal text-gray-400">#{selectedOrder.order_number}</span>
+                  <span className="text-[22px] font-normal text-gray-400">#{selectedOrder.order_number}</span>
                 </h2>
-                <p className="text-xs text-gray-500 mt-1">{new Date(selectedOrder.created_at).toLocaleString()}</p>
+                <p className="text-[20px] text-gray-500 mt-1">{new Date(selectedOrder.created_at).toLocaleString()}</p>
               </div>
               <button 
                 onClick={() => setSelectedOrder(null)}
@@ -379,7 +379,7 @@ export default function AdminOrders() {
                 <div className="space-y-1">
                   <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Current Status</span>
                   <div className="flex items-center gap-2">
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${getStatusStyle(selectedOrder.status)}`}>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[20px] font-bold border ${getStatusStyle(selectedOrder.status)}`}>
                       {getStatusIcon(selectedOrder.status)}
                       {selectedOrder.status}
                     </span>
@@ -396,7 +396,7 @@ export default function AdminOrders() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Customer Information */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
+                  <h3 className="text-[22px] font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
                     <User className="w-4 h-4" /> Customer Info
                   </h3>
                   <div className="space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
@@ -413,11 +413,11 @@ export default function AdminOrders() {
 
                 {/* Delivery Address */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
+                  <h3 className="text-[22px] font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
                     <MapPin className="w-4 h-4" /> Shipping Address
                   </h3>
                   <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                     <p className="text-sm text-gray-700 leading-relaxed font-medium">
+                     <p className="text-[22px] text-gray-700 leading-relaxed font-medium">
                        {selectedOrder.address}<br />
                        {selectedOrder.subdistrict}, {selectedOrder.district}<br />
                        {selectedOrder.province} {selectedOrder.postal_code}
@@ -431,7 +431,7 @@ export default function AdminOrders() {
 
               {/* Order Items */}
               <div className="space-y-4">
-                <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
+                <h3 className="text-[22px] font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
                   <Package className="w-4 h-4" /> Order Items ({selectedOrder.order_items.length})
                 </h3>
                 <div className="space-y-2">
@@ -443,7 +443,7 @@ export default function AdminOrders() {
                         </div>
                         <div>
                           <p className="font-bold text-gray-900">{item.product_name}</p>
-                          <p className="text-xs text-gray-500">฿{item.price.toLocaleString()} / ชิ้น</p>
+                          <p className="text-[20px] text-gray-500">฿{item.price.toLocaleString()} / ชิ้น</p>
                         </div>
                       </div>
                       <p className="font-bold text-gray-900 font-display">฿{(item.price * item.quantity).toLocaleString()}</p>
@@ -454,23 +454,23 @@ export default function AdminOrders() {
 
               {/* Order Summary */}
               <div className="bg-gray-900 text-white p-6 rounded-3xl shadow-xl space-y-4">
-                 <div className="flex justify-between text-sm opacity-60">
+                 <div className="flex justify-between text-[22px] opacity-60">
                    <span>Subtotal</span>
                    <span>฿{selectedOrder.subtotal.toLocaleString()}</span>
                  </div>
                  {selectedOrder.points_discount > 0 && (
-                   <div className="flex justify-between text-sm text-emerald-400 font-medium">
+                   <div className="flex justify-between text-[22px] text-emerald-400 font-medium">
                      <span>Points Discount</span>
                      <span>- ฿{selectedOrder.points_discount.toLocaleString()}</span>
                    </div>
                  )}
-                 <div className="flex justify-between text-sm opacity-60">
+                 <div className="flex justify-between text-[22px] opacity-60">
                    <span>Shipping & Tax</span>
                    <span>฿{selectedOrder.tax.toLocaleString()}</span>
                  </div>
                  <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                    <span className="font-bold uppercase tracking-widest text-xs">Total Amount</span>
-                    <span className="text-2xl font-bold font-display tracking-tight text-[#c3a2ab]">฿{selectedOrder.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                    <span className="font-bold uppercase tracking-widest text-[20px]">Total Amount</span>
+                    <span className="text-[36px] font-bold font-display tracking-tight text-[#c3a2ab]">฿{selectedOrder.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                  </div>
               </div>
             </div>
@@ -480,16 +480,16 @@ export default function AdminOrders() {
                <div className="flex items-center gap-2">
                  <button 
                   onClick={() => window.print()}
-                  className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-100 transition-all flex items-center gap-2"
+                  className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl text-[20px] font-bold uppercase tracking-widest hover:bg-gray-100 transition-all flex items-center gap-2"
                  >
-                   <span className="material-symbols-outlined notranslate text-sm">print</span> Print Invoice
+                   <span className="material-symbols-outlined notranslate text-[22px]">print</span> Print Invoice
                  </button>
                </div>
                <div className="flex items-center gap-2">
                   <select 
                     value={selectedOrder.status}
                     onChange={(e) => handleStatusChange(selectedOrder.id, e.target.value)}
-                    className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-widest outline-none"
+                    className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-[20px] font-bold uppercase tracking-widest outline-none"
                   >
                     <option value="PENDING">SET PENDING</option>
                     <option value="SHIPPED">SET SHIPPED</option>
@@ -501,7 +501,7 @@ export default function AdminOrders() {
                         const tracking = prompt("Enter tracking number:", selectedOrder.tracking_number || "");
                         if (tracking !== null) handleStatusChange(selectedOrder.id, selectedOrder.status, tracking);
                     }}
-                    className="px-6 py-2 bg-[#c3a2ab] text-white rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg shadow-[#c3a2ab]/20 hover:scale-105 transition-all"
+                    className="px-6 py-2 bg-[#c3a2ab] text-white rounded-xl text-[20px] font-bold uppercase tracking-widest shadow-lg shadow-[#c3a2ab]/20 hover:scale-105 transition-all"
                   >
                     Update Tracking
                   </button>

@@ -181,7 +181,7 @@ export default function FlashSaleManagement() {
              <div className="p-2 bg-rose-100 text-rose-600 rounded-lg">
                 <Zap size={24} />
              </div>
-             <h1 className="text-3xl font-display font-bold text-gray-900 tracking-tight">Campaign Dashboard</h1>
+             <h1 className="text-[44px] font-display font-bold text-gray-900 tracking-tight">Campaign Dashboard</h1>
           </div>
           <p className="text-gray-500 max-w-lg">Manage seasonal flash sales, dynamic pricing, and scheduled promotions for your entire catalog.</p>
         </div>
@@ -189,15 +189,15 @@ export default function FlashSaleManagement() {
         <div className="grid grid-cols-3 gap-4 flex-1 max-w-2xl">
            <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm text-center">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Active Now</p>
-              <p className="text-2xl font-bold text-emerald-600 font-display">{stats.activeCount}</p>
+              <p className="text-[36px] font-bold text-emerald-600 font-display">{stats.activeCount}</p>
            </div>
            <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm text-center">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Scheduled</p>
-              <p className="text-2xl font-bold text-blue-600 font-display">{stats.scheduledCount}</p>
+              <p className="text-[36px] font-bold text-blue-600 font-display">{stats.scheduledCount}</p>
            </div>
            <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm text-center">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Avg. Discount</p>
-              <p className="text-2xl font-bold text-rose-500 font-display">{stats.avgDiscount}%</p>
+              <p className="text-[36px] font-bold text-rose-500 font-display">{stats.avgDiscount}%</p>
            </div>
         </div>
       </div>
@@ -206,7 +206,7 @@ export default function FlashSaleManagement() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Bulk Schedule */}
         <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4">
-          <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+          <h3 className="text-[22px] font-bold text-gray-900 flex items-center gap-2">
             <Calendar size={16} className="text-[#c3a2ab]" /> 1. Bulk Scheduling
           </h3>
           <div className="grid grid-cols-2 gap-4">
@@ -216,7 +216,7 @@ export default function FlashSaleManagement() {
                   type="datetime-local" 
                   value={globalStart}
                   onChange={(e) => setGlobalStart(e.target.value)}
-                  className="w-full bg-gray-50 border-gray-200 rounded-xl text-sm focus:ring-[#c3a2ab]"
+                  className="w-full bg-gray-50 border-gray-200 rounded-xl text-[22px] focus:ring-[#c3a2ab]"
                 />
              </div>
              <div className="space-y-1">
@@ -225,13 +225,13 @@ export default function FlashSaleManagement() {
                   type="datetime-local" 
                   value={globalEnd}
                   onChange={(e) => setGlobalEnd(e.target.value)}
-                  className="w-full bg-gray-50 border-gray-200 rounded-xl text-sm focus:ring-[#c3a2ab]"
+                  className="w-full bg-gray-50 border-gray-200 rounded-xl text-[22px] focus:ring-[#c3a2ab]"
                 />
              </div>
           </div>
           <button 
             onClick={applyGlobalSchedule}
-            className="w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-black transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 bg-gray-900 text-white rounded-xl text-[20px] font-bold uppercase tracking-widest hover:bg-black transition-all flex items-center justify-center gap-2"
           >
             Apply Schedule to All Items
           </button>
@@ -239,7 +239,7 @@ export default function FlashSaleManagement() {
 
         {/* Bulk Pricing */}
         <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4">
-          <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+          <h3 className="text-[22px] font-bold text-gray-900 flex items-center gap-2">
             <TrendingDown size={16} className="text-rose-500" /> 2. Bulk Price Adjustment
           </h3>
           <div className="flex items-center gap-4">
@@ -248,14 +248,14 @@ export default function FlashSaleManagement() {
                 <input 
                   type="number" 
                   placeholder="Enter discount percent (e.g. 20)"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-rose-500 outline-none"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border-none rounded-xl text-[22px] focus:ring-rose-500 outline-none"
                   value={bulkDiscountPercent}
                   onChange={(e) => setBulkDiscountPercent(e.target.value)}
                 />
              </div>
              <button 
                onClick={applyBulkDiscount}
-               className="bg-rose-500 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-rose-600 transition-all shadow-lg shadow-rose-500/20"
+               className="bg-rose-500 text-white px-6 py-3 rounded-xl text-[20px] font-bold uppercase tracking-widest hover:bg-rose-600 transition-all shadow-lg shadow-rose-500/20"
              >
                Apply Discount
              </button>
@@ -289,7 +289,7 @@ export default function FlashSaleManagement() {
                   placeholder="Search products..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-[#c3a2ab]/20 transition-all text-sm shadow-sm"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-[#c3a2ab]/20 transition-all text-[22px] shadow-sm"
                 />
              </div>
              <button 
@@ -343,7 +343,7 @@ export default function FlashSaleManagement() {
                              <div className="flex items-center justify-center gap-4">
                                 <div className="text-right">
                                    <p className="text-[10px] font-bold text-gray-400 uppercase">Original</p>
-                                   <p className="text-sm font-medium text-gray-500 line-through">฿{p.price.toLocaleString()}</p>
+                                   <p className="text-[22px] font-medium text-gray-500 line-through">฿{p.price.toLocaleString()}</p>
                                 </div>
                                 <ArrowRight size={16} className="text-gray-300" />
                                 <div className="space-y-1">
@@ -356,7 +356,7 @@ export default function FlashSaleManagement() {
                                           const updated = products.map(item => item.id === p.id ? { ...item, flashSalePrice: e.target.value } : item);
                                           setProducts(updated);
                                         }}
-                                        className="w-24 bg-rose-50/50 border border-rose-100 rounded-xl px-3 py-2 text-sm font-bold text-rose-600 focus:ring-2 focus:ring-rose-500 outline-none text-center"
+                                        className="w-24 bg-rose-50/50 border border-rose-100 rounded-xl px-3 py-2 text-[22px] font-bold text-rose-600 focus:ring-2 focus:ring-rose-500 outline-none text-center"
                                       />
                                       {discountPercent > 0 && (
                                         <div className="bg-rose-500 text-white text-[10px] font-black px-1.5 py-1 rounded-lg">
@@ -415,7 +415,7 @@ export default function FlashSaleManagement() {
                {filteredProducts.length === 0 && (
                  <div className="py-32 flex flex-col items-center justify-center text-gray-400 space-y-4">
                     <Package size={48} className="opacity-20 translate-y-2" />
-                    <p className="text-xs font-bold uppercase tracking-widest">The collection is hidden or empty</p>
+                    <p className="text-[20px] font-bold uppercase tracking-widest">The collection is hidden or empty</p>
                     <button onClick={() => {setSearch(""); setFilter("all");}} className="text-rose-500 text-[10px] font-bold uppercase tracking-widest border-b border-rose-200">Reset View</button>
                  </div>
                )}

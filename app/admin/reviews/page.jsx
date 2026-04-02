@@ -67,7 +67,7 @@ export default function AdminReviews() {
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }).map((_, i) => (
-      <span key={i} className={`material-symbols-outlined text-sm ${i < rating ? "text-amber-400" : "text-gray-200"}`} style={{ fontVariationSettings: i < rating ? "'FILL' 1" : "'FILL' 0" }}>
+      <span key={i} className={`material-symbols-outlined text-[22px] ${i < rating ? "text-amber-400" : "text-gray-200"}`} style={{ fontVariationSettings: i < rating ? "'FILL' 1" : "'FILL' 0" }}>
         star
       </span>
     ));
@@ -76,14 +76,14 @@ export default function AdminReviews() {
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-display font-bold mb-2">Product Reviews</h1>
+        <h1 className="text-[44px] font-display font-bold mb-2">Product Reviews</h1>
         <p className="text-gray-500">Moderate and manage customer feedback before it appears on the site.</p>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-gray-50 text-gray-500 text-sm">
+            <thead className="bg-gray-50 text-gray-500 text-[22px]">
               <tr>
                 <th className="py-4 px-6 font-medium">Product</th>
                 <th className="py-4 px-6 font-medium">Reviewer</th>
@@ -104,15 +104,15 @@ export default function AdminReviews() {
                             <img src={review.product.image} alt={review.product.name} className="w-full h-full object-contain" />
                           </div>
                         )}
-                        <span className="font-bold text-gray-800 text-sm line-clamp-2" title={review.product.name}>
+                        <span className="font-bold text-gray-800 text-[22px] line-clamp-2" title={review.product.name}>
                           {review.product.name}
                         </span>
                       </div>
                     </td>
                     <td className="py-4 px-6">
-                      <div className="text-sm">
+                      <div className="text-[22px]">
                         <p className="font-medium text-gray-900">{review.user.name || "Anonymous"}</p>
-                        <p className="text-xs text-gray-500">{review.user.email}</p>
+                        <p className="text-[20px] text-gray-500">{review.user.email}</p>
                       </div>
                     </td>
                     <td className="py-4 px-6">
@@ -120,7 +120,7 @@ export default function AdminReviews() {
                       <p className="text-[10px] text-gray-400 mt-1">{new Date(review.created_at).toLocaleDateString("th-TH")}</p>
                     </td>
                     <td className="py-4 px-6">
-                      <p className={`text-sm ${review.isHidden ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
+                      <p className={`text-[22px] ${review.isHidden ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
                         {review.comment || <span className="italic text-gray-400">No text provided</span>}
                       </p>
                     </td>
@@ -135,7 +135,7 @@ export default function AdminReviews() {
                     <td className="py-4 px-6">
                        <div className="flex items-center justify-end">
                         <button onClick={() => handleDelete(review.id)} className="text-gray-400 hover:text-red-500 transition-colors" title="Delete permanently">
-                          <span className="material-symbols-outlined notranslate text-sm">delete</span>
+                          <span className="material-symbols-outlined notranslate text-[22px]">delete</span>
                         </button>
                       </div>
                     </td>

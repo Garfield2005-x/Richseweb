@@ -80,7 +80,7 @@ function AutomationCard({
         <div>
           <div className="flex items-center gap-2 mb-2">
             <h2
-              className={`text-xl font-bold ${
+              className={`text-[30px] font-bold ${
                 isActive ? "text-white" : "text-gray-900"
               }`}
             >
@@ -89,7 +89,7 @@ function AutomationCard({
             {isActive && <CheckCircle2 className="w-4 h-4" style={{ color: accentColor }} />}
           </div>
           <p
-            className={`leading-relaxed text-sm ${
+            className={`leading-relaxed text-[22px] ${
               isActive ? "text-gray-400" : "text-gray-500"
             }`}
           >
@@ -101,7 +101,7 @@ function AutomationCard({
         <div className={`pt-4 border-t ${isActive ? "border-white/10" : "border-gray-100"}`}>
           <div className="flex items-center justify-between">
             <span
-              className={`text-xs uppercase tracking-widest font-bold ${
+              className={`text-[20px] uppercase tracking-widest font-bold ${
                 isActive ? "text-gray-500" : "text-gray-400"
               }`}
             >
@@ -247,7 +247,7 @@ export default function AutomationsDashboard() {
           <div className="p-2.5 bg-gray-900 text-white rounded-2xl shadow-xl">
             <Zap className="w-6 h-6" fill="currentColor" />
           </div>
-          <h1 className="text-4xl font-display font-bold text-gray-900 tracking-tight">
+          <h1 className="text-[48px] font-display font-bold text-gray-900 tracking-tight">
             Sales Automations
           </h1>
         </div>
@@ -266,7 +266,7 @@ export default function AutomationsDashboard() {
         ].map((s) => (
           <div key={s.label} className="bg-white rounded-[2rem] border border-gray-100 p-5 shadow-sm">
             <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">{s.label}</p>
-            <p className={`text-2xl font-display font-bold ${s.color}`}>{s.value}</p>
+            <p className={`text-[36px] font-display font-bold ${s.color}`}>{s.value}</p>
           </div>
         ))}
       </div>
@@ -307,13 +307,13 @@ export default function AutomationsDashboard() {
                 min="0"
                 value={minThreshold}
                 onChange={(e) => setMinThreshold(e.target.value)}
-                className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-blue-200"
+                className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-[22px] font-bold text-gray-900 outline-none focus:ring-2 focus:ring-blue-200"
                 placeholder="e.g. 300"
               />
               <button
                 onClick={() => saveSetting("auto_min_order_threshold", minThreshold)}
                 disabled={saving["auto_min_order_threshold"]}
-                className="px-4 py-3 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-3 bg-gray-900 text-white rounded-xl text-[20px] font-black uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50 flex items-center gap-2"
               >
                 <Save size={14} />
                 {saving["auto_min_order_threshold"] ? "..." : "Save"}
@@ -345,13 +345,13 @@ export default function AutomationsDashboard() {
                 type="text"
                 value={memberCode}
                 onChange={(e) => setMemberCode(e.target.value.toUpperCase())}
-                className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-[#c3a2ab]/30 font-mono tracking-widest"
+                className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-[22px] font-bold text-gray-900 outline-none focus:ring-2 focus:ring-[#c3a2ab]/30 font-mono tracking-widest"
                 placeholder="e.g. WELCOME10"
               />
               <button
                 onClick={() => saveSetting("auto_new_member_code", memberCode)}
                 disabled={saving["auto_new_member_code"]}
-                className="px-4 py-3 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-3 bg-gray-900 text-white rounded-xl text-[20px] font-black uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50 flex items-center gap-2"
               >
                 <Save size={14} />
                 {saving["auto_new_member_code"] ? "..." : "Save"}
@@ -385,13 +385,13 @@ export default function AutomationsDashboard() {
                 min="1"
                 value={lowStockThreshold}
                 onChange={(e) => setLowStockThreshold(e.target.value)}
-                className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-amber-200"
+                className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-[22px] font-bold text-gray-900 outline-none focus:ring-2 focus:ring-amber-200"
                 placeholder="e.g. 5"
               />
               <button
                 onClick={() => saveSetting("auto_low_stock_threshold", lowStockThreshold)}
                 disabled={saving["auto_low_stock_threshold"]}
-                className="px-4 py-3 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-3 bg-gray-900 text-white rounded-xl text-[20px] font-black uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50 flex items-center gap-2"
               >
                 <Save size={14} />
                 {saving["auto_low_stock_threshold"] ? "..." : "Save"}
@@ -424,13 +424,13 @@ export default function AutomationsDashboard() {
                 min="1"
                 value={loyaltyRate}
                 onChange={(e) => setLoyaltyRate(e.target.value)}
-                className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-purple-200"
+                className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-[22px] font-bold text-gray-900 outline-none focus:ring-2 focus:ring-purple-200"
                 placeholder="e.g. 10"
               />
               <button
                 onClick={() => saveSetting("auto_loyalty_points_rate", loyaltyRate)}
                 disabled={saving["auto_loyalty_points_rate"]}
-                className="px-4 py-3 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-3 bg-gray-900 text-white rounded-xl text-[20px] font-black uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50 flex items-center gap-2"
               >
                 <Save size={14} />
                 {saving["auto_loyalty_points_rate"] ? "..." : "Save"}
@@ -475,13 +475,13 @@ export default function AutomationsDashboard() {
                   type="number"
                   value={recoveryDelay}
                   onChange={(e) => setRecoveryDelay(e.target.value)}
-                  className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none"
+                  className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-[22px] font-bold text-gray-900 outline-none"
                   placeholder="e.g. 60"
                 />
                 <button
                   onClick={() => saveSetting("auto_abandoned_recovery_delay", recoveryDelay)}
                   disabled={saving["auto_abandoned_recovery_delay"]}
-                  className="px-4 py-3 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest"
+                  className="px-4 py-3 bg-gray-900 text-white rounded-xl text-[20px] font-black uppercase tracking-widest"
                 >Save</button>
               </div>
             </div>
@@ -493,13 +493,13 @@ export default function AutomationsDashboard() {
               <textarea
                 value={recoveryMsg}
                 onChange={(e) => setRecoveryMsg(e.target.value)}
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none min-h-[100px]"
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-[22px] font-medium text-gray-900 outline-none min-h-[100px]"
                 placeholder="Message to send..."
               />
               <button
                 onClick={() => saveSetting("auto_abandoned_recovery_msg", recoveryMsg)}
                 disabled={saving["auto_abandoned_recovery_msg"]}
-                className="w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest"
+                className="w-full py-3 bg-gray-900 text-white rounded-xl text-[20px] font-black uppercase tracking-widest"
               >Save Message</button>
               <p className="text-[10px] text-gray-400 italic">
                 Use {"{{name}}"} and {"{{link}}"} for dynamic content.
@@ -514,7 +514,7 @@ export default function AutomationsDashboard() {
             <Sparkles className="w-5 h-5 text-gray-300" />
           </div>
           <h3 className="font-bold text-gray-400">More Coming Soon</h3>
-          <p className="text-sm text-gray-400 max-w-xs leading-relaxed">
+          <p className="text-[22px] text-gray-400 max-w-xs leading-relaxed">
             Abandoned cart recovery, birthday campaigns, and referral bonuses will be added here.
           </p>
         </div>

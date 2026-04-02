@@ -213,7 +213,7 @@ export default function AdminDiscounts() {
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-4xl font-display font-bold mb-2">Discount Codes</h1>
+          <h1 className="text-[48px] font-display font-bold mb-2">Discount Codes</h1>
           <p className="text-[18px] text-gray-500">Create and manage promotion codes for your customers.</p>
         </div>
         <div className="flex items-center gap-3">
@@ -325,7 +325,7 @@ export default function AdminDiscounts() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl w-full max-w-lg overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white">
-              <h2 className="text-xl font-bold">{editMode ? "Edit Discount Code" : "Create Discount Code"}</h2>
+              <h2 className="text-[30px] font-bold">{editMode ? "Edit Discount Code" : "Create Discount Code"}</h2>
               <button onClick={handleCloseModal} className="text-gray-400 hover:text-gray-600">
                 <span className="material-symbols-outlined notranslate">close</span>
               </button>
@@ -333,7 +333,7 @@ export default function AdminDiscounts() {
             <div className="p-6">
               <form onSubmit={handleSave} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Code Name</label>
+                  <label className="block text-[22px] font-bold text-gray-700 mb-2">Code Name</label>
                   <input
                     type="text"
                     required
@@ -342,12 +342,12 @@ export default function AdminDiscounts() {
                     className="w-full border border-gray-300 rounded-lg px-4 py-3 font-mono font-bold tracking-wider focus:outline-none focus:ring-2 focus:ring-[#c3a2ab]"
                     placeholder="e.g. SUMMER20"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Codes will be uppercase without spaces.</p>
+                  <p className="text-[20px] text-gray-500 mt-1">Codes will be uppercase without spaces.</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Discount (%)</label>
+                    <label className="block text-[22px] font-bold text-gray-700 mb-2">Discount (%)</label>
                     <input
                       type="number"
                       required
@@ -360,7 +360,7 @@ export default function AdminDiscounts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Min. Purchase (฿)</label>
+                    <label className="block text-[22px] font-bold text-gray-700 mb-2">Min. Purchase (฿)</label>
                     <input
                       type="number"
                       min="0"
@@ -371,7 +371,7 @@ export default function AdminDiscounts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Usage Limit</label>
+                    <label className="block text-[22px] font-bold text-gray-700 mb-2">Usage Limit</label>
                     <input
                       type="number"
                       min="1"
@@ -382,7 +382,7 @@ export default function AdminDiscounts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Max. Discount (฿)</label>
+                    <label className="block text-[22px] font-bold text-gray-700 mb-2">Max. Discount (฿)</label>
                     <input
                       type="number"
                       min="1"
@@ -392,7 +392,7 @@ export default function AdminDiscounts() {
                       />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Limit Per User</label>
+                    <label className="block text-[22px] font-bold text-gray-700 mb-2">Limit Per User</label>
                     <input
                       type="number"
                       min="1"
@@ -443,8 +443,8 @@ export default function AdminDiscounts() {
           <div className="bg-white rounded-2xl w-full max-w-lg overflow-y-auto max-h-[80vh]">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white">
               <div>
-                <h2 className="text-xl font-bold">Usage History</h2>
-                <p className="text-xs text-gray-400 font-mono">Code: {selectedCode}</p>
+                <h2 className="text-[30px] font-bold">Usage History</h2>
+                <p className="text-[20px] text-gray-400 font-mono">Code: {selectedCode}</p>
               </div>
               <button onClick={() => setIsUsageModalOpen(false)} className="text-gray-400 hover:text-gray-600">
                 <span className="material-symbols-outlined notranslate">close</span>
@@ -452,7 +452,7 @@ export default function AdminDiscounts() {
             </div>
             <div className="p-6">
                {fetchingUsage ? (
-                 <div className="py-20 text-center text-gray-400 animate-pulse font-black uppercase tracking-widest text-xs">Fetching Usage Data...</div>
+                 <div className="py-20 text-center text-gray-400 animate-pulse font-black uppercase tracking-widest text-[20px]">Fetching Usage Data...</div>
                ) : usageHistory.length > 0 ? (
                  <table className="w-full text-left">
                    <thead className="bg-gray-50 text-gray-500 text-[10px] uppercase font-black tracking-widest">
@@ -465,8 +465,8 @@ export default function AdminDiscounts() {
                    <tbody className="divide-y divide-gray-100 italic">
                      {usageHistory.map((u, i) => (
                        <tr key={u.id || i} className="hover:bg-gray-50">
-                          <td className="py-3 px-4 text-sm font-bold text-gray-900">{u.phone}</td>
-                          <td className="py-3 px-4 text-xs text-gray-500">
+                          <td className="py-3 px-4 text-[22px] font-bold text-gray-900">{u.phone}</td>
+                          <td className="py-3 px-4 text-[20px] text-gray-500">
                              {new Date(u.created_at).toLocaleString("th-TH")}
                           </td>
                           <td className="py-3 px-4 text-right">

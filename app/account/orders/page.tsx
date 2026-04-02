@@ -67,18 +67,18 @@ export default function AccountOrders() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-display font-medium text-gray-900 uppercase tracking-widest border-b border-gray-200 pb-4">
+      <h1 className="text-[36px] font-display font-medium text-gray-900 uppercase tracking-widest border-b border-gray-200 pb-4">
         My Orders
       </h1>
 
       {orders.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-          <h3 className="text-lg font-medium text-gray-900">No orders yet</h3>
-          <p className="mt-1 text-sm text-gray-500">Looks like you haven&apos;t made your first purchase yet.</p>
+          <h3 className="text-[26px] font-medium text-gray-900">No orders yet</h3>
+          <p className="mt-1 text-[22px] text-gray-500">Looks like you haven&apos;t made your first purchase yet.</p>
           <div className="mt-6">
             <Link
               href="/ProductAll"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#c3a2ab] hover:bg-[#b08c95] uppercase tracking-wider transition-colors"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-[22px] font-medium rounded-md shadow-sm text-white bg-[#c3a2ab] hover:bg-[#b08c95] uppercase tracking-wider transition-colors"
             >
               Start Shopping
             </Link>
@@ -91,7 +91,7 @@ export default function AccountOrders() {
               {/* Order Header */}
               <div className="bg-gray-50 border-b border-gray-200 p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2 text-sm">
+                  <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2 text-[22px]">
                     <div>
                       <dt className="font-medium text-gray-900">Order</dt>
                       <dd className="mt-1 text-gray-500">#{order.order_number || order.id.slice(-8).toUpperCase()}</dd>
@@ -109,12 +109,12 @@ export default function AccountOrders() {
                   </dl>
                   <div className="flex flex-col items-end gap-2 mt-4 sm:mt-0">
                     <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${getStatusColor(order.status || "PENDING")}`}
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-[20px] font-bold uppercase tracking-wider ${getStatusColor(order.status || "PENDING")}`}
                     >
                       {order.status || "PENDING"}
                     </span>
                     {order.tracking_number && (
-                      <div className="flex items-center gap-1.5 text-xs text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-md font-mono">
+                      <div className="flex items-center gap-1.5 text-[20px] text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-md font-mono">
                         <span className="material-symbols-outlined notranslate text-[14px]">local_shipping</span>
                         Tracking: <span className="font-bold text-gray-900">{order.tracking_number}</span>
                       </div>
@@ -129,7 +129,7 @@ export default function AccountOrders() {
                   <li key={item.id} className="p-4 sm:p-6 flex justify-between items-center gap-4">
                     <div>
                       <p className="font-medium text-gray-900">{item.product_name}</p>
-                      <p className="text-sm text-gray-500 mt-1">Qty: {item.quantity}</p>
+                      <p className="text-[22px] text-gray-500 mt-1">Qty: {item.quantity}</p>
                     </div>
                     <div className="flex flex-col items-end gap-2 text-right">
                       <p className="font-medium text-gray-900 whitespace-nowrap">
@@ -138,7 +138,7 @@ export default function AccountOrders() {
                       {["SHIPPED", "DELIVERED", "COMPLETED"].includes(order.status.toUpperCase()) && (
                         <Link
                           href={`/account/orders/review?orderId=${order.id}&productId=${item.product_id}&productName=${encodeURIComponent(item.product_name)}`}
-                          className="text-xs font-bold text-[#c3a2ab] hover:text-[#b08c95] border border-[#c3a2ab] px-2 py-1 rounded transition-colors"
+                          className="text-[20px] font-bold text-[#c3a2ab] hover:text-[#b08c95] border border-[#c3a2ab] px-2 py-1 rounded transition-colors"
                         >
                           Write Review
                         </Link>

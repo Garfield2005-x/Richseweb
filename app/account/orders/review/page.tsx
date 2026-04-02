@@ -61,7 +61,7 @@ function ReviewContent() {
 
   return (
     <div className="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-      <h1 className="text-2xl font-serif text-gray-800 mb-6 text-center">Write a Review</h1>
+      <h1 className="text-[36px] font-serif text-gray-800 mb-6 text-center">Write a Review</h1>
       <p className="text-gray-500 text-center mb-8">How was your experience with <strong>{productName}</strong>?</p>
 
       <form onSubmit={handleSubmit} className="space-y-8">
@@ -87,7 +87,7 @@ function ReviewContent() {
 
         {/* Comment Box */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+          <label className="block text-[22px] font-medium text-gray-700 mb-2">Your Review</label>
           <textarea
             required
             className="w-full border-2 border-gray-100 p-4 rounded-xl focus:outline-none focus:border-[#c3a2ab] transition-colors min-h-[150px]"

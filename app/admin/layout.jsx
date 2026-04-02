@@ -26,8 +26,8 @@ export default async function AdminLayout({ children }) {
       <aside className="w-full md:w-64 bg-white border-r border-gray-200 flex-shrink-0">
         <div className="h-full flex flex-col">
           <div className="p-6 border-b border-gray-200">
-            <h1 className="text-2xl font-display font-bold text-[#161314]">RICHSE</h1>
-            <p className="text-xs text-gray-500 uppercase tracking-widest mt-1">Admin Panel</p>
+            <h1 className="text-[36px] font-display font-bold text-[#161314]">RICHSE</h1>
+            <p className="text-[20px] text-gray-500 uppercase tracking-widest mt-1">Admin Panel</p>
           </div>
 
           <nav className="flex-1 p-4 space-y-2">
@@ -141,8 +141,8 @@ export default async function AdminLayout({ children }) {
               href="/"
               className="flex items-center justify-center gap-2 w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              <span className="material-symbols-outlined text-sm">storefront</span>
-              <span className="text-sm font-medium">Back to Store</span>
+              <span className="material-symbols-outlined text-[22px]">storefront</span>
+              <span className="text-[22px] font-medium">Back to Store</span>
             </Link>
           </div>
         </div>

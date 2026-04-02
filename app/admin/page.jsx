@@ -86,7 +86,7 @@ export default function AdminDashboard() {
     return (
       <div className="p-12 min-h-screen flex flex-col items-center justify-center bg-[#fafafa]">
         <div className="w-12 h-12 border-4 border-[#c3a2ab]/20 border-t-[#c3a2ab] rounded-full animate-spin"></div>
-        <p className="mt-4 text-sm font-black uppercase tracking-widest text-gray-400">Initializing War Room...</p>
+        <p className="mt-4 text-[22px] font-black uppercase tracking-widest text-gray-400">Initializing War Room...</p>
       </div>
     );
   }
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#c3a2ab]">
             <Activity size={12} /> Live Operations Center
           </div>
-          <h1 className="text-4xl font-display font-black text-gray-900 tracking-tight">Intelligence Hub</h1>
+          <h1 className="text-[48px] font-display font-black text-gray-900 tracking-tight">Intelligence Hub</h1>
           <p className="text-gray-500 font-medium">Real-time conversion insights and performance analytics.</p>
         </div>
 
@@ -114,14 +114,14 @@ export default function AdminDashboard() {
               type="date" 
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="text-xs font-bold focus:outline-none bg-transparent"
+              className="text-[20px] font-bold focus:outline-none bg-transparent"
             />
             <span className="text-[10px] font-black text-gray-300">TO</span>
             <input 
               type="date" 
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="text-xs font-bold focus:outline-none bg-transparent"
+              className="text-[20px] font-bold focus:outline-none bg-transparent"
             />
           </div>
           {(startDate || endDate) && (
@@ -147,7 +147,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Gross Revenue</p>
-          <h3 className="text-3xl font-display font-black text-gray-900 tracking-tight">
+          <h3 className="text-[44px] font-display font-black text-gray-900 tracking-tight">
             ฿{stats.totalSales.toLocaleString()}
           </h3>
         </div>
@@ -163,7 +163,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Total Orders</p>
-          <h3 className="text-3xl font-display font-black text-gray-900 tracking-tight uppercase">
+          <h3 className="text-[44px] font-display font-black text-gray-900 tracking-tight uppercase">
             {stats.totalOrders}
           </h3>
         </div>
@@ -179,7 +179,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#c3a2ab] mb-1">Abandoned Checkouts</p>
-          <h3 className="text-3xl font-display font-black text-gray-900 tracking-tight">
+          <h3 className="text-[44px] font-display font-black text-gray-900 tracking-tight">
             {stats.totalPotentialCustomers || 0}
           </h3>
           <p className="text-[10px] text-gray-400 mt-2 font-medium italic">Potential missed revenue detectable</p>
@@ -194,7 +194,7 @@ export default function AdminDashboard() {
               </div>
             </div>
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Conversion Efficiency</p>
-            <h3 className="text-4xl font-display font-black text-white tracking-tight">
+            <h3 className="text-[48px] font-display font-black text-white tracking-tight">
               {stats.conversionRate}%
             </h3>
           </div>
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center gap-4">
                <div className="w-1 h-8 bg-[#c3a2ab] rounded-full"></div>
-               <h2 className="text-2xl font-display font-bold text-gray-900">Revenue Analytics</h2>
+               <h2 className="text-[36px] font-display font-bold text-gray-900">Revenue Analytics</h2>
             </div>
             <div className="flex items-center gap-6">
                <div className="flex items-center gap-2">
@@ -270,14 +270,14 @@ export default function AdminDashboard() {
 
         {/* Best Performance Funnel */}
         <div className="lg:col-span-4 bg-white p-10 rounded-[3rem] shadow-xl shadow-black/[0.02] border border-gray-100 flex flex-col">
-           <h2 className="text-xl font-display font-bold text-gray-900 mb-2">Sales Funnel</h2>
-           <p className="text-xs text-gray-400 font-medium mb-10">Conversion of checkout starts into orders.</p>
+           <h2 className="text-[30px] font-display font-bold text-gray-900 mb-2">Sales Funnel</h2>
+           <p className="text-[20px] text-gray-400 font-medium mb-10">Conversion of checkout starts into orders.</p>
            
            <div className="flex-1 flex flex-col justify-center gap-12">
               <div className="space-y-4">
                  <div className="flex justify-between items-end">
                     <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Checkout Started</span>
-                    <span className="text-lg font-display font-black">{stats.totalOrders + (stats.totalPotentialCustomers || 0)}</span>
+                    <span className="text-[26px] font-display font-black">{stats.totalOrders + (stats.totalPotentialCustomers || 0)}</span>
                  </div>
                  <div className="h-12 w-full bg-gray-50 rounded-2xl relative overflow-hidden">
                     <div className="h-full bg-gray-200 w-full animate-pulse"></div>
@@ -287,7 +287,7 @@ export default function AdminDashboard() {
               <div className="space-y-4">
                  <div className="flex justify-between items-end">
                     <span className="text-[10px] font-black uppercase tracking-widest text-[#c3a2ab]">Orders Completed</span>
-                    <span className="text-lg font-display font-black">{stats.totalOrders}</span>
+                    <span className="text-[26px] font-display font-black">{stats.totalOrders}</span>
                  </div>
                  <div className="h-12 w-full bg-[#f9f5f6] rounded-2xl relative overflow-hidden">
                     <div 
@@ -303,7 +303,7 @@ export default function AdminDashboard() {
                        <Target size={20} />
                     </div>
                     <div>
-                       <p className="text-xs font-bold text-gray-900 italic">You lost {stats.totalPotentialCustomers || 0} customers this period.</p>
+                       <p className="text-[20px] font-bold text-gray-900 italic">You lost {stats.totalPotentialCustomers || 0} customers this period.</p>
                        <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mt-1">Activate Recovery Automation</p>
                     </div>
                  </div>
@@ -323,7 +323,7 @@ export default function AdminDashboard() {
                  <AlertCircle size={20} />
               </div>
               <div>
-                <h2 className="text-xl font-display font-bold text-gray-900">Abandoned Discovery</h2>
+                <h2 className="text-[30px] font-display font-bold text-gray-900">Abandoned Discovery</h2>
                 <p className="text-[10px] font-black uppercase tracking-widest text-orange-500">Recover these potential orders</p>
               </div>
             </div>
@@ -336,11 +336,11 @@ export default function AdminDashboard() {
                   abandoned.map((log) => (
                     <div key={log.id} className="group flex items-center justify-between p-6 bg-white border border-gray-50 rounded-[2rem] hover:border-[#c3a2ab]/30 hover:shadow-xl hover:shadow-black/[0.02] transition-all">
                        <div className="flex items-center gap-5">
-                          <div className="w-12 h-12 rounded-2xl bg-gray-50 text-gray-400 flex items-center justify-center font-bold text-xs uppercase group-hover:bg-[#c3a2ab] group-hover:text-white transition-all">
+                          <div className="w-12 h-12 rounded-2xl bg-gray-50 text-gray-400 flex items-center justify-center font-bold text-[20px] uppercase group-hover:bg-[#c3a2ab] group-hover:text-white transition-all">
                              {log.name.charAt(0)}
                           </div>
                           <div>
-                             <p className="text-sm font-bold text-gray-900">{log.name}</p>
+                             <p className="text-[22px] font-bold text-gray-900">{log.name}</p>
                              <div className="flex items-center gap-3 mt-1">
                                 <p className="text-[10px] font-black uppercase tracking-widest text-[#c3a2ab]">{log.phone}</p>
                                 <span className="text-[8px] text-gray-300">•</span>
@@ -368,7 +368,7 @@ export default function AdminDashboard() {
                      <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto text-gray-300">
                         <CheckCircle2 size={32} />
                      </div>
-                     <p className="text-sm font-bold text-gray-400">No abandoned sessions detected recently.</p>
+                     <p className="text-[22px] font-bold text-gray-400">No abandoned sessions detected recently.</p>
                   </div>
                 )}
              </div>
@@ -382,7 +382,7 @@ export default function AdminDashboard() {
            <div className="relative">
              <div className="flex items-center justify-between mb-10">
                <div>
-                  <h2 className="text-2xl font-display font-black tracking-tight text-white">Top Sellers</h2>
+                  <h2 className="text-[36px] font-display font-black tracking-tight text-white">Top Sellers</h2>
                   <p className="text-[10px] font-black uppercase tracking-widest text-[#c3a2ab]">Live Ranking</p>
                </div>
                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
@@ -395,16 +395,16 @@ export default function AdminDashboard() {
                   stats.bestSellers.map((product, index) => (
                     <div key={product.id} className="flex items-center justify-between group">
                        <div className="flex items-center gap-5">
-                          <div className="text-2xl font-display font-black text-white/10 italic group-hover:text-[#c3a2ab]/40 transition-colors w-8">
+                          <div className="text-[36px] font-display font-black text-white/10 italic group-hover:text-[#c3a2ab]/40 transition-colors w-8">
                              0{index + 1}
                           </div>
                           <div>
-                             <p className="text-sm font-bold text-white group-hover:text-[#c3a2ab] transition-colors">{product.name}</p>
+                             <p className="text-[22px] font-bold text-white group-hover:text-[#c3a2ab] transition-colors">{product.name}</p>
                              <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-1">{product.sold} UNITS SOLD</p>
                           </div>
                        </div>
                        <div className="text-right">
-                          <p className="text-sm font-black">฿{product.revenue.toLocaleString()}</p>
+                          <p className="text-[22px] font-black">฿{product.revenue.toLocaleString()}</p>
                        </div>
                     </div>
                   ))

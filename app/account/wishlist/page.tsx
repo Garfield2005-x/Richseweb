@@ -48,7 +48,7 @@ export default function WishlistPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-display font-medium text-gray-900 mb-6">Your Wishlist</h2>
+      <h2 className="text-[36px] font-display font-medium text-gray-900 mb-6">Your Wishlist</h2>
       {wishlist.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-100">
           <p className="text-gray-500 mb-4">You haven&apos;t saved any items yet.</p>
@@ -75,7 +75,7 @@ export default function WishlistPage() {
               <div className="p-4">
                 <h3 className="font-medium text-gray-900 truncate">{item.product.name}</h3>
                 <p className="text-[#c3a2ab] font-medium mt-1">฿{item.product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
-                <Link href={`/product/${item.productId}`} className="mt-3 block text-center w-full bg-gray-900 text-white py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">
+                <Link href={`/product/${item.productId}`} className="mt-3 block text-center w-full bg-gray-900 text-white py-2 rounded-lg text-[22px] font-medium hover:bg-gray-800 transition-colors">
                   View Product
                 </Link>
               </div>

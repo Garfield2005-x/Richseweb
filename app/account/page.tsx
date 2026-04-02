@@ -150,7 +150,7 @@ export default function AccountOverview() {
             />
           </div>
           <div>
-            <h1 className="text-2xl font-display font-medium text-gray-900 uppercase tracking-widest">
+            <h1 className="text-[36px] font-display font-medium text-gray-900 uppercase tracking-widest">
               Account Overview
             </h1>
             <p className="mt-2 text-gray-600">
@@ -165,8 +165,8 @@ export default function AccountOverview() {
             <Award className="h-8 w-8 text-white" />
           </div>
           <div>
-            <p className="text-sm font-medium opacity-90 uppercase tracking-wider">Richse Points</p>
-            <h2 className="text-3xl font-display font-bold">
+            <p className="text-[22px] font-medium opacity-90 uppercase tracking-wider">Richse Points</p>
+            <h2 className="text-[44px] font-display font-bold">
               {profile ? profile.points?.toLocaleString() : "..."}
             </h2>
           </div>
@@ -184,10 +184,10 @@ export default function AccountOverview() {
                 <LayoutDashboard className="h-6 w-6" />
               </div>
               <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900 group-hover:text-[#c3a2ab] transition-colors">
+                <h3 className="text-[26px] font-medium text-gray-900 group-hover:text-[#c3a2ab] transition-colors">
                   Admin Dashboard
                 </h3>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-[22px] text-gray-500">
                   Manage products, orders, and rewards
                 </p>
               </div>
@@ -203,10 +203,10 @@ export default function AccountOverview() {
               <Package className="h-6 w-6" />
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-medium text-gray-900 group-hover:text-[#c3a2ab] transition-colors">
+              <h3 className="text-[26px] font-medium text-gray-900 group-hover:text-[#c3a2ab] transition-colors">
                 My Orders
               </h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-[22px] text-gray-500">
                 Track, return, or buy things again
               </p>
             </div>
@@ -222,10 +222,10 @@ export default function AccountOverview() {
               <MapPin className="h-6 w-6" />
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-medium text-gray-900 group-hover:text-[#c3a2ab] transition-colors">
+              <h3 className="text-[26px] font-medium text-gray-900 group-hover:text-[#c3a2ab] transition-colors">
                 Address Book
               </h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-[22px] text-gray-500">
                 Edit addresses for orders and gifts
               </p>
             </div>
@@ -237,7 +237,7 @@ export default function AccountOverview() {
       <div className="pt-6 border-t border-gray-100">
          <div className="flex items-center gap-2 mb-6">
             <Ticket className="w-6 h-6 text-[#c3a2ab]" />
-            <h3 className="text-xl font-display font-bold text-gray-900">My Coupons / โค้ดส่วนลดของคุณ</h3>
+            <h3 className="text-[30px] font-display font-bold text-gray-900">My Coupons / โค้ดส่วนลดของคุณ</h3>
          </div>
          
          {discounts.length > 0 ? (
@@ -246,17 +246,17 @@ export default function AccountOverview() {
                   <div key={discount.code} className="border border-gray-100 rounded-2xl p-5 hover:border-[#c3a2ab] hover:shadow-lg hover:shadow-[#c3a2ab]/10 transition-all bg-white flex flex-col justify-between">
                      <div>
                         <div className="flex justify-between items-start mb-2">
-                           <span className="bg-[#f8f6f4] text-[#c3a2ab] text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full">{discount.discount_percent}% OFF</span>
+                           <span className="bg-[#f8f6f4] text-[#c3a2ab] text-[20px] font-black uppercase tracking-widest px-3 py-1 rounded-full">{discount.discount_percent}% OFF</span>
                         </div>
-                        <h4 className="text-lg font-bold text-gray-900 mt-2 tracking-wide break-all">{discount.code}</h4>
-                        <p className="text-sm text-gray-500 mt-1">{discount.description}</p>
+                        <h4 className="text-[26px] font-bold text-gray-900 mt-2 tracking-wide break-all">{discount.code}</h4>
+                        <p className="text-[22px] text-gray-500 mt-1">{discount.description}</p>
                      </div>
                      <button
                         onClick={() => {
                            navigator.clipboard.writeText(discount.code);
                            toast.success("คัดลอกโค้ดส่วนลดแล้ว!");
                         }}
-                        className="mt-4 w-full bg-gray-50 text-gray-700 hover:bg-[#c3a2ab] hover:text-white font-bold py-2 rounded-xl transition-colors text-sm"
+                        className="mt-4 w-full bg-gray-50 text-gray-700 hover:bg-[#c3a2ab] hover:text-white font-bold py-2 rounded-xl transition-colors text-[22px]"
                      >
                         Copy Code
                      </button>
@@ -272,15 +272,15 @@ export default function AccountOverview() {
       </div>
 
       <div className="pt-6 border-t border-gray-100">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Personal Details</h3>
+        <h3 className="text-[26px] font-medium text-gray-900 mb-4">Personal Details</h3>
         <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
           <div className="sm:col-span-1">
-            <dt className="text-sm font-medium text-gray-500">Full name</dt>
-            <dd className="mt-1 text-sm text-gray-900">{session?.user?.name || "N/A"}</dd>
+            <dt className="text-[22px] font-medium text-gray-500">Full name</dt>
+            <dd className="mt-1 text-[22px] text-gray-900">{session?.user?.name || "N/A"}</dd>
           </div>
           <div className="sm:col-span-1">
-            <dt className="text-sm font-medium text-gray-500">Email address</dt>
-            <dd className="mt-1 text-sm text-gray-900">{session?.user?.email || "N/A"}</dd>
+            <dt className="text-[22px] font-medium text-gray-500">Email address</dt>
+            <dd className="mt-1 text-[22px] text-gray-900">{session?.user?.email || "N/A"}</dd>
           </div>
         </dl>
       </div>

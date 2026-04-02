@@ -38,6 +38,10 @@ model User {
   reviews       ProductReview[]
   points        Int      @default(0)
   cookiePreferences UserCookiePreference?
+
+  // Attribution
+  signupCampaignId String?
+  signupCampaign   MarketingCampaign? @relation("UserSignupCampaign", fields: [signupCampaignId], references: [id])
 }
 
 model Account {
@@ -307,4 +311,116 @@ model PromotionLog {
 
   @@index([phone, promotion])
   @@map("promotion_logs")
+}
+
+// --- Enterprise Marketing System ---
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  QUEUED
+  SENDING
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum DeliveryStatus {
+  PENDING
+  SENDING
+  SENT
+  FAILED
+  DROPPED
+  RETRYING
+}
+
+enum BounceType {
+  SOFT
+  HARD
+}
+
+model MarketingCampaign {
+  id              String      @id @default(cuid())
+  subject         String
+  content         String      @db.Text
+  snapshotHtml    String      @db.Text // Locked HTML after scheduling
+  audienceType    String      // ALL, REGISTERED, SUB_UNREG
+  status          CampaignStatus @default(DRAFT)
+  
+  // Aggregated Counters
+  totalRecipients Int         @default(0)
+  sentCount       Int         @default(0)
+  openCount       Int         @default(0)
+  clickCount      Int         @default(0)
+  conversionCount Int         @default(0)
+  
+  scheduledAt     DateTime?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  recipients      CampaignRecipient[]
+  auditLogs       MarketingAuditLog[]
+  attributedUsers User[]      @relation("UserSignupCampaign")
+
+  @@map("marketing_campaigns")
+}
+
+model CampaignRecipient {
+  id              String      @id @default(cuid())
+  campaignId      String
+  email           String      // Normalized (lowercase)
+  status          DeliveryStatus @default(PENDING)
+  retryCount      Int         @default(0)
+  lastError       String?
+  
+  bounceType      BounceType?
+  
+  sentAt          DateTime?
+  openedAt        DateTime?
+  clickedAt       DateTime?
+  convertedAt     DateTime?
+  
+  token           String      @unique // Signed HMAC token
+  
+  campaign        MarketingCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  
+  @@unique([campaignId, email])
+  @@index([status])
+  @@index([token])
+  @@map("campaign_recipients")
+}
+
+model MarketingAuditLog {
+  id          String   @id @default(cuid())
+  campaignId  String?
+  action      String
+  adminEmail  String
+  beforeData  Json?
+  afterData   Json?
+  createdAt   DateTime @default(now())
+
+  campaign    MarketingCampaign? @relation(fields: [campaignId], references: [id])
+  @@map("marketing_audit_logs")
+}
+
+model MarketingConfig {
+  id              String   @id @default(cuid())
+  key             String   @unique
+  value           String
+  description     String?
+  updatedAt       DateTime @updatedAt
+  
+  @@map("marketing_configs")
+}
+
+model UnsubscribedEmail {
+  id        String   @id @default(cuid())
+  email     String   @unique // Normalized
+  reason    String   @default("USER_REQUEST") // USER_REQUEST, BOUNCE, COMPLAINT
+  createdAt DateTime @default(now())
+
+  @@map("unsubscribed_emails")
 }

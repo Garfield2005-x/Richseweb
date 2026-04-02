@@ -102,7 +102,7 @@ export default function CustomerDetail(props) {
     </div>
   );
   
-  if (!customer) return <div className="p-8 text-center font-display text-2xl text-red-500">Customer Profile Not Found</div>;
+  if (!customer) return <div className="p-8 text-center font-display text-[36px] text-red-500">Customer Profile Not Found</div>;
 
   const isAdmin = customer.role === "ADMIN";
 
@@ -116,15 +116,15 @@ export default function CustomerDetail(props) {
             <ArrowLeft className="h-5 w-5 text-gray-500 group-hover:text-[#c3a2ab] transition-colors" />
           </Link>
           <div>
-            <h1 className="text-3xl font-display font-bold text-gray-900 tracking-tight">Customer Dossier</h1>
-            <p className="text-gray-500 text-sm mt-1 flex items-center gap-2">
-              <KeyRound className="w-3 h-3"/> Internal ID: <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded-md">{customer.id}</span>
+            <h1 className="text-[44px] font-display font-bold text-gray-900 tracking-tight">Customer Dossier</h1>
+            <p className="text-gray-500 text-[22px] mt-1 flex items-center gap-2">
+              <KeyRound className="w-3 h-3"/> Internal ID: <span className="font-mono text-[20px] bg-gray-100 px-2 py-0.5 rounded-md">{customer.id}</span>
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-            <span className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black tracking-widest uppercase border shadow-sm ${
+            <span className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[20px] font-black tracking-widest uppercase border shadow-sm ${
                isAdmin 
                ? "bg-red-50 text-red-600 border-red-200 shadow-red-500/10" 
                : "bg-gray-50 text-gray-700 border-gray-200"
@@ -155,13 +155,13 @@ export default function CustomerDetail(props) {
             </div>
             
             <div className="text-center space-y-2 mb-8 relative">
-               <h2 className="text-2xl font-display font-bold text-gray-900 flex items-center justify-center gap-2">
+               <h2 className="text-[36px] font-display font-bold text-gray-900 flex items-center justify-center gap-2">
                  {customer.name || "Anonymous User"}
                  {customer.accounts && customer.accounts.some(a => a.provider === 'google') && (
                     <span className="text-[10px] bg-red-50 text-red-500 border border-red-100 font-bold uppercase tracking-widest px-2 py-0.5 rounded-full shadow-sm align-middle">Google Auth</span>
                  )}
                </h2>
-               <p className="text-gray-500 text-sm">{customer.email}</p>
+               <p className="text-gray-500 text-[22px]">{customer.email}</p>
             </div>
 
             <div className="bg-gradient-to-r from-purple-50 to-[#fdf2f4] rounded-2xl p-5 border border-purple-100/50 flex justify-between items-center text-left">
@@ -171,7 +171,7 @@ export default function CustomerDetail(props) {
                  </div>
                  <div>
                     <p className="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-0.5">Loyalty Balance</p>
-                    <p className="text-xl font-display font-bold text-gray-900">{customer.points?.toLocaleString() || 0} <span className="text-sm font-medium text-gray-500">pts</span></p>
+                    <p className="text-[30px] font-display font-bold text-gray-900">{customer.points?.toLocaleString() || 0} <span className="text-[22px] font-medium text-gray-500">pts</span></p>
                  </div>
               </div>
             </div>
@@ -181,26 +181,26 @@ export default function CustomerDetail(props) {
           <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8">
              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-50">
                 <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400"><MapPin className="w-4 h-4"/></div>
-                <h3 className="font-bold text-gray-900 font-display text-lg">Logistics</h3>
+                <h3 className="font-bold text-gray-900 font-display text-[26px]">Logistics</h3>
              </div>
              <div className="space-y-6">
                 <div>
                    <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-2">Primary Phone</p>
-                   <p className="text-sm font-medium text-gray-900 bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-100 inline-block">
+                   <p className="text-[22px] font-medium text-gray-900 bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-100 inline-block">
                      {customer.phone || "Not provided"}
                    </p>
                 </div>
                 <div>
                    <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-2">Shipping Address</p>
                    {customer.address ? (
-                      <div className="text-sm text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-xl border border-gray-100">
+                      <div className="text-[22px] text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-xl border border-gray-100">
                           <p className="font-medium text-gray-900 mb-1">{customer.name}</p>
                           {customer.address}<br/>
                           {customer.subdistrict} {customer.district}<br/>
                           {customer.province} {customer.postal_code}
                       </div>
                    ) : (
-                      <p className="text-sm italic text-gray-400 bg-gray-50 p-4 rounded-xl border border-gray-50 text-center">No address on file</p>
+                      <p className="text-[22px] italic text-gray-400 bg-gray-50 p-4 rounded-xl border border-gray-50 text-center">No address on file</p>
                    )}
                  </div>
               </div>
@@ -210,25 +210,25 @@ export default function CustomerDetail(props) {
            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8">
               <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-50">
                  <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400"><Laptop className="w-4 h-4"/></div>
-                 <h3 className="font-bold text-gray-900 font-display text-lg">System Data</h3>
+                 <h3 className="font-bold text-gray-900 font-display text-[26px]">System Data</h3>
               </div>
               <div className="space-y-5">
                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-gray-500 font-medium flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5"/> Registered</p>
-                    <p className="text-sm font-bold text-gray-900">{customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : "Unknown"}</p>
+                    <p className="text-[20px] text-gray-500 font-medium flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5"/> Registered</p>
+                    <p className="text-[22px] font-bold text-gray-900">{customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : "Unknown"}</p>
                  </div>
 
                  <div className="flex items-center justify-between border-t border-gray-50 pt-3">
-                    <p className="text-xs text-gray-500 font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5"/> Authentication</p>
-                    <p className="text-sm font-bold text-gray-900 text-right">
+                    <p className="text-[20px] text-gray-500 font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5"/> Authentication</p>
+                    <p className="text-[22px] font-bold text-gray-900 text-right">
                        {customer.accounts && customer.accounts.some(a => a.provider === 'google') ? "Google SSO" : "Email / Password"}
                     </p>
                  </div>
                  
                  <div className="border-t border-gray-50 pt-3">
-                    <p className="text-xs text-gray-500 font-medium mb-2">Latest Login Environment</p>
+                    <p className="text-[20px] text-gray-500 font-medium mb-2">Latest Login Environment</p>
                     {customer.loginDevices && customer.loginDevices.length > 0 ? (
-                       <div className="bg-[#f8f9fa] rounded-xl p-4 text-xs font-mono space-y-2 border border-gray-100">
+                       <div className="bg-[#f8f9fa] rounded-xl p-4 text-[20px] font-mono space-y-2 border border-gray-100">
                           <div className="flex justify-between items-center text-gray-900 font-bold">
                              <span>{customer.loginDevices[0].device}</span>
                              <span>{customer.loginDevices[0].os}</span>
@@ -241,7 +241,7 @@ export default function CustomerDetail(props) {
                           )}
                        </div>
                     ) : (
-                       <p className="text-sm italic text-gray-400 bg-gray-50 p-3 rounded-lg text-center">No device history tracked</p>
+                       <p className="text-[22px] italic text-gray-400 bg-gray-50 p-3 rounded-lg text-center">No device history tracked</p>
                     )}
                  </div>
               </div>
@@ -255,14 +255,14 @@ export default function CustomerDetail(props) {
           <div className="bg-[#161314] text-white rounded-[2rem] shadow-xl p-8 flex flex-col md:flex-row gap-6 items-center justify-between relative overflow-hidden">
              <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
              <div>
-                <h3 className="font-display text-2xl font-bold mb-2">CRM Controls</h3>
-                <p className="text-gray-400 text-sm max-w-sm">Manage loyalty privileges and system access levels for this user account.</p>
+                <h3 className="font-display text-[36px] font-bold mb-2">CRM Controls</h3>
+                <p className="text-gray-400 text-[22px] max-w-sm">Manage loyalty privileges and system access levels for this user account.</p>
              </div>
              <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <button 
                   onClick={() => setShowPointsModal(true)}
                   disabled={isUpdating}
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold py-3 px-6 rounded-xl transition-all text-sm flex items-center justify-center gap-2 backdrop-blur-sm"
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold py-3 px-6 rounded-xl transition-all text-[22px] flex items-center justify-center gap-2 backdrop-blur-sm"
                 >
                    <span className="material-symbols-outlined text-[18px]">stars</span>
                    Adjust Loyalty
@@ -271,7 +271,7 @@ export default function CustomerDetail(props) {
                 <button 
                   onClick={handleRoleToggle}
                   disabled={isUpdating}
-                  className={`${isAdmin ? 'bg-red-500/20 text-red-100 hover:bg-red-500/30 border-red-500/30' : 'bg-white hover:bg-gray-100 text-black border-transparent'} border font-bold py-3 px-6 rounded-xl transition-all text-sm flex items-center justify-center gap-2`}
+                  className={`${isAdmin ? 'bg-red-500/20 text-red-100 hover:bg-red-500/30 border-red-500/30' : 'bg-white hover:bg-gray-100 text-black border-transparent'} border font-bold py-3 px-6 rounded-xl transition-all text-[22px] flex items-center justify-center gap-2`}
                 >
                    <span className="material-symbols-outlined text-[18px]">admin_panel_settings</span>
                    {isAdmin ? "Demote to User" : "Make Admin"}
@@ -284,9 +284,9 @@ export default function CustomerDetail(props) {
              <div className="p-8 border-b border-gray-50 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500"><Package className="w-5 h-5"/></div>
-                   <h3 className="font-bold text-gray-900 font-display text-xl">Order Ledger</h3>
+                   <h3 className="font-bold text-gray-900 font-display text-[30px]">Order Ledger</h3>
                 </div>
-                <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold leading-none">{customer.orders?.length || 0} Total</span>
+                <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-[20px] font-bold leading-none">{customer.orders?.length || 0} Total</span>
              </div>
              
              <div className="overflow-x-auto flex-1">
@@ -301,7 +301,7 @@ export default function CustomerDetail(props) {
                                 <th className="py-4 px-8 text-center">Fulfillment</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-50 text-sm">
+                        <tbody className="divide-y divide-gray-50 text-[22px]">
                             {customer.orders.map((order) => (
                                 <tr key={order.id} className="hover:bg-gray-50/50 transition-colors group">
                                     <td className="py-5 px-8 font-mono text-gray-900 font-medium">
@@ -333,7 +333,7 @@ export default function CustomerDetail(props) {
                     <div className="h-full min-h-[250px] flex flex-col items-center justify-center p-8 text-center">
                        <Package className="w-12 h-12 text-gray-200 mb-3"/>
                        <p className="text-gray-500 font-medium">No transactions recorded yet.</p>
-                       <p className="text-sm text-gray-400">Order history will appear here once the customer purchases.</p>
+                       <p className="text-[22px] text-gray-400">Order history will appear here once the customer purchases.</p>
                     </div>
                 )}
              </div>
@@ -344,9 +344,9 @@ export default function CustomerDetail(props) {
              <div className="p-8 border-b border-gray-50 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                    <div className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-[#c3a2ab]"><Heart className="w-5 h-5"/></div>
-                   <h3 className="font-bold text-gray-900 font-display text-xl">Saved Impressions</h3>
+                   <h3 className="font-bold text-gray-900 font-display text-[30px]">Saved Impressions</h3>
                 </div>
-                <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold leading-none">{customer.wishlist?.length || 0} Items</span>
+                <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-[20px] font-bold leading-none">{customer.wishlist?.length || 0} Items</span>
              </div>
              
              <div className="p-8 bg-gray-50/30">
@@ -362,14 +362,14 @@ export default function CustomerDetail(props) {
                                       className="object-cover group-hover:scale-110 transition-transform duration-700"
                                   />
                                 </div>
-                                <span className="text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-[#c3a2ab] transition-colors">{item.product?.name}</span>
+                                <span className="text-[22px] font-bold text-gray-900 line-clamp-2 group-hover:text-[#c3a2ab] transition-colors">{item.product?.name}</span>
                             </Link>
                         ))}
                     </div>
                 ) : (
                     <div className="py-12 flex flex-col items-center justify-center text-center">
                        <Heart className="w-8 h-8 text-gray-200 mb-3"/>
-                       <p className="text-gray-400 text-sm">Customer hasn&apos;t saved any items to their wishlist.</p>
+                       <p className="text-gray-400 text-[22px]">Customer hasn&apos;t saved any items to their wishlist.</p>
                     </div>
                 )}
              </div>
@@ -388,13 +388,13 @@ export default function CustomerDetail(props) {
               onClick={() => setShowPointsModal(false)}
               className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center bg-gray-50 rounded-full text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
             >
-              <span className="material-symbols-outlined notranslate text-sm">close</span>
+              <span className="material-symbols-outlined notranslate text-[22px]">close</span>
             </button>
             <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6">
                <Award className="w-6 h-6"/>
             </div>
-            <h2 className="text-2xl font-display font-bold text-gray-900 mb-2">Modify Ledger</h2>
-            <p className="text-sm text-gray-500 mb-8">Update loyalty points manually. Current Balance: <strong className="text-gray-900 bg-gray-100 px-2 py-0.5 rounded-md">{customer.points || 0} pts</strong></p>
+            <h2 className="text-[36px] font-display font-bold text-gray-900 mb-2">Modify Ledger</h2>
+            <p className="text-[22px] text-gray-500 mb-8">Update loyalty points manually. Current Balance: <strong className="text-gray-900 bg-gray-100 px-2 py-0.5 rounded-md">{customer.points || 0} pts</strong></p>
             
             <div className="space-y-5">
                <div>
@@ -411,13 +411,13 @@ export default function CustomerDetail(props) {
                <div>
                   <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2">Absolute Amount</label>
                   <div className="relative">
-                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-lg">tag</span>
+                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[26px]">tag</span>
                      <input 
                         type="number" 
                         placeholder="e.g. 500" 
                         value={pointsAmount}
                         onChange={e => setPointsAmount(e.target.value)}
-                        className="w-full border-none bg-gray-50 rounded-xl pl-12 pr-4 py-4 outline-none focus:ring-2 focus:ring-purple-500 font-bold text-2xl text-gray-900 placeholder:text-gray-300 placeholder:font-normal"
+                        className="w-full border-none bg-gray-50 rounded-xl pl-12 pr-4 py-4 outline-none focus:ring-2 focus:ring-purple-500 font-bold text-[36px] text-gray-900 placeholder:text-gray-300 placeholder:font-normal"
                         min="1"
                      />
                   </div>

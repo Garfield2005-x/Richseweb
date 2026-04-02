@@ -77,7 +77,7 @@ export default function AdminSubscribers() {
       <div className="flex flex-col gap-6 ">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
           <div>
-            <h1 className="text-4xl font-display font-bold mb-2 text-gray-900">Mailing List</h1>
+            <h1 className="text-[48px] font-display font-bold mb-2 text-gray-900">Mailing List</h1>
             <p className="text-gray-500">Track newsletter sign-ups from the storefront footer.</p>
           </div>
         </div>
@@ -86,8 +86,8 @@ export default function AdminSubscribers() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/20 flex items-center justify-between group hover:border-[#c3a2ab] transition-all">
             <div>
-              <p className="text-sm font-bold tracking-wider text-gray-400 uppercase mb-1">Total Audience</p>
-              <p className="text-3xl font-display font-bold text-gray-900">{totalSubs}</p>
+              <p className="text-[22px] font-bold tracking-wider text-gray-400 uppercase mb-1">Total Audience</p>
+              <p className="text-[44px] font-display font-bold text-gray-900">{totalSubs}</p>
             </div>
             <div className="w-12 h-12 bg-[#c3a2ab]/10 rounded-2xl flex items-center justify-center transition-colors">
               <Mailbox className="w-5 h-5 text-[#c3a2ab]" />
@@ -97,8 +97,8 @@ export default function AdminSubscribers() {
           <div className="bg-[#161314] text-white p-6 rounded-3xl border border-black shadow-xl shadow-black/20 flex items-center justify-between relative overflow-hidden group">
              <div className="absolute -right-10 -top-10 w-24 h-24 bg-green-500/20 rounded-full blur-2xl"></div>
             <div className="relative z-10">
-              <p className="text-sm font-bold tracking-wider text-gray-400 uppercase mb-1">Registered</p>
-              <p className="text-3xl font-display font-bold">{convertedCount}</p>
+              <p className="text-[22px] font-bold tracking-wider text-gray-400 uppercase mb-1">Registered</p>
+              <p className="text-[44px] font-display font-bold">{convertedCount}</p>
             </div>
             <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center relative z-10">
               <UserCheck className="w-5 h-5 text-green-400" />
@@ -107,8 +107,8 @@ export default function AdminSubscribers() {
 
           <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/20 flex items-center justify-between group hover:border-gray-300 transition-all">
             <div>
-              <p className="text-sm font-bold tracking-wider text-gray-400 uppercase mb-1">Guest Emails</p>
-              <p className="text-3xl font-display font-bold text-gray-900">{guestCount}</p>
+              <p className="text-[22px] font-bold tracking-wider text-gray-400 uppercase mb-1">Guest Emails</p>
+              <p className="text-[44px] font-display font-bold text-gray-900">{guestCount}</p>
             </div>
             <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center transition-colors">
               <Ghost className="w-5 h-5 text-gray-400" />
@@ -117,8 +117,8 @@ export default function AdminSubscribers() {
 
           <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/20 flex items-center justify-between group hover:border-blue-200 transition-all">
             <div>
-              <p className="text-sm font-bold tracking-wider text-gray-400 uppercase mb-1">Conversion Rate</p>
-              <p className="text-3xl font-display font-bold text-gray-900">{conversionRate}%</p>
+              <p className="text-[22px] font-bold tracking-wider text-gray-400 uppercase mb-1">Conversion Rate</p>
+              <p className="text-[44px] font-display font-bold text-gray-900">{conversionRate}%</p>
             </div>
             <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center transition-colors">
               <span className="material-symbols-outlined text-blue-500">monitoring</span>
@@ -135,7 +135,7 @@ export default function AdminSubscribers() {
           </div>
           <input
             type="text"
-            className="block w-full pl-11 pr-4 py-3 border-none bg-gray-50 rounded-xl leading-5 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] sm:text-sm transition-shadow"
+            className="block w-full pl-11 pr-4 py-3 border-none bg-gray-50 rounded-xl leading-5 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c3a2ab] sm:text-[22px] transition-shadow"
             placeholder="Search email addresses..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -165,11 +165,11 @@ export default function AdminSubscribers() {
           {loading ? (
             <div className="p-20 flex flex-col items-center justify-center text-gray-400 space-y-4">
               <div className="w-10 h-10 border-4 border-gray-200 border-t-[#c3a2ab] rounded-full animate-spin"></div>
-              <p className="font-medium tracking-wider uppercase text-sm">Scanning Inbox...</p>
+              <p className="font-medium tracking-wider uppercase text-[22px]">Scanning Inbox...</p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
-              <thead className="bg-gray-50/80 backdrop-blur-md sticky top-0 z-10 border-b border-gray-100 text-gray-400 text-xs uppercase tracking-widest font-bold">
+              <thead className="bg-gray-50/80 backdrop-blur-md sticky top-0 z-10 border-b border-gray-100 text-gray-400 text-[20px] uppercase tracking-widest font-bold">
                 <tr>
                   <th className="py-5 px-8">Email Address</th>
                   <th className="py-5 px-8">Sign Up Date</th>
@@ -191,7 +191,7 @@ export default function AdminSubscribers() {
                       </td>
                       <td className="py-5 px-8">
                         <div className="flex flex-col">
-                           <span className="text-sm font-bold text-gray-900">{new Date(sub.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                           <span className="text-[22px] font-bold text-gray-900">{new Date(sub.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                            <span className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">{new Date(sub.createdAt).toLocaleTimeString()}</span>
                         </div>
                       </td>
@@ -224,8 +224,8 @@ export default function AdminSubscribers() {
                     <td colSpan="4" className="py-20 text-center">
                        <div className="flex flex-col items-center justify-center text-gray-400 space-y-3">
                           <Mailbox className="w-12 h-12 text-gray-200" />
-                          <p className="text-lg font-medium text-gray-500">No subscribers found</p>
-                          <p className="text-sm">Try adjusting your filters.</p>
+                          <p className="text-[26px] font-medium text-gray-500">No subscribers found</p>
+                          <p className="text-[22px]">Try adjusting your filters.</p>
                        </div>
                     </td>
                   </tr>

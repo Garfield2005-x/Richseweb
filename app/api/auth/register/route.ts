@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json();
+    const { name, email, password, campaignId } = await req.json();
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -32,8 +32,26 @@ export async function POST(req: Request) {
         email,
         password: hashedPassword,
         role: "USER",
+        signupCampaignId: campaignId || null,
       },
     });
+
+    // Mark as converted in the marketing system
+    if (campaignId) {
+       await prisma.$transaction([
+          prisma.campaignRecipient.updateMany({
+            where: { campaignId, email: email.toLowerCase() },
+            data: { 
+              status: "SENT" as const, // In case it wasn't marked sent yet
+              convertedAt: new Date() 
+            }
+          }),
+          prisma.marketingCampaign.update({
+            where: { id: campaignId },
+            data: { conversionCount: { increment: 1 } }
+          })
+       ]);
+    }
 
     return NextResponse.json(
       { message: "User registered successfully", user: { id: newUser.id, name: newUser.name, email: newUser.email } },
