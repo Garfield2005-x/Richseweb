@@ -32,6 +32,7 @@ export default function Home() {
   const [homeVideos, setHomeVideos] = useState(["", "", "", "", ""]);
   const { addToCart } = useCart()
   const scrollRef = useRef(null);
+  const [hasMounted, setHasMounted] = useState(false);
 
   const scroll = (direction) => {
     if (scrollRef.current) {
@@ -71,6 +72,7 @@ export default function Home() {
       }
     }
     fetchProducts();
+    setHasMounted(true);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -104,7 +106,6 @@ export default function Home() {
 
   return (
     <div>
-      <title>Richse | Luxury Skincare - Radiance Refined</title>
       <Navbar />
       <NewsletterPopup />
 
@@ -287,7 +288,7 @@ export default function Home() {
                   </div>
 
                   <div className="pt-2">
-                    {product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && new Date() >= new Date(product.flashSaleStart) && new Date() <= new Date(product.flashSaleEnd) ? (
+                    {hasMounted && product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && new Date() >= new Date(product.flashSaleStart) && new Date() <= new Date(product.flashSaleEnd) ? (
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-red-600 text-[21px]">

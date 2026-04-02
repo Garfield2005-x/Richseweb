@@ -72,6 +72,7 @@ export default function BiorichsePage() {
                                 <h2 className="text-lg md:text-3xl font-bold text-[#4b0027] leading-tight">
                                     Group Affiliate Community
                                 </h2>
+                                <p className="text-[0.7rem] md:text-sm text-[#acaab1]">ค่าคอม12-20%</p>
                             </div>
                             <div className="relative z-10 flex items-center justify-between md:w-full">
                                 <span className="hidden md:inline-block text-xl font-bold text-[#4b0027]">Com 10-15%</span>
