@@ -68,135 +68,141 @@ export default function BiorichsePage() {
                     <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Highlight Tile: Group Affiliate */}
                         <a
-                            className="md:col-span-2 group relative overflow-hidden signature-gradient p-8 rounded-[1.5rem] flex flex-col justify-between min-h-[220px] active:scale-[0.98] transition-transform"
+                            className="md:col-span-2 group relative overflow-hidden signature-gradient p-5 md:p-8 rounded-[1.5rem] flex flex-row md:flex-col items-center md:justify-between min-h-[100px] md:min-h-[220px] active:scale-[0.98] transition-transform gap-4 md:gap-0"
                             href="https://line.me/ti/g2/dQQu0-rhnBQKiAdDn3L02Ro7id7RDruC02Q5NA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <div className="absolute top-0 right-0 p-8 opacity-20 group-hover:scale-110 transition-transform duration-500">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line Logo" className="w-32 h-32" />
+                            <div className="md:absolute top-0 right-0 p-0 md:p-8 opacity-40 md:opacity-20 group-hover:scale-110 transition-transform duration-500 shrink-0">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line Logo" className="w-12 h-12 md:w-32 md:h-32" />
                             </div>
-                            <div className="relative z-10">
-                                <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[0.65rem] uppercase tracking-tighter text-white mb-4 inline-block font-bold">
+                            <div className="relative z-10 flex-grow">
+                                <span className="hidden md:inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[0.6rem] md:text-[0.65rem] uppercase tracking-tighter text-white mb-3 md:mb-4 font-bold">
                                     High Intent Opportunity
                                 </span>
-                                <h2 className="text-4xl lg:text-5xl font-bold text-[#4b0027] leading-tight">
-                                    Group Affiliate
-                                    <br />
-                                    Community
+                                <h2 className="text-xl md:text-4xl lg:text-5xl font-bold text-[#4b0027] leading-tight">
+                                    Group Affiliate Community
                                 </h2>
+                                <div className="md:hidden mt-1">
+                                    <span className="text-[#4b0027]/80 text-sm font-bold uppercase tracking-widest">Share & Earn 15%</span>
+                                </div>
                             </div>
-                            <div className="relative z-10 flex items-center justify-between mt-10">
-                                <span className="text-3xl font-bold text-[#4b0027]">ค่าคอมมิชชั่น 12-20%</span>
-                                <div className="bg-[#4b0027] text-white px-8 py-3 rounded-full text-base flex items-center gap-2 group-hover:gap-4 transition-all uppercase font-bold tracking-widest shadow-xl">
-                                    Join Now <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line" className="w-5 h-5 brightness-0 invert" />
+                            <div className="relative z-10 flex items-center justify-between md:mt-10 md:w-full">
+                                <span className="hidden md:inline-block text-2xl md:text-3xl font-bold text-[#4b0027]">Com 10-15%</span>
+                                <div className="bg-[#4b0027] text-white p-2 md:px-8 md:py-3 rounded-full text-sm md:text-base flex items-center gap-2 group-hover:gap-4 transition-all uppercase font-bold tracking-widest shadow-xl">
+                                    <span className="hidden md:inline">Join Now</span> <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line" className="w-4 h-4 md:w-5 md:h-5 brightness-0 invert" />
                                 </div>
                             </div>
                         </a>
 
                         {/* Shopee Tile */}
                         <a
-                            className="glass-tile p-8 rounded-[1.5rem] flex flex-col justify-between hover:bg-[#25252c] transition-all group border border-[#48474d]/10 active:scale-[0.98]"
+                            className="glass-tile p-5 md:p-8 rounded-[1.5rem] flex flex-row md:flex-col items-center md:justify-between hover:bg-[#25252c] transition-all group border border-[#48474d]/10 active:scale-[0.98] gap-4"
                             href="https://th.shp.ee/awo2JNVD"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <div className="flex justify-between items-start">
-                                <div className="w-14 h-14 bg-orange-500/20 rounded-xl flex items-center justify-center p-3">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg" alt="Shopee Logo" className="h-8 w-auto object-contain" />
+                            <div className="shrink-0 flex justify-between items-start md:w-full">
+                                <div className="w-12 h-12 md:w-14 md:h-14 bg-orange-500/20 rounded-xl flex items-center justify-center p-2 md:p-3">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg" alt="Shopee Logo" className="h-6 md:h-8 w-auto object-contain" />
                                 </div>
-                                <span className="text-[#ff88b4] font-bold text-xl tracking-tighter uppercase">Official</span>
+                                <span className="hidden md:inline-block text-[#ff88b4] font-bold text-lg md:text-xl tracking-tighter uppercase">Official</span>
                             </div>
-                            <div className="mt-8">
-                                <h3 className="text-2xl font-bold mb-2">Shopee Store</h3>
-                                <p className="text-base text-[#acaab1] mb-6">Exclusive brand discounts & deals.</p>
-                                <div className="text-[#ff88b4] text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
-                                    Shop Now <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                                </div>
+                            <div className="flex-grow">
+                                <h3 className="text-lg md:text-2xl font-bold mb-0.5 md:mb-2">Shopee Store</h3>
+                                <p className="text-xs md:text-base text-[#acaab1] md:mb-6">Exclusive brand discounts & deals.</p>
+                                <div className="md:hidden mt-1 text-[#ff88b4] text-[0.6rem] font-bold uppercase tracking-widest">Shop Online</div>
+                            </div>
+                            <div className="shrink-0 text-[#ff88b4] text-xs md:text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
+                                <span className="hidden md:inline">Shop Now</span> <span className="material-symbols-outlined text-sm md:text-sm">arrow_forward</span>
                             </div>
                         </a>
 
                         {/* Line Consult Tile */}
                         <a
-                            className="glass-tile p-8 rounded-[1.5rem] flex flex-col justify-between hover:bg-[#25252c] transition-all group border border-[#48474d]/10 active:scale-[0.98]"
+                            className="glass-tile p-5 md:p-8 rounded-[1.5rem] flex flex-row md:flex-col items-center md:justify-between hover:bg-[#25252c] transition-all group border border-[#48474d]/10 active:scale-[0.98] gap-4"
                             href="https://line.me/R/ti/p/@338mcudr?oat_content=url&ts=02170245"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <div className="flex justify-between items-start">
-                                <div className="w-14 h-14 bg-green-500/20 rounded-xl flex items-center justify-center p-3">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line Logo" className="w-8 h-8" />
+                            <div className="shrink-0 flex justify-between items-start md:w-full">
+                                <div className="w-12 h-12 md:w-14 md:h-14 bg-green-500/20 rounded-xl flex items-center justify-center p-2 md:p-3">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line Logo" className="w-7 h-7 md:w-8 md:h-8" />
                                 </div>
                             </div>
-                            <div className="mt-8">
-                                <h3 className="text-2xl font-bold mb-2">Consultation</h3>
-                                <p className="text-base text-[#acaab1] mb-6">ปรึกษาปัญหาผิว (Official Line)</p>
-                                <div className="text-green-500 text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
-                                    Chat Now <span className="material-symbols-outlined text-sm">chat</span>
-                                </div>
+                            <div className="flex-grow">
+                                <h3 className="text-lg md:text-2xl font-bold mb-0.5 md:mb-2">Consultation</h3>
+                                <p className="text-xs md:text-base text-[#acaab1] md:mb-6">Official Line Support</p>
+                                <div className="md:hidden mt-1 text-green-500 text-[0.6rem] font-bold uppercase tracking-widest">Connect Support</div>
+                            </div>
+                            <div className="shrink-0 text-green-500 text-xs md:text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
+                                <span className="hidden md:inline">Chat Now</span> <span className="material-symbols-outlined text-sm md:text-sm">chat</span>
                             </div>
                         </a>
 
                         {/* Instagram Tile */}
                         <a
-                            className="glass-tile p-8 rounded-[1.5rem] flex flex-col justify-between hover:bg-[#25252c] transition-all group border border-[#48474d]/10 active:scale-[0.98]"
+                            className="glass-tile p-5 md:p-8 rounded-[1.5rem] flex flex-row md:flex-col items-center md:justify-between hover:bg-[#25252c] transition-all group border border-[#48474d]/10 active:scale-[0.98] gap-4"
                             href="https://www.instagram.com/richse_official/?utm_source=ig_embed&ig_rid=866aee39-6af1-4bd0-9f3d-6504b9238b17"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <div className="flex justify-between items-start">
-                                <div className="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center p-3">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram Logo" className="w-10 h-10" />
+                            <div className="shrink-0 flex justify-between items-start md:w-full">
+                                <div className="w-12 h-12 md:w-14 md:h-14 bg-white/5 rounded-xl flex items-center justify-center p-2 md:p-3">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram Logo" className="w-8 h-8 md:w-10 md:h-10" />
                                 </div>
                             </div>
-                            <div className="mt-10">
-                                <h3 className="text-2xl font-bold mb-2">Instagram</h3>
-                                <p className="text-base text-[#acaab1] mb-6">Behind the scenes & updates.</p>
-                                <div className="text-[#ac89ff] text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
-                                    View Feed <span className="material-symbols-outlined text-sm">grid_view</span>
-                                </div>
+                            <div className="flex-grow">
+                                <h3 className="text-lg md:text-2xl font-bold mb-0.5 md:mb-2">Instagram</h3>
+                                <p className="text-xs md:text-base text-[#acaab1] md:mb-6">Updates & Lifestyle</p>
+                                <div className="md:hidden mt-1 text-[#ac89ff] text-[0.6rem] font-bold uppercase tracking-widest">Follow Story</div>
+                            </div>
+                            <div className="shrink-0 text-[#ac89ff] text-xs md:text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
+                                <span className="hidden md:inline">View Feed</span> <span className="material-symbols-outlined text-sm md:text-sm">grid_view</span>
                             </div>
                         </a>
 
                         {/* Facebook Tile */}
                         <a
-                            className="glass-tile p-8 rounded-[1.5rem] flex flex-col justify-between hover:bg-[#25252c] transition-all group border border-[#48474d]/10 active:scale-[0.98]"
+                            className="glass-tile p-5 md:p-8 rounded-[1.5rem] flex flex-row md:flex-col items-center md:justify-between hover:bg-[#25252c] transition-all group border border-[#48474d]/10 active:scale-[0.98] gap-4"
                             href="https://www.facebook.com/chnay.chi.ta.ra.ni.nakh.ratn.siri.kul/"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <div className="flex justify-between items-start">
-                                <div className="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center p-3">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook Logo" className="w-10 h-10 md:w-12 md:h-12" />
+                            <div className="shrink-0 flex justify-between items-start md:w-full">
+                                <div className="w-12 h-12 md:w-14 md:h-14 bg-blue-500/20 rounded-xl flex items-center justify-center p-2 md:p-3">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook Logo" className="w-8 h-8 md:w-10 md:h-10 md:w-12 md:h-12" />
                                 </div>
                             </div>
-                            <div className="mt-10">
-                                <h3 className="text-2xl font-bold mb-2">Facebook</h3>
-                                <p className="text-base text-[#acaab1] mb-6">Join our official brand page.</p>
-                                <div className="text-blue-400 text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
-                                    Follow Us <span className="material-symbols-outlined text-sm">thumb_up</span>
-                                </div>
+                            <div className="flex-grow">
+                                <h3 className="text-lg md:text-2xl font-bold mb-0.5 md:mb-2">Facebook</h3>
+                                <p className="text-xs md:text-base text-[#acaab1] md:mb-6">Official Brand Page</p>
+                                <div className="md:hidden mt-1 text-blue-400 text-[0.6rem] font-bold uppercase tracking-widest">Join Community</div>
+                            </div>
+                            <div className="shrink-0 text-blue-400 text-xs md:text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
+                                <span className="hidden md:inline">Follow Us</span> <span className="material-symbols-outlined text-sm md:text-sm">thumb_up</span>
                             </div>
                         </a>
 
                         {/* Primary Tile: Official Website (Moved to Bottom) */}
                         <Link
-                            className="md:col-span-2 group relative overflow-hidden bg-white text-[#0e0e13] p-8 rounded-[1.5rem] flex flex-col justify-between min-h-[160px] active:scale-[0.98] transition-transform hover:bg-[#ff88b4] hover:text-[#4b0027]"
+                            className="md:col-span-2 group relative overflow-hidden bg-white text-[#0e0e13] p-5 md:p-8 rounded-[1.5rem] flex flex-row md:flex-col items-center md:justify-between min-h-[100px] md:min-h-[160px] active:scale-[0.98] transition-transform hover:bg-[#ff88b4] hover:text-[#4b0027] gap-4 md:gap-0"
                             href="/"
                         >
-                            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                                <img src="/logo.png" alt="Richse Logo" className="w-32 h-32 md:w-48 md:h-48" />
+                            <div className="md:absolute top-0 right-0 p-0 md:p-8 opacity-20 md:opacity-10 group-hover:scale-110 transition-transform duration-500 shrink-0">
+                                <img src="/logo.png" alt="Richse Logo" className="w-14 h-14 md:w-32 md:h-32 md:w-48 md:h-48" />
                             </div>
-                            <div className="relative z-10">
-                                <span className="bg-[#0e0e13]/10 px-3 py-1 rounded-full text-[0.65rem] uppercase tracking-tighter mb-4 inline-block font-bold">
+                            <div className="relative z-10 flex-grow">
+                                <span className="hidden md:inline-block bg-[#0e0e13]/10 px-3 py-1 rounded-full text-[0.6rem] md:text-[0.65rem] uppercase tracking-tighter mb-3 md:mb-4 font-bold">
                                     Direct to Store
                                 </span>
-                                <h2 className="text-4xl lg:text-5xl font-bold leading-tight">Official Website</h2>
+                                <h2 className="text-xl md:text-4xl lg:text-5xl font-bold leading-tight">Official Website</h2>
+                                <div className="md:hidden mt-0.5 text-[#0e0e13]/60 text-xs font-bold uppercase tracking-widest">Shop Online Store</div>
                             </div>
-                            <div className="relative z-10 flex items-center justify-between mt-6">
-                                <p className="text-base md:text-lg opacity-80 font-medium">Shop our full collection & exclusive offers.</p>
-                                <div className="bg-[#0e0e13] text-white px-8 py-3 rounded-full text-base flex items-center gap-2 group-hover:bg-[#4b0027] transition-all font-bold shadow-xl">
-                                    Visit Now <span className="material-symbols-outlined text-lg">open_in_new</span>
+                            <div className="relative z-10 flex items-center justify-between md:mt-4 md:mt-6">
+                                <p className="hidden md:block text-sm md:text-base md:text-lg opacity-80 font-medium whitespace-nowrap overflow-hidden text-ellipsis mr-2">Shop our full collection & offers.</p>
+                                <div className="bg-[#0e0e13] text-white p-2.5 md:px-8 md:py-3 rounded-full text-base flex items-center gap-2 group-hover:bg-[#4b0027] transition-all font-bold shadow-xl">
+                                    <span className="hidden md:inline">Visit Now</span> <span className="material-symbols-outlined text-base md:text-lg">open_in_new</span>
                                 </div>
                             </div>
                         </Link>
@@ -217,23 +223,7 @@ export default function BiorichsePage() {
                             พบกับสินค้าราคาพิเศษ พร้อมโปรโมชั่นเฉพาะที่เว็บไซต์ทางการของ RICH&apos;SE เท่านั้น
                         </p>
                     </div>
-                    <div className="relative z-10 flex -space-x-4">
-                        <img
-                            className="w-32 h-44 object-cover rounded-2xl border-4 border-[#0e0e13] shadow-xl rotate-[-6deg]"
-                            alt="Richse Website Experience"
-                            src="/biorichse/website.png"
-                        />
-                        <img
-                            className="w-32 h-44 object-cover rounded-2xl border-4 border-[#0e0e13] shadow-xl translate-y-4"
-                            alt="Richse Premium Product"
-                            src="/biorichse/product.png"
-                        />
-                        <img
-                            className="w-32 h-44 object-cover rounded-2xl border-4 border-[#0e0e13] shadow-xl rotate-[6deg]"
-                            alt="Richse Luxury Unboxing"
-                            src="/biorichse/lifestyle.png"
-                        />
-                    </div>
+
                 </div>
             </main>
 
