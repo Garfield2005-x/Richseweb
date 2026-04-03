@@ -53,14 +53,14 @@ export default function CookieSettingsModal({
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="bg-white dark:bg-[#1c191a] text-[#1c191a] dark:text-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10"
+            className="bg-white text-[#1c191a] w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-gray-100"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/10">
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <h2 className="text-xl font-bold tracking-tight">การตั้งค่าคุกกี้ (Cookie Settings)</h2>
               <button 
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <X size={20} />
               </button>
@@ -68,23 +68,23 @@ export default function CookieSettingsModal({
 
             {/* Content */}
             <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto">
-              <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+              <p className="text-sm text-gray-500 leading-relaxed">
                 เราใช้คุกกี้เพื่อเพิ่มประสิทธิภาพ และประสบการณ์ที่ดีในการใช้งานเว็บไซต์ คุณสามารถเลือกความยินยอมการใช้คุกกี้แต่ละประเภทได้
               </p>
 
               {/* Essential */}
-              <div className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 dark:bg-white/5">
+              <div className="flex items-start gap-4 p-4 rounded-xl bg-gray-50">
                 <div className="bg-[#c3a2ab] p-2 rounded-lg text-white">
                   <Shield size={20} />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold">คุกกี้ที่จำเป็น (Essential Cookies)</h3>
-                    <span className="text-[10px] bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-400 px-2 py-1 rounded uppercase font-bold">
+                    <span className="text-[10px] bg-gray-200 text-gray-600 px-2 py-1 rounded uppercase font-bold">
                       จำเป็นเสมอ
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     คุกกี้เหล่านี้จำเป็นสำหรับการทำงานของเว็บไซต์ และไม่สามารถปิดการใช้งานได้ในระบบของเรา
                   </p>
                 </div>
@@ -92,7 +92,7 @@ export default function CookieSettingsModal({
 
               {/* Analytics */}
               <div 
-                className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
                 onClick={() => handleToggle("analytics")}
               >
                 <div className="bg-blue-500/20 p-2 rounded-lg text-blue-500">
@@ -101,11 +101,11 @@ export default function CookieSettingsModal({
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold">คุกกี้เพื่อการวิเคราะห์ (Analytics Cookies)</h3>
-                    <div className={`w-10 h-5 rounded-full relative transition-colors ${localConsent.analytics ? 'bg-[#c3a2ab]' : 'bg-gray-300 dark:bg-white/20'}`}>
+                    <div className={`w-10 h-5 rounded-full relative transition-colors ${localConsent.analytics ? 'bg-[#c3a2ab]' : 'bg-gray-300'}`}>
                       <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${localConsent.analytics ? 'left-6' : 'left-1'}`} />
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     ช่วยให้เรานับจำนวนผู้เข้าชมและแหล่งที่มาของทราฟฟิก เพื่อวัดผลและปรับปรุงประสิทธิภาพของเว็บไซต์
                   </p>
                 </div>
@@ -113,7 +113,7 @@ export default function CookieSettingsModal({
 
               {/* Marketing */}
               <div 
-                className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
                 onClick={() => handleToggle("marketing")}
               >
                 <div className="bg-purple-500/20 p-2 rounded-lg text-purple-500">
@@ -122,11 +122,11 @@ export default function CookieSettingsModal({
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold">คุกกี้เพื่อการตลาด (Marketing Cookies)</h3>
-                    <div className={`w-10 h-5 rounded-full relative transition-colors ${localConsent.marketing ? 'bg-[#c3a2ab]' : 'bg-gray-300 dark:bg-white/20'}`}>
+                    <div className={`w-10 h-5 rounded-full relative transition-colors ${localConsent.marketing ? 'bg-[#c3a2ab]' : 'bg-gray-300'}`}>
                       <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${localConsent.marketing ? 'left-6' : 'left-1'}`} />
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     ใช้เพื่อแสดงเนื้อหาและโฆษณาที่ตรงตามความต้องการของคุณมากขึ้น
                   </p>
                 </div>
@@ -134,10 +134,10 @@ export default function CookieSettingsModal({
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-gray-100 dark:border-white/10 flex gap-3">
+            <div className="p-6 border-t border-gray-100 flex gap-3">
               <button 
                 onClick={onClose}
-                className="flex-1 py-3 text-sm font-semibold rounded-xl border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                className="flex-1 py-3 text-sm font-semibold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
               >
                 ยกเลิก
               </button>

@@ -13,15 +13,15 @@ import CountdownTimer from "@/app/components/CountdownTimer";
 const AccordionItem = ({ title, defaultOpen = false, children }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-gray-100 dark:border-gray-800">
+    <div className="border-b border-gray-100">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex justify-between items-center py-5 text-left focus:outline-none focus:ring-none group hover:bg-[#faf9f8] dark:hover:bg-gray-800/50 px-2 -mx-2 rounded-xl transition-all"
+        className="w-full flex justify-between items-center py-5 text-left focus:outline-none focus:ring-none group hover:bg-[#faf9f8] px-2 -mx-2 rounded-xl transition-all"
       >
-        <span className="font-display font-medium text-2xl tracking-wide text-[#161314] dark:text-white group-hover:text-[#c3a2ab] transition-colors">
+        <span className="font-display font-medium text-2xl tracking-wide text-[#161314] group-hover:text-[#c3a2ab] transition-colors">
           {title}
         </span>
-        <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-800 group-hover:bg-[#f3edf0] transition-colors text-[#161314] dark:text-gray-200">
+        <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 group-hover:bg-[#f3edf0] transition-colors text-[#161314]">
           {/* Horizontal line */}
           <span className="absolute w-[14px] h-[1.5px] bg-current rounded-full transition-transform duration-300"></span>
           {/* Vertical line - hidden when open */}
@@ -31,7 +31,7 @@ const AccordionItem = ({ title, defaultOpen = false, children }) => {
       <div 
         className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] px-2 ${isOpen ? "max-h-[800px] opacity-100 pb-6" : "max-h-0 opacity-0 pb-0"}`}
       >
-        <div className="text-gray-600 dark:text-gray-400 leading-relaxed font-sans text-[20px] whitespace-pre-wrap">
+        <div className="text-gray-600 leading-relaxed font-sans text-[20px] whitespace-pre-wrap">
           {children}
         </div>
       </div>
@@ -161,7 +161,7 @@ export default function ProductDetailPage(props) {
       <main className="max-w-360 mx-auto px-6 lg:px-12 pt-32 pb-12 md:pt-40 md:pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start landing-section">
           <div className="lg:col-span-7 flex flex-col md:flex-row-reverse gap-4">
-            <div className="flex-1 bg-white dark:bg-gray-900 rounded-xl overflow-hidden aspect-4/5 relative group cursor-zoom-in border border-gray-100 dark:border-gray-800 shadow-sm">
+            <div className="flex-1 bg-white rounded-xl overflow-hidden aspect-4/5 relative group cursor-zoom-in border border-gray-100 shadow-sm">
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                 data-alt={product.name}
@@ -177,7 +177,7 @@ export default function ProductDetailPage(props) {
                 <span className="text-[16px] uppercase tracking-[0.2em] text-[#c3a2ab] font-bold mb-3 block">
                   The Radiance Collection
                 </span>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-[#161314] dark:text-white leading-tight mb-4">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-[#161314] leading-tight mb-4">
                   {product.name}
                 </h2>
                 <div className="flex items-center gap-4">
@@ -187,7 +187,7 @@ export default function ProductDetailPage(props) {
                         {s <= Math.floor(avgRating || 5) ? "star" : (s <= Math.round(avgRating || 5) ? "star_half" : "star")}
                       </span>
                     ))}
-                    <span className="ml-2 text-[18px] text-gray-600 dark:text-gray-400 font-sans">
+                    <span className="ml-2 text-[18px] text-gray-600 font-sans">
                       {avgRating || "5.0"} ({reviews.length} Reviews)
                     </span>
                   </div>
@@ -232,7 +232,7 @@ export default function ProductDetailPage(props) {
                     {product.variants?.length > 0 && !selectedVariant && (
                       <span className="text-base text-gray-500 font-medium">Starting from</span>
                     )}
-                    <span className="text-3xl font-light text-[#161314] dark:text-white">
+                    <span className="text-3xl font-light text-[#161314]">
                       ฿{product.variants?.length > 0 && !selectedVariant 
                           ? Math.min(...product.variants.map(v => v.price)).toLocaleString(undefined, { minimumFractionDigits: 2 })
                           : currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })
@@ -240,7 +240,7 @@ export default function ProductDetailPage(props) {
                     </span>
                   </div>
                 )}
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+                <span className="text-sm text-gray-500">
                   {currentStock > 0 ? "In Stock" : "Out of Stock"}
                 </span>
               </div>
@@ -251,11 +251,11 @@ export default function ProductDetailPage(props) {
                  </AccordionItem>
                  
                  <AccordionItem title="การดูแลปัญหาผิว (Skin Type)">
-                    <div className="bg-[#fcfaf9] dark:bg-gray-800/50 p-4 rounded-2xl border border-[#f3edf0] dark:border-gray-700 mb-5 inline-flex items-start gap-4 shadow-sm w-full">
+                    <div className="bg-[#fcfaf9] p-4 rounded-2xl border border-[#f3edf0] mb-5 inline-flex items-start gap-4 shadow-sm w-full">
                        <span className="material-symbols-outlined text-[#c3a2ab] text-3xl">verified</span>
                        <div>
-                          <strong className="block text-[#161314] dark:text-white mb-1">เหมาะสำหรับ</strong>
-                          <span className="text-[#161314] dark:text-white font-medium">{product.skinType || "ทุกสภาพผิว (All Skin Types)"}</span>
+                          <strong className="block text-[#161314] mb-1">เหมาะสำหรับ</strong>
+                          <span className="text-[#161314] font-medium">{product.skinType || "ทุกสภาพผิว (All Skin Types)"}</span>
                        </div>
                     </div>
                     <strong>✨ วิธีการใช้งาน:</strong><br/>
@@ -264,24 +264,24 @@ export default function ProductDetailPage(props) {
 
                  <AccordionItem title="ข้อมูลจำเพาะ (Product Info)">
                     <ul className="space-y-5 list-none py-2 m-0">
-                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-colors">
+                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors">
                           <span className="material-symbols-outlined text-gray-400 text-3xl">category</span>
                           <div>
-                             <strong className="block text-[#161314] dark:text-white text-[16px] mb-0.5 uppercase tracking-widest">Category</strong>
+                             <strong className="block text-[#161314] text-[16px] mb-0.5 uppercase tracking-widest">Category</strong>
                              <span className="text-[18px] text-gray-600">{product.category || "สกินแคร์ / ความงาม"}</span>
                           </div>
                        </li>
-                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-colors">
+                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors">
                           <span className="material-symbols-outlined text-emerald-500 text-3xl">eco</span>
                           <div>
-                             <strong className="block text-[#161314] dark:text-white text-[16px] mb-0.5 uppercase tracking-widest">Clean Beauty Paradigm</strong>
+                             <strong className="block text-[#161314] text-[16px] mb-0.5 uppercase tracking-widest">Clean Beauty Paradigm</strong>
                              <span className="text-[18px] text-gray-600">100% Vegan & Cruelty-Free ปราศจากการทารุณกรรมสัตว์ ปราศจากพาราเบน ซิลิโคน และสารแต่งกลิ่นสังเคราะห์</span>
                           </div>
                        </li>
-                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-colors">
+                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors">
                           <span className="material-symbols-outlined text-blue-400 text-3xl">health_and_safety</span>
                           <div>
-                             <strong className="block text-[#161314] dark:text-white text-[16px] mb-0.5 uppercase tracking-widest">Dermatologically Endorsed</strong>
+                             <strong className="block text-[#161314] text-[16px] mb-0.5 uppercase tracking-widest">Dermatologically Endorsed</strong>
                              <span className="text-[18px] text-gray-600">Formula พัฒนาและผ่านการทดสอบโดยผู้เชี่ยวชาญด้านผิวหนัง อ่อนโยนแต่ให้ผลลัพธ์สูง</span>
                           </div>
                        </li>
@@ -289,12 +289,12 @@ export default function ProductDetailPage(props) {
                  </AccordionItem>
                  
                  <AccordionItem title="ส่วนผสมหลัก (Key Ingredients)">
-                    <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-5 rounded-xl shadow-inner text-sm text-gray-600 dark:text-gray-400 leading-loose">
+                    <div className="bg-white border border-gray-100 p-5 rounded-xl shadow-inner text-sm text-gray-600 leading-loose">
                        {product.ingredients || "Water, Glycerin, Premium Extracts. (กรุณาสอบถามข้อมูลส่วนผสมโดยละเอียดสำหรับสินค้าล็อตปัจจุบันจากแอดมิน)"}
                     </div>
                  </AccordionItem>
               </div>
-              <div className="space-y-4 pt-6 border-t border-gray-100 dark:border-gray-800">
+              <div className="space-y-4 pt-6 border-t border-gray-100">
                 {product.variants?.length > 0 && (
                   <div className="mb-6">
                     <span className="text-xs uppercase tracking-[0.2em] font-bold text-gray-400 mb-3 block">Select Size</span>
@@ -308,7 +308,7 @@ export default function ProductDetailPage(props) {
                           }}
                           className={`px-5 py-3 border rounded-lg text-[17px] font-bold transition-all uppercase tracking-wider ${
                             selectedVariant?.id === v.id 
-                              ? "border-[#161314] bg-[#161314] text-white dark:border-white dark:bg-white dark:text-black" 
+                              ? "border-[#161314] bg-[#161314] text-white" 
                               : v.stock <= 0 
                                 ? "border-gray-200 bg-gray-50 text-gray-400 opacity-50 relative overflow-hidden"
                                 : "border-gray-200 text-gray-600 hover:border-gray-400"
@@ -383,13 +383,13 @@ export default function ProductDetailPage(props) {
                 {currentStock > 0 && (
                   <Link
                     href="/Checkout"
-                    className="w-full border-2 border-[#161314] dark:border-white text-[#161314] dark:text-white font-bold py-5 rounded-lg hover:bg-[#161314] hover:text-white dark:hover:bg-white dark:hover:text-black transition-all uppercase tracking-widest text-[18px] block text-center"
+                    className="w-full border-2 border-[#161314] text-[#161314] font-bold py-5 rounded-lg hover:bg-[#161314] hover:text-white transition-all uppercase tracking-widest text-[18px] block text-center"
                   >
                     Buy It Now
                   </Link>
                 )}
               </div>
-              <div className="grid grid-cols-3 gap-4 pt-8 border-t border-gray-100 dark:border-gray-800">
+              <div className="grid grid-cols-3 gap-4 pt-8 border-t border-gray-100">
                 <div className="flex flex-col items-center text-center gap-2">
                   <span className="material-symbols-outlined notranslate text-[#C9A961] text-3xl">
                     local_shipping
@@ -422,7 +422,7 @@ export default function ProductDetailPage(props) {
         <div className="mt-16 sm:mt-32 space-y-16 sm:space-y-32">
           {reviews.length > 0 && (
           <section className="landing-section">
-            <div className="flex flex-col lg:flex-row gap-16 p-12 lg:p-16 bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-xl shadow-primary/5">
+            <div className="flex flex-col lg:flex-row gap-16 p-12 lg:p-16 bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-primary/5">
               <div className="flex flex-col gap-6 lg:w-1/3">
                 <h3 className="text-4xl font-display">Customer Praise</h3>
                 <div className="space-y-1">
@@ -448,7 +448,7 @@ export default function ProductDetailPage(props) {
                 ) : (
                   <div className="max-h-[500px] overflow-y-auto pr-4 space-y-8 custom-scrollbar">
                     {reviews.map((rev) => (
-                      <div key={rev.id} className="border-b border-gray-50 dark:border-gray-800 pb-8 last:border-0">
+                      <div key={rev.id} className="border-b border-gray-50 pb-8 last:border-0">
                         <div className="flex justify-between items-start mb-4">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
@@ -459,7 +459,7 @@ export default function ProductDetailPage(props) {
                               )}
                             </div>
                             <div>
-                              <p className="font-bold text-gray-900 dark:text-white text-sm">{rev.user.name || "Verified Buyer"}</p>
+                              <p className="font-bold text-gray-900 text-sm">{rev.user.name || "Verified Buyer"}</p>
                               <p className="text-[10px] text-gray-400 uppercase tracking-tighter">{new Date(rev.created_at).toLocaleDateString()}</p>
                             </div>
                           </div>
@@ -469,7 +469,7 @@ export default function ProductDetailPage(props) {
                             ))}
                           </div>
                         </div>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed whitespace-pre-wrap">
+                        <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">
                           {rev.comment}
                         </p>
                       </div>

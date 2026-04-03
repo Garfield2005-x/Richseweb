@@ -9,12 +9,9 @@ interface GoogleAnalyticsProps {
 }
 
 export default function GoogleAnalytics({ gaId }: GoogleAnalyticsProps) {
-  const [consentGiven, setConsentGiven] = useState(false);
+  const [consentGiven, setConsentGiven] = useState(() => hasConsent("analytics"));
 
   useEffect(() => {
-    // Sync consent state on mount
-    setConsentGiven(hasConsent("analytics"));
-
     const handleConsentChange = () => {
       setConsentGiven(hasConsent("analytics"));
     };

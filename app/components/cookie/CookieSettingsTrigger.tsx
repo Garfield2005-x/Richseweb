@@ -21,7 +21,7 @@ export default function CookieSettingsTrigger() {
       whileTap={{ scale: 0.9 }}
       onClick={() => setIsOpen(true)}
       id="cookie-settings-trigger"
-      className="fixed bottom-6 left-6 z-[80] w-12 h-12 bg-white dark:bg-[#1c191a] text-[#c3a2ab] rounded-full shadow-2xl flex items-center justify-center border border-gray-100 dark:border-white/10 hover:shadow-[#c3a2ab]/20 transition-all group"
+      className="fixed bottom-6 left-6 z-[80] w-12 h-12 bg-white text-[#c3a2ab] rounded-full shadow-2xl flex items-center justify-center border border-gray-100 hover:shadow-[#c3a2ab]/20 transition-all group"
       title="Cookie Settings"
     >
       <Cookie size={24} className="group-hover:rotate-12 transition-transform" />

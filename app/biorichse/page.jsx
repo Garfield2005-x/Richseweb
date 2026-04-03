@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function BiorichsePage() {
     return (
@@ -30,10 +31,12 @@ export default function BiorichsePage() {
                     <div className="w-full flex flex-col gap-2 items-center lg:items-start">
                         <div className="relative group">
                             <div className="absolute -inset-2 bg-[#ff88b4]/10 rounded-2xl blur-xl group-hover:bg-[#ff88b4]/20 transition-all duration-700"></div>
-                            <img
+                            <Image
                                 className="relative w-32 h-32 lg:w-40 lg:h-40 object-contain rounded-2xl shadow-xl bg-white/5 backdrop-blur-md p-2"
                                 alt="Richse Brand Official Logo"
                                 src="/logo.png"
+                                width={160}
+                                height={160}
                             />
                         </div>
                         <div className="space-y-1 text-center lg:text-left">
@@ -66,7 +69,7 @@ export default function BiorichsePage() {
                             rel="noopener noreferrer"
                         >
                             <div className="md:absolute top-0 right-0 p-0 md:p-4 opacity-40 md:opacity-20 group-hover:scale-110 transition-transform duration-500 shrink-0">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line Logo" className="w-10 h-10 md:w-24 md:h-24" />
+                                <Image src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line Logo" width={96} height={96} className="w-10 h-10 md:w-24 md:h-24" />
                             </div>
                             <div className="relative z-10 flex-grow">
                                 <h2 className="text-lg md:text-3xl font-bold text-[#4b0027] leading-tight">
@@ -77,7 +80,7 @@ export default function BiorichsePage() {
                             <div className="relative z-10 flex items-center justify-between md:w-full">
                                 <span className="hidden md:inline-block text-xl font-bold text-[#4b0027]">Com 10-15%</span>
                                 <div className="bg-[#4b0027] text-white p-2 md:px-6 md:py-2 rounded-full text-xs md:text-sm flex items-center gap-2 transition-all uppercase font-bold tracking-widest shadow-lg">
-                                    <span className="hidden md:inline">Join Now</span> <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line" className="w-3 h-3 md:w-4 md:h-4 brightness-0 invert" />
+                                    <span className="hidden md:inline">Join Now</span> <Image src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line" width={16} height={16} className="w-3 h-3 md:w-4 md:h-4 brightness-0 invert" />
                                 </div>
                             </div>
                         </a>
@@ -91,7 +94,7 @@ export default function BiorichsePage() {
                         >
                             <div className="shrink-0 flex justify-between items-start md:w-full">
                                 <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center p-2">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg" alt="Shopee Logo" className="h-5 w-auto object-contain" />
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg" alt="Shopee Logo" width={20} height={20} className="h-5 w-auto object-contain" />
                                 </div>
                             </div>
                             <div className="flex-grow">
@@ -112,7 +115,7 @@ export default function BiorichsePage() {
                         >
                             <div className="shrink-0 flex justify-between items-start md:w-full">
                                 <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center p-2">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line Logo" className="w-6 h-6" />
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="Line Logo" width={24} height={24} className="w-6 h-6" />
                                 </div>
                             </div>
                             <div className="flex-grow">
@@ -133,7 +136,7 @@ export default function BiorichsePage() {
                         >
                             <div className="shrink-0 flex justify-between items-start md:w-full">
                                 <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center p-2">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram Logo" className="w-7 h-7" />
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram Logo" width={28} height={28} className="w-7 h-7" />
                                 </div>
                             </div>
                             <div className="flex-grow">
@@ -154,7 +157,7 @@ export default function BiorichsePage() {
                         >
                             <div className="shrink-0 flex justify-between items-start md:w-full">
                                 <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center p-2">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook Logo" className="w-7 h-7" />
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook Logo" width={28} height={28} className="w-7 h-7" />
                                 </div>
                             </div>
                             <div className="flex-grow">
@@ -167,12 +170,12 @@ export default function BiorichsePage() {
                         </a>
 
                         {/* Primary Tile: Official Website (Moved to Bottom) */}
-                        <a
+                        <Link
                             className="md:col-span-2 group relative overflow-hidden bg-white text-[#0e0e13] p-4 md:p-5 rounded-[1rem] flex flex-row md:flex-col items-center md:justify-between min-h-[70px] md:min-h-[120px] active:scale-[0.98] transition-transform hover:bg-[#ff88b4] hover:text-[#4b0027] gap-3 md:gap-0"
                             href="/"
                         >
                             <div className="md:absolute top-0 right-0 p-0 md:p-3 opacity-20 md:opacity-10 group-hover:scale-110 transition-transform duration-500 shrink-0">
-                                <img src="/logo.png" alt="Richse Logo" className="w-10 h-10 md:w-24 md:h-24" />
+                                <Image src="/logo.png" alt="Richse Logo" width={96} height={96} className="w-10 h-10 md:w-24 md:h-24" />
                             </div>
                             <div className="relative z-10 flex-grow">
                                 <h2 className="text-lg md:text-3xl font-bold leading-tight">Official Website</h2>
@@ -183,7 +186,7 @@ export default function BiorichsePage() {
                                     <span className="hidden md:inline">Visit Now</span> <span className="material-symbols-outlined text-sm md:text-base">open_in_new</span>
                                 </div>
                             </div>
-                        </a>
+                        </Link>
                     </div>
                 </div>
 

@@ -32,6 +32,7 @@ export default function Home() {
   const [homeVideos, setHomeVideos] = useState(["", "", "", "", ""]);
   const { addToCart } = useCart()
   const scrollRef = useRef(null);
+  const communityRef = useRef(null);
   const [hasMounted, setHasMounted] = useState(false);
 
   const scroll = (direction) => {
@@ -112,44 +113,93 @@ export default function Home() {
       <NewsletterPopup />
 
       {/* --- HERO SECTION --- */}
-      <section className="hero-mesh dark:bg-background-dark py-12 md:py-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className="relative hero-mesh py-16 md:py-28 overflow-hidden">
 
-            {/* Context Side */}
+        {/* Ambient Glow Orbs */}
+        <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-[#c3a2ab]/12 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[450px] h-[450px] bg-[#7a5260]/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/2 -translate-y-1/2 left-0 w-[250px] h-[250px] bg-[#c3a2ab]/8 rounded-full blur-[80px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+            {/* Content Side */}
             <motion.div
               className="order-2 lg:order-1 space-y-8"
               initial="hidden" animate="visible" variants={staggerContainer}
             >
-              <div className="space-y-4">
-                <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-[15px]">
-                  The Pinnacle of Skin Rejuvenation
-                </motion.span>
-                <motion.h1 variants={fadeInUp} className="font-display text-6xl md:text-8xl font-bold leading-[1.05] text-[#161314] dark:text-white">
-                  Radiance <br />
-                  <span className="text-[#C9A961] font-display italic font-medium">Refined.</span>
+              {/* Heading Block */}
+              <div className="space-y-3">
+                {/* Editorial top separator */}
+                {/* Editorial top separator - Long & Symmetrical */}
+                <motion.div variants={fadeInUp} className="flex items-center gap-6 w-full max-w-xl mx-auto lg:mx-0">
+                  <div className="flex-1 h-[0.5px] bg-gradient-to-r from-transparent via-[#c3a2ab]/30 to-[#c3a2ab]/60" />
+                  <div className="flex items-center gap-4 text-[#9d7b84] text-[11px] tracking-[0.5em] uppercase font-medium whitespace-nowrap">
+                    <span className="text-[10px] opacity-60">✦</span>
+                    <span>Richse Official</span>
+                    <span className="text-[10px] opacity-60">✦</span>
+                  </div>
+                  <div className="flex-1 h-[0.5px] bg-gradient-to-l from-transparent via-[#c3a2ab]/30 to-[#c3a2ab]/60" />
+                </motion.div>
+
+                <motion.h1 variants={fadeInUp} className="font-display text-[#161314] leading-[1.0]">
+                  <span className="block text-7xl md:text-[8rem] font-bold tracking-tight">Feel It</span>
+                  <span className="block text-6xl md:text-[6.5rem] font-semibold tracking-wide bg-gradient-to-r from-[#c3a2ab] via-[#a87d89] to-[#7a5260] bg-clip-text text-transparent mt-1">
+                    In Your Skin.
+                  </span>
                 </motion.h1>
-                <motion.p variants={fadeInUp} className="text-[22px] text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
-                  Thoughtfully crafted skincare blending advanced clinical formulation with a modern approach to skin wellness, designed to support a naturally resilient, glowing, and healthy-looking complexion.
-                </motion.p>
+
+                {/* Decorative rule ✦ (Perfectly matched & centered) */}
+                <motion.div variants={fadeInUp} className="flex justify-center lg:justify-start w-full max-w-xl">
+                  <div className="relative inline-flex items-center gap-4 text-transparent text-[11px] tracking-[0.5em] uppercase font-medium whitespace-nowrap select-none pointer-events-none">
+                    <span className="text-[10px]">✦</span>
+                    <span>Richse Official</span>
+                    <span className="text-[10px]">✦</span>
+                    
+                    {/* Centered Symmetrical Line */}
+                    <div className="absolute inset-0 flex items-center gap-4">
+                      <div className="flex-1 h-[0.5px] bg-gradient-to-r from-transparent to-[#c3a2ab]/50" />
+                      <span className="text-[#c3a2ab]/50 text-[12px] opacity-100 flex-shrink-0">✦</span>
+                      <div className="flex-1 h-[0.5px] bg-gradient-to-l from-transparent to-[#c3a2ab]/50" />
+                    </div>
+                  </div>
+                </motion.div>
               </div>
 
+              {/* Punchy paragraph */}
+              <motion.p variants={fadeInUp} className="text-[19px] text-gray-500 max-w-md leading-relaxed">
+                Clinically formulated. Barrier-first.{" "}
+                <span className="font-semibold text-[#161314] not-italic">Results you can actually feel.</span>
+              </motion.p>
+
+              {/* CTA Buttons */}
               <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
-                <Link className="bg-[#c3a2ab] text-white px-10 py-4 rounded-xl font-bold tracking-wider hover:opacity-90 transition-all shadow-lg shadow-primary/20 text-[18px]" href="/ProductAll">
-                  Discover Collection
+                <Link
+                  href="/ProductAll"
+                  className="relative overflow-hidden group bg-[#161314] text-white px-10 py-4 rounded-xl font-bold tracking-wider text-[17px] shadow-xl hover:shadow-2xl transition-all duration-300"
+                >
+                  <span className="relative z-10 group-hover:text-white transition-colors duration-300">Discover Collection</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#c3a2ab] to-[#7a5260] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </Link>
-                <Link href="/skin-quiz" className="border border-[#dfd8da] dark:border-white/10 px-10 py-4 rounded-xl font-bold tracking-wider hover:bg-white dark:hover:bg-white/5 transition-all text-[18px]">
+                <Link
+                  href="/skin-quiz"
+                  className="border border-[#c3a2ab]/40 text-[#161314] px-10 py-4 rounded-xl font-bold tracking-wider hover:border-[#c3a2ab] hover:bg-[#c3a2ab]/5 transition-all duration-300 text-[17px] backdrop-blur-sm"
+                >
                   Take Skin Quiz
                 </Link>
               </motion.div>
 
-              <motion.div variants={fadeInUp} className="pt-8 flex items-center gap-6">
+              {/* Social Proof */}
+              <motion.div variants={fadeInUp} className="flex items-center gap-6 pt-4 border-t border-[#c3a2ab]/10">
                 <div className="flex -space-x-3">
-                  <div className="size-10 rounded-full border-2 border-white bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOkU_KsqoSbhbtjJ5OK9CLJa6qSuYp3FafH-5nN4-H_9gRQAwdEge5ePpZlee9flZzUHCC5Eqg5W-PocN0GRdG-6eYGM0CtwOHiaZtCPmghKObx7bLetYpi-upa72L4tRUipvZVaBED4KGN31iBxkekVRd14csqj41oXrqCnFYDhL0Q1aEInkrj_s4Q9i-wjyGpzBmUDJpMb1gEkQ7PqFeht3_H4uYGOKXz39j_WZJpCKIIJS7Alfg1cSmsWuFW1sfy5NvAGJoqCU')" }} />
-                  <div className="size-10 rounded-full border-2 border-white bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDszfLbZT1XnVheqbKqCnnJvupr51auXLy8rZ_dvzHG157egPBmPKxb7WT-_cHGSqLMExoNRLiFIRww8HhXiX_MZq2hpr22pscgo1fzgY0bLrcacqJJCdctMfyb7Z_fWfKnyWY9iVQxSht9YnIFWje2A27e5NfRoqVnj6bJu7yFJxnzFJXV_Ly6A00t9rbXf5YQ9yGBU20jriE_6U0hOl3JGZit5vAmK9WuHAtvMX74FZT_ZiqkT_F3XzPfykhevxTCIZAQEzzU2LA')" }} />
-                  <div className="size-10 rounded-full border-2 border-white bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAzAfdMu-3RKvQBQQmbeIFjWUf1wlZXlQhh7P9e4sICbkGiXGKs3s4X_QULfM-xcRQ0PEJ1s8Kytvagkp8RZ9GD7Oj7l1paVsQodOYMyWZTgHLI4r1hQy1w8fbaIYPFXImsAlLUwLPD8qje6En3dZBaZ2_gvJ1oL2YMsNtPn3dkHNRXhaA8AM3lprxZppX0n4fJU4HnljWJVgFF8ozB8oh9aWOng5h-GiZdunpLCqPhFligY32ziY7jDoJ8ftgm-53q8Qj5WObdXnk')" }} />
+                  <div className="size-10 rounded-full border-2 border-white bg-cover bg-center shadow-sm" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOkU_KsqoSbhbtjJ5OK9CLJa6qSuYp3FafH-5nN4-H_9gRQAwdEge5ePpZlee9flZzUHCC5Eqg5W-PocN0GRdG-6eYGM0CtwOHiaZtCPmghKObx7bLetYpi-upa72L4tRUipvZVaBED4KGN31iBxkekVRd14csqj41oXrqCnFYDhL0Q1aEInkrj_s4Q9i-wjyGpzBmUDJpMb1gEkQ7PqFeht3_H4uYGOKXz39j_WZJpCKIIJS7Alfg1cSmsWuFW1sfy5NvAGJoqCU')" }} />
+                  <div className="size-10 rounded-full border-2 border-white bg-cover bg-center shadow-sm" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDszfLbZT1XnVheqbKqCnnJvupr51auXLy8rZ_dvzHG157egPBmPKxb7WT-_cHGSqLMExoNRLiFIRww8HhXiX_MZq2hpr22pscgo1fzgY0bLrcacqJJCdctMfyb7Z_fWfKnyWY9iVQxSht9YnIFWje2A27e5NfRoqVnj6bJu7yFJxnzFJXV_Ly6A00t9rbXf5YQ9yGBU20jriE_6U0hOl3JGZit5vAmK9WuHAtvMX74FZT_ZiqkT_F3XzPfykhevxTCIZAQEzzU2LA')" }} />
+                  <div className="size-10 rounded-full border-2 border-white bg-cover bg-center shadow-sm" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAzAfdMu-3RKvQBQQmbeIFjWUf1wlZXlQhh7P9e4sICbkGiXGKs3s4X_QULfM-xcRQ0PEJ1s8Kytvagkp8RZ9GD7Oj7l1paVsQodOYMyWZTgHLI4r1hQy1w8fbaIYPFXImsAlLUwLPD8qje6En3dZBaZ2_gvJ1oL2YMsNtPn3dkHNRXhaA8AM3lprxZppX0n4fJU4HnljWJVgFF8ozB8oh9aWOng5h-GiZdunpLCqPhFligY32ziY7jDoJ8ftgm-53q8Qj5WObdXnk')" }} />
                 </div>
-                <p className="text-sm font-medium text-gray-500 italic">&quot;The most luminous my skin has ever looked.&quot; &mdash; Beauty Experts</p>
+                <div>
+                  <div className="flex gap-0.5 text-amber-400 text-sm">★★★★★</div>
+                  <p className="text-xs text-gray-400 mt-0.5 tracking-wide">Trusted by 10,000+ customers</p>
+                </div>
               </motion.div>
             </motion.div>
 
@@ -161,19 +211,45 @@ export default function Home() {
                 transition={{ duration: 1, ease: "easeOut" }}
                 className="relative aspect-4/5 rounded-3xl overflow-hidden shadow-2xl"
               >
+                {/* Subtle color overlay for depth */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#c3a2ab]/10 via-transparent to-[#7a5260]/10 z-10 pointer-events-none rounded-3xl" />
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
                   style={{ backgroundImage: "url('/toy.png')" }}
-                ></div>
-                <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 hidden md:block">
+                />
+
+                {/* Product info card */}
+                <div className="absolute bottom-6 left-6 right-6 p-5 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 z-20">
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="text-white font-bold">Featured Product</p>
-                      <p className="text-white/80 text-sm">Richse Night Cream</p>
+                      <p className="text-white/70 text-xs uppercase tracking-widest font-medium">Featured</p>
+                      <p className="text-white font-bold text-[16px] mt-0.5">Richse Night Cream</p>
                     </div>
-                    <div className="text-white font-display text-xl">฿290</div>
+                    <div className="text-right">
+                      <p className="text-white/60 text-xs line-through">฿390</p>
+                      <p className="text-white font-display text-xl font-bold">฿290</p>
+                    </div>
                   </div>
                 </div>
+              </motion.div>
+
+              {/* Floating mini stats below image */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="flex justify-center gap-6 mt-6"
+              >
+                {[
+                  { val: "100%", label: "Vegan" },
+                  { val: "0%", label: "Paraben" },
+                  { val: "SPF", label: "Safe Formula" },
+                ].map((stat, i) => (
+                  <div key={i} className="text-center">
+                    <p className="font-display font-bold text-[#161314] text-lg">{stat.val}</p>
+                    <p className="text-[11px] text-gray-400 uppercase tracking-widest">{stat.label}</p>
+                  </div>
+                ))}
               </motion.div>
             </div>
 
@@ -182,7 +258,7 @@ export default function Home() {
       </section>
 
       {/* --- WHY RICHSE --- */}
-      <section className="py-20 bg-white dark:bg-background-dark/50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center mb-16 space-y-4">
             <motion.h2 variants={fadeInUp} className="font-display text-3xl md:text-4xl font-bold">The Philosophy of Richse</motion.h2>
@@ -198,13 +274,13 @@ export default function Home() {
               <motion.div
                 key={i}
                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.15 }}
-                className="p-8 rounded-2xl border border-[#dfd8da] dark:border-white/10 hover:shadow-xl hover:-translate-y-1 transition-all group h-full flex flex-col"
+                className="p-8 rounded-2xl border border-[#dfd8da] hover:shadow-xl hover:-translate-y-1 transition-all group h-full flex flex-col"
               >
                 <div className="size-12 rounded-xl bg-[#c3a2ab]/10 flex items-center justify-center text-[#c3a2ab] mb-6 group-hover:bg-[#c3a2ab] group-hover:text-white transition-colors">
                   <span className="material-symbols-outlined notranslate">{feature.icon}</span>
                 </div>
                 <h3 className="font-display text-2xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-[18px] text-gray-600 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
+                <p className="text-[18px] text-gray-600 leading-relaxed">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -238,132 +314,151 @@ export default function Home() {
             ref={scrollRef}
             className="flex gap-8 overflow-x-auto no-scrollbar pb-10 snap-x snap-mandatory items-stretch scroll-smooth"
           >
-          {loadingProducts ? (
-            <div className="py-10 px-6 text-gray-500 tracking-widest uppercase text-sm w-full text-center">Loading Best Sellers...</div>
-          ) : products.length > 0 ? (
-            products.map((product, i) => (
-              <motion.div
-                key={product.id}
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.1 }}
-                className="w-[280px] md:w-[320px] shrink-0 group snap-start flex flex-col"
-              >
-                {/* รูปสินค้า */}
-                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 mb-4 shadow-sm border border-gray-100 shrink-0">
-                  <Link href={`/product/${product.id}`}>
-                    <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                      style={{ backgroundImage: `url('${product.image || "/G11.png"}')` }}
-                    />
-                  </Link>
+            {loadingProducts ? (
+              <div className="py-10 px-6 text-gray-500 tracking-widest uppercase text-sm w-full text-center">Loading Best Sellers...</div>
+            ) : products.length > 0 ? (
+              products.map((product, i) => (
+                <motion.div
+                  key={product.id}
+                  initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.1 }}
+                  className="w-[280px] md:w-[320px] shrink-0 group snap-start flex flex-col"
+                >
+                  {/* รูปสินค้า */}
+                  <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 mb-4 shadow-sm border border-gray-100 shrink-0">
+                    <Link href={`/product/${product.id}`}>
+                      <div
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                        style={{ backgroundImage: `url('${product.image || "/G11.png"}')` }}
+                      />
+                    </Link>
 
-                  {/* ป้าย Limited */}
-                  {product.id === 3 && (
-                    <div className="absolute top-5 left-5 bg-[#c3a2ab] text-white px-4 py-1.5 rounded-full text-[13px] font-bold uppercase tracking-wider">
-                      Limited Edition
-                    </div>
-                  )}
-
-                  {/* Quick Add */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      const now = new Date();
-                      const isFlashSale = product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && now >= new Date(product.flashSaleStart) && now <= new Date(product.flashSaleEnd);
-                      addToCart({
-                        ...product,
-                        price: isFlashSale ? product.flashSalePrice : product.price,
-                        originalPrice: product.price,
-                        taxe: product.description
-                      })
-                    }}
-                    className="absolute bottom-4 left-4 right-4 bg-white text-[#161314] py-4 rounded-xl font-bold text-[16px] opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl text-center"
-                  >
-                    Quick Add
-                  </button>
-                </div>
-
-                {/* รายละเอียด */}
-                <div className="flex-1 flex flex-col justify-between space-y-3">
-                  <div className="space-y-1">
-                    <p className="font-display text-2xl font-bold leading-tight line-clamp-1">{product.name}</p>
-                    <p className="text-[17px] text-gray-500 line-clamp-2 h-12 overflow-hidden">{product.description}</p>
-                  </div>
-
-                  <div className="pt-2">
-                    {hasMounted && product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && new Date() >= new Date(product.flashSaleStart) && new Date() <= new Date(product.flashSaleEnd) ? (
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-red-600 text-[21px]">
-                            ฿{product.flashSalePrice.toLocaleString()}
-                          </span>
-                          <span className="text-gray-400 line-through text-[15px] font-medium">
-                            ฿{product.price.toLocaleString()}
-                          </span>
-                        </div>
-                        <CountdownTimer targetDate={product.flashSaleEnd} />
+                    {/* ป้าย Limited */}
+                    {product.id === 3 && (
+                      <div className="absolute top-5 left-5 bg-[#c3a2ab] text-white px-4 py-1.5 rounded-full text-[13px] font-bold uppercase tracking-wider">
+                        Limited Edition
                       </div>
-                    ) : (
-                      <p className="font-bold text-[#c3a2ab] text-[21px]">
-                        ฿{product.price.toLocaleString()}
-                      </p>
                     )}
-                  </div>
-                </div>
-              </motion.div>
-            ))
-          ) : (
-            <div className="py-10 px-6 text-gray-500 w-full text-center">No products available.</div>
-          )}
-        </div>
-      </div>
-    </section>
 
-      {/* --- AS SEEN ON TIKTOK --- */}
-      <section className="py-24 bg-[#fdf2f4] dark:bg-white/5 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 mb-12">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center space-y-4">
-            <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-[15px]">
-              Loved By
-            </motion.span>
-            <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold">
-              Top Beauty Creators
+                    {/* Quick Add */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        const now = new Date();
+                        const isFlashSale = product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && now >= new Date(product.flashSaleStart) && now <= new Date(product.flashSaleEnd);
+                        addToCart({
+                          ...product,
+                          price: isFlashSale ? product.flashSalePrice : product.price,
+                          originalPrice: product.price,
+                          taxe: product.description
+                        })
+                      }}
+                      className="absolute bottom-4 left-4 right-4 bg-white text-[#161314] py-4 rounded-xl font-bold text-[16px] opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl text-center"
+                    >
+                      Quick Add
+                    </button>
+                  </div>
+
+                  {/* รายละเอียด */}
+                  <div className="flex-1 flex flex-col justify-between space-y-3">
+                    <div className="space-y-1">
+                      <p className="font-display text-2xl font-bold leading-tight line-clamp-1">{product.name}</p>
+                      <p className="text-[17px] text-gray-500 line-clamp-2 h-12 overflow-hidden">{product.description}</p>
+                    </div>
+
+                    <div className="pt-2">
+                      {hasMounted && product.flashSalePrice && product.flashSaleStart && product.flashSaleEnd && new Date() >= new Date(product.flashSaleStart) && new Date() <= new Date(product.flashSaleEnd) ? (
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-red-600 text-[21px]">
+                              ฿{product.flashSalePrice.toLocaleString()}
+                            </span>
+                            <span className="text-gray-400 line-through text-[15px] font-medium">
+                              ฿{product.price.toLocaleString()}
+                            </span>
+                          </div>
+                          <CountdownTimer targetDate={product.flashSaleEnd} />
+                        </div>
+                      ) : (
+                        <p className="font-bold text-[#c3a2ab] text-[21px]">
+                          ฿{product.price.toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              <div className="py-10 px-6 text-gray-500 w-full text-center">No products available.</div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* --- AS SEEN ON TIKTOK (Luxury Gallery) --- */}
+      <section className="relative py-28 bg-[#fdf2f4] overflow-hidden">
+        
+        {/* Ambient Glow behind section */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-[#c3a2ab]/10 rounded-full blur-[160px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-6 mb-16 relative z-10">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center space-y-5">
+            <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-[#c3a2ab]/30 bg-white/50 backdrop-blur-sm shadow-sm">
+              <span className="text-[#c3a2ab] font-bold tracking-[0.2em] uppercase text-[10px]">Community Magic</span>
+            </div>
+            <motion.h2 variants={fadeInUp} className="font-display text-5xl md:text-6xl font-bold tracking-tight text-[#161314]">
+              Real Glow, <span className="text-[#c3a2ab] italic font-medium">Real Results.</span>
             </motion.h2>
-            <motion.div variants={fadeInUp} className="w-16 h-0.5 bg-[#c3a2ab] mx-auto"></motion.div>
+            <motion.div variants={fadeInUp} className="flex items-center justify-center gap-4">
+              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[#c3a2ab]/60" />
+              <span className="text-[#c3a2ab]/50 text-xs">✦</span>
+              <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[#c3a2ab]/60" />
+            </motion.div>
           </motion.div>
         </div>
 
-        {/* Marquee Container */}
-        <div className="relative flex overflow-x-hidden w-full group py-4">
+        {/* Marquee Container with Perspective */}
+        <div className="relative flex overflow-x-hidden w-full group/gallery py-12 perspective-[2000px]">
           <style jsx>{`
             @keyframes marquee {
-              0% { transform: translateX(0%); }
+              0% { transform: translateX(0); }
               100% { transform: translateX(-100%); }
+            }
+            @keyframes float {
+              0%, 100% { transform: translateY(0) rotate(0); }
+              50% { transform: translateY(-10px) rotate(2deg); }
             }
             .animate-marquee {
               display: flex;
               flex-shrink: 0;
               width: max-content;
-              animation: marquee 35s linear infinite;
+              animation: marquee 45s linear infinite;
             }
-            .group:hover .animate-marquee {
+            .group\/gallery:hover .animate-marquee {
               animation-play-state: paused;
+            }
+            .video-card-perspective {
+              transform: rotateY(-15deg) skewY(2deg);
+              transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            }
+            .video-card-perspective:hover {
+              transform: rotateY(0) skewY(0) scale(1.08);
+              z-index: 50;
             }
           `}</style>
 
-          {/* We use multiple identical blocks animating at -100% of their own width. 4 blocks ensures no gaps even on Ultrawide screens */}
           {[...Array(4)].map((_, containerIndex) => (
-            <div key={containerIndex} className="animate-marquee flex gap-6 pr-6" aria-hidden={containerIndex === 1}>
+            <div key={containerIndex} className="animate-marquee flex gap-10 pr-10" aria-hidden={containerIndex !== 0}>
               {[1, 2, 3, 4, 5].map((item, idx) => (
                 <div
                   key={`${containerIndex}-${idx}`}
-                  className="w-[260px] h-[460px] md:w-[280px] md:h-[520px] bg-[#f8f6f4] rounded-[2rem] overflow-hidden outline outline-1 outline-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.06)] shrink-0 cursor-pointer relative group/video hover:shadow-[0_20px_40px_rgba(195,162,171,0.2)] transition-all duration-700 hover:-translate-y-2"
+                  className="video-card-perspective w-[280px] h-[500px] md:w-[300px] md:h-[540px] bg-white rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] shrink-0 cursor-pointer relative group/video border border-white/50 backdrop-blur-xl group-hover/gallery:opacity-40 hover:!opacity-100 transition-opacity duration-500"
                   onClick={(e) => {
                     const vid = e.currentTarget.querySelector('video');
                     const overlay = e.currentTarget.querySelector('.play-overlay');
                     if (vid) {
                       if (vid.paused) {
                         vid.muted = false;
-                        vid.play().catch(() => console.log("Play blocked"));
+                        vid.play().catch(() => {});
                         if (overlay) overlay.style.opacity = '0';
                       } else {
                         vid.pause();
@@ -378,8 +473,7 @@ export default function Home() {
                       if (vid) {
                         vid.muted = false;
                         vid.play().catch(() => {
-                          vid.muted = true;
-                          vid.play();
+                           vid.muted = true; vid.play();
                         });
                       }
                       if (overlay) overlay.style.opacity = '0';
@@ -394,35 +488,47 @@ export default function Home() {
                     }
                   }}
                 >
-                  {/* Note: Insert actual vertical .mp4 paths here */}
                   <video
-                    className="w-full h-full object-cover scale-[1.02] group-hover/video:scale-100 transition-transform duration-700 ease-out"
+                    className="w-full h-full object-cover scale-[1.05] group-hover/video:scale-100 transition-transform duration-1000 ease-out"
                     src={homeVideos[idx] || `/videos/tiktok-${item}.mp4`}
                     loop
                     playsInline
                   />
 
-                  {/* Elegant Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-60 group-hover/video:opacity-80 transition-opacity duration-500 pointer-events-none"></div>
+                  {/* Enhanced Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#161314]/80 via-transparent to-transparent opacity-60 group-hover/video:opacity-40 transition-opacity duration-500 pointer-events-none"></div>
 
-                  {/* Play Icon Overlay */}
+                  {/* Floating Beauty Tags (Random positions) */}
+                  <div 
+                    className="absolute top-12 right-6 z-20 px-3 py-1.5 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-[10px] font-bold text-white uppercase tracking-widest shadow-xl pointer-events-none"
+                    style={{ animation: `float ${3+idx}s ease-in-out infinite` }}
+                  >
+                    {["Glow ✨", "Results", "Clinically", "100% Real", "Top Rated"][idx]}
+                  </div>
+
+                  {/* Play Interface - High End Style */}
                   <div className="play-overlay absolute inset-0 flex flex-col justify-center items-center transition-opacity duration-500 pointer-events-none">
-                    <div className="size-14 bg-white/20 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center shadow-lg group-hover/video:scale-110 transition-transform duration-500">
-                      <span className="material-symbols-outlined text-white text-2xl ml-0.5 opacity-90">play_arrow</span>
+                    <div className="size-16 bg-white/10 backdrop-blur-lg border border-white/40 rounded-full flex items-center justify-center shadow-2xl group-hover/video:scale-110 transition-transform duration-700">
+                      <div className="size-12 bg-white/20 rounded-full flex items-center justify-center">
+                        <span className="material-symbols-outlined text-white text-3xl ml-1 opacity-95">play_arrow</span>
+                      </div>
                     </div>
                   </div>
 
-                  <a
-                    href="https://www.tiktok.com/@richse.888?_r=1&_t=ZS-94v5EesyoiY"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="absolute bottom-6 left-6 right-6 text-white z-10 block w-fit"
-                  >
-                    <p className="font-serif text-[10px] md:text-[11px] tracking-[0.15em] uppercase bg-white/10 backdrop-blur-md w-fit px-5 py-2.5 rounded-full border border-white/20 hover:bg-white hover:text-[#161314] transition-colors duration-500">
-                      @richse.888
-                    </p>
-                  </a>
+                  {/* User Handle - Glassmorphism Pill */}
+                  <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 w-[80%]">
+                    <a
+                      href="https://www.tiktok.com/@richse.888?_r=1&_t=ZS-94v5EesyoiY"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="block w-full py-3 px-4 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl text-center hover:bg-white hover:text-[#161314] transition-all duration-500 shadow-xl group/handle"
+                    >
+                      <p className="text-white group-hover/handle:text-[#161314] font-medium text-[12px] tracking-[0.2em] uppercase">
+                        @richse.888
+                      </p>
+                    </a>
+                  </div>
                 </div>
               ))}
             </div>
@@ -430,42 +536,148 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- COMMUNITY VOICES --- */}
-      <section className="py-24 bg-white dark:bg-background-dark">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center mb-16">
-            <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-xs">Community Voices</motion.span>
-            <motion.h2 variants={fadeInUp} className="font-display text-3xl md:text-4xl font-bold mt-2">Shared Experiences</motion.h2>
-          </motion.div>
+      {/* --- COMMUNITY VOICES (Interactive Floating Social Cloud) --- */}
+      <section ref={communityRef} className="relative py-40 overflow-hidden text-[#161314] min-h-[900px] flex items-center w-full bg-[#fdfafb]">
+        
+        {/* Premium Background Layer (Dazzling Mesh Gradient) */}
+        <div className="absolute inset-0 pointer-events-none z-0" 
+             style={{ 
+               background: `
+                 radial-gradient(circle at 10% 10%, #fce7ef 0%, transparent 40%),
+                 radial-gradient(circle at 90% 10%, #f3edf0 0%, transparent 40%),
+                 radial-gradient(circle at 50% 50%, #faf3f6 0%, transparent 70%),
+                 radial-gradient(circle at 80% 80%, #fcf3f6 0%, transparent 40%),
+                 radial-gradient(circle at 20% 80%, #f3edf0 0%, transparent 40%)
+               ` 
+             }} 
+        />
+        
+        {/* Subtle Diamond Texture Overlay */}
+        <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-multiply z-1" 
+             style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/white-diamond-dark.png')` }} 
+        />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { text: "“I'm incredibly impressed by the gentle yet highly effective formulation. My skin felt smoother and stronger within just two weeks. Truly an outstanding luxury product.”", name: "Kanokwan S.", title: "Vogue Contributor", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC0c3DaMxV1mAx2B_8VNuOcVQ89pawk0Z4fBYI1rOC00uDVCHfcEXZG1V-29Lwavf5RGIeEtiFs-YNDJXPxftzTMhBRmyqSrBogpiLDm1gkOGzpK2yDJKtfnt12WjMqeLUAPT4UJlh3HSJXnKXa4B_6lwrSBaLBaVIFxB2xw-4UHXcUdZ4frNI2X-geIKaYo7eetxumNtnLpPMknOWFK8eErg_BSUAOmyc2rHh4ifGOJPrQ_ZGVQPA7yoJv1n_w9SOTohpCcOW2mRM" },
-              { text: "“This delivers visible clinical results in a short period without causing any irritation to sensitive skin. An absolute new benchmark in high-end skincare.”", name: "Teerapat W.", title: "Skincare Specialist", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAFadPtDcIKL6h9YR-z6iN2Y0Q2-NKdEg6D9JRA0uYotIU6tglfx2MzmFOSUAAwV1A4dmj17g1WS4jf6z93h8sFp8ny-fGMzrG5SHOZNwmwDdxK_Qhg3yVH3_6RJTKFTdJP7MfDc8J4GQltptoVUuFhOLLUyYzWr6Un6GBgJcqFLFtppIz0-z_8Dcdk26F_NMzkBDTPC9_giJraKCnfVohUfpLDyrYCAmHWbKdbpMO7XriaB471Bv6VOhUUP2C3BjaoF7MCZJb3f_E" },
-              { text: "“Finally found a premium product that truly respects delicate skin barriers. The transformation is undeniable and long-lasting. Highly recommended.”", name: "Sopee J.", title: "Lifestyle Influencer", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAyqQzej49jQsMHMfWBUzE3zrxHX6wOli8fQCT7Z1G-hZct04vc2qXRHX84sl_OVfjNj8ARr4ifUFWND9RH-oaFcgLlOXdn_g1i5a9M8Nnc--xOelDgAqQb9wHVqgOEFaWzGOIV8TK7SsQhZyFRiZ9Pu_1L1uPZWBMoNlPT2V8J4D2Uo5L_lfueV_fWDy4zwh_h_K1jDlrsVQwOnKz6T7dmGG69pBR7Q5oZSIdLgqioHSVI_M4g7heHOa4EeqNz_fY0tP1dOJxpohw" }
-            ].map((quote, i) => (
-              <motion.div
-                key={i}
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.15 }}
-                className="hero-mesh dark:bg-white/5 p-8 rounded-2xl relative"
-              >
-                <div className="flex gap-1 text-[#C9A961] mb-4">
-                  {[...Array(5)].map((_, idx) => (
-                    <span key={idx} className="material-symbols-outlined fill-1">star</span>
-                  ))}
-                </div>
-                <p className="italic text-gray-700 dark:text-gray-300 mb-6 leading-relaxed text-[19px]">
-                  {quote.text}
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-full bg-cover bg-center" style={{ backgroundImage: `url('${quote.img}')` }} />
-                  <div>
-                    <p className="font-bold text-sm">{quote.name}</p>
-                    <p className="text-xs text-gray-500">{quote.title}</p>
+        {/* Animated Light Orbs for Depth */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-2">
+          <motion.div 
+            animate={{ x: [0, 100, 0], y: [0, 50, 0] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="absolute top-[10%] left-[20%] w-[500px] h-[500px] bg-[#c3a2ab]/8 blur-[120px] rounded-full" 
+          />
+          <motion.div 
+            animate={{ x: [0, -80, 0], y: [0, -100, 0] }}
+            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+            className="absolute bottom-[10%] right-[20%] w-[400px] h-[400px] bg-[#c3a2ab]/12 blur-[100px] rounded-full" 
+          />
+        </div>
+
+        {/* The Cloud Layer - Now Interactive & Draggable (The Ultimate Spread Fix) */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden block z-10">
+          {[
+            // --- PILLS (Short Praise Spread) ---
+            { t: "ใช้ดีมาก!", x: "12%", y: "15%", d: 0, s: 15, type: "pill" },
+            { t: "Glow ✨", x: "85%", y: "10%", d: 1.5, s: 18, type: "pill" },
+            { t: "10/10", x: "25%", y: "82%", d: 2.2, s: 16, type: "pill" },
+            { t: "ต้องมี!", x: "90%", y: "78%", d: 0.8, s: 14, type: "pill" },
+            { t: "Glass Skin", x: "32%", y: "7%", d: 5.5, s: 20, type: "pill" },
+            { t: "Worth it", x: "65%", y: "92%", d: 3.2, s: 12, type: "pill" },
+            { t: "ผิวฉ่ำวาว", x: "18%", y: "55%", d: 0.5, s: 17, type: "pill" },
+            { t: "ที่สุด!", x: "78%", y: "25%", d: 4.5, s: 22, type: "pill" },
+            { t: "Luxury ✨", x: "88%", y: "52%", d: 2, s: 14, type: "pill" },
+            { t: "เลิฟเลย", x: "15%", y: "94%", d: 3, s: 18, type: "pill" },
+            { t: "ซ้ำแน่นอน", x: "82%", y: "28%", d: 1.5, s: 16, type: "pill" },
+            { t: "Radiance", x: "48%", y: "18%", d: 5, s: 19, type: "pill" },
+            { t: "ผิวแข็งแรง", x: "55%", y: "12%", d: 2.2, s: 13, type: "pill" },
+            { t: "Love it", x: "94%", y: "85%", d: 0.5, s: 16, type: "pill" },
+            { t: "Best ✨", x: "5%", y: "30%", d: 1.8, s: 15, type: "pill" },
+            { t: "ฉ่ำมาก!", x: "72%", y: "5%", d: 2.5, s: 17, type: "pill" },
+            
+            // --- MINI PROFILES ---
+            { n: "Kanokwan.", i: "https://lh3.googleusercontent.com/aida-public/AB6AXuC0c3DaMxV1mAx2B_8VNuOcVQ89pawk0Z4fBYI1rOC00uDVCHfcEXZG1V-29Lwavf5RGIeEtiFs-YNDJXPxftzTMhBRmyqSrBogpiLDm1gkOGzpK2yDJKtfnt12WjMqeLUAPT4UJlh3HSJXnKXa4B_6lwrSBaLBaVIFxB2xw-4UHXcUdZ4frNI2X-geIKaYo7eetxumNtnLpPMknOWFK8eErg_BSUAOmyc2rHh4ifGOJPrQ_ZGVQPA7yoJv1n_w9SOTohpCcOW2mRM", x: "20%", y: "32%", d: 2, s: 25, type: "profile" },
+            { n: "Teerapat W.", i: "https://lh3.googleusercontent.com/aida-public/AB6AXuAFadPtDcIKL6h9YR-z6iN2Y0Q2-NKdEg6D9JRA0uYotIU6tglfx2MzmFOSUAAwV1A4dmj17g1WS4jf6z93h8sFp8ny-fGMzrG5SHOZNwmwDdxK_Qhg3yVH3_6RJTKFTdJP7MfDc8J4GQltptoVUuFhOLLUyYzWr6Un6GBgJcqFLFtppIz0-z_8Dcdk26F_NMzkBDTPC9_giJraKCnfVohUfpLDyrYCAmHWbKdbpMO7XriaB471Bv6VOhUUP2C3BjaoF7MCZJb3f_E", x: "75%", y: "42%", d: 4, s: 30, type: "profile" },
+            { n: "Sopee J.", i: "https://lh3.googleusercontent.com/aida-public/AB6AXuAyqQzej49jQsMHMfWBUzE3zrxHX6wOli8fQCT7Z1G-hZct04vc2qXRHX84sl_OVfjNj8ARr4ifUFWND9RH-oaFcgLlOXdn_g1i5a9M8Nnc--xOelDgAqQb9wHVqgOEFaWzGOIV8TK7SsQhZyFRiZ9Pu_1L1uPZWBMoNlPT2V8J4D2Uo5L_lfueV_fWDy4zwh_h_K1jDlrsVQwOnKz6T7dmGG69pBR7Q5oZSIdLgqioHSVI_M4g7heHOa4EeqNz_fY0tP1dOJxpohw", x: "32%", y: "68%", d: 0.5, s: 28, type: "profile" },
+            { n: "Nutcha.", i: "https://lh3.googleusercontent.com/a/ACg8ocL_pXy8rQ=s96-c", x: "82%", y: "65%", d: 3.5, s: 26, type: "profile" },
+            
+            // --- QUOTES ---
+            { q: "ผิวเรียบเนียนขึ้นใน 2 สัปดาห์! รักเลย ✨", x: "50%", y: "45%", d: 3, s: 22, type: "quote" },
+            { q: "ใช้แล้วไม่แพ้ ผิวนุ่มมาก Amazing Results.", x: "12%", y: "58%", d: 1.5, s: 24, type: "quote" },
+            { q: "ที่สุดของสกินแคร์หรู 💎 Richse Magic is real.", x: "70%", y: "62%", d: 6, s: 26, type: "quote" },
+            { q: "Visible results without irritation. ผิวดีขึ้นจริงๆ", x: "35%", y: "8%", d: 2.2, s: 19, type: "quote" },
+            { q: "ใครยังไม่มี ต้องลองนะ! Perfect for skin barrier.", x: "65%", y: "82%", d: 4.8, s: 23, type: "quote" },
+            { q: "The transformation is undeniable. Highly recommend!", x: "28%", y: "85%", d: 1.2, s: 21, type: "quote" }
+          ].map((item, i) => (
+            <motion.div 
+              key={i} 
+              drag
+              dragConstraints={communityRef}
+              dragElastic={0.5}
+              dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
+              whileHover={{ scale: 1.1, zIndex: 60 }}
+              whileDrag={{ scale: 1.25, zIndex: 100, cursor: 'grabbing', boxShadow: '0 25px 50px rgba(195, 162, 171, 0.25)' }}
+              animate={{
+                x: [0, 20, -20, 0],
+                y: [0, -25, 25, 0],
+                rotate: [0, 1.5, -1.5, 0]
+              }}
+              transition={{
+                duration: item.s,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: item.d
+              }}
+              className={`absolute cursor-grab select-none backdrop-blur-2xl transition-all duration-300 transform scale-[0.6] sm:scale-100
+                ${item.type === 'pill' ? 'bg-white/70 border-[1.5px] border-[#c3a2ab]/40 rounded-full px-5 py-2.5 sm:px-8 sm:py-3.5 text-[11px] sm:text-[14px] font-extrabold text-[#9d7b84] tracking-[0.1em] uppercase shadow-[0_10px_30px_rgba(195,162,171,0.1)] ring-4 ring-[#c3a2ab]/5' : 
+                  item.type === 'profile' ? 'bg-white/95 border-2 border-white rounded-[35px] px-4 py-3 sm:px-6 sm:py-4.5 flex items-center gap-3 sm:gap-5 shadow-[0_25px_60px_rgba(195,162,171,0.1)] ring-1 ring-[#c3a2ab]/20' : 
+                  'bg-white/98 border-[1.5px] border-[#c3a2ab]/30 rounded-[30px] px-6 py-5 sm:px-10 sm:py-8 max-w-[200px] sm:max-w-[320px] shadow-[0_35px_80px_rgba(195,162,171,0.15)] ring-offset-2 ring-1 ring-[#c3a2ab]/10'}`}
+              style={{ 
+                left: item.x, 
+                top: item.y
+              }}
+            >
+              {item.type === 'pill' && <span className="flex items-center gap-2">{item.t}</span>}
+              {item.type === 'profile' && (
+                <>
+                  <div className="size-8 sm:size-11 rounded-full bg-cover bg-center shrink-0 border border-[#c3a2ab]/20" style={{ backgroundImage: `url('${item.i}')` }} />
+                  <div className="flex flex-col">
+                    <span className="text-[10px] sm:text-[13px] font-bold tracking-tight text-[#161314]">{item.n}</span>
+                    <div className="flex gap-0.5 text-[#C9A961] text-[8px] sm:text-[10px]">
+                      {[...Array(5)].map((_, i) => <span key={i} className="material-symbols-outlined fill-1" style={{ fontSize: '10px' }}>star</span>)}
+                    </div>
                   </div>
+                </>
+              )}
+              {item.type === 'quote' && (
+                <div className="flex flex-col gap-1">
+                  <span className="text-[12px] sm:text-[16px] italic leading-relaxed text-[#4a4a4a] font-medium">{item.q}</span>
+                  <div className="h-[1px] sm:h-[1.5px] w-8 sm:w-12 bg-[#c3a2ab]/40 mt-2 sm:mt-3" />
                 </div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10 w-full pointer-events-none">
+          <div className="border border-[#c3a2ab]/20 rounded-[40px] p-12 md:p-24 relative overflow-hidden bg-white/30 backdrop-blur-[2px]">
+            {/* Corner Accents */}
+            <div className="absolute top-8 left-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
+            <div className="absolute top-8 right-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
+            <div className="absolute bottom-8 left-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
+            <div className="absolute bottom-8 right-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
+
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center space-y-6 relative z-20">
+              <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-[0.4em] uppercase text-[12px]">Community Magic</motion.span>
+              <motion.h2 variants={fadeInUp} className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-[#161314]">
+                Loved by <span className="text-[#c3a2ab] italic font-medium">Thousands.</span>
+              </motion.h2>
+              <motion.div variants={fadeInUp} className="flex items-center justify-center gap-6 pt-2">
+                <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-[#c3a2ab]/40 to-[#c3a2ab]" />
+                <span className="text-[#c3a2ab] text-xl">✦</span>
+                <div className="h-[1px] w-32 bg-gradient-to-l from-transparent via-[#c3a2ab]/40 to-[#c3a2ab]" />
               </motion.div>
-            ))}
+              <motion.p variants={fadeInUp} className="text-gray-400 font-medium tracking-[0.2em] uppercase text-xs pt-8">
+                Discover why Richse is the choice for radiant skin
+              </motion.p>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -473,8 +685,8 @@ export default function Home() {
       {/* --- JOIN THE INNER CIRCLE --- */}
       <section className="py-20 bg-[#c3a2ab]/10 border-t border-[#c3a2ab]/20">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="max-w-200 mx-auto px-6 text-center">
-          <motion.h2 variants={fadeInUp} className="font-display text-3xl font-bold mb-4">Richse Exclusive Club</motion.h2>
-          <motion.p variants={fadeInUp} className="text-gray-600 dark:text-gray-400 mb-8">
+          <motion.h2 variants={fadeInUp} className="font-display text-3xl font-bold mb-4 text-[#161314]">Richse Exclusive Club</motion.h2>
+          <motion.p variants={fadeInUp} className="text-gray-600 mb-8">
             Join our inner circle for early access to new rituals, exclusive events, and expert skincare advice.
           </motion.p>
 
@@ -485,7 +697,7 @@ export default function Home() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Your email address"
-              className="flex-1 rounded-xl bg-white border-none focus:ring-2 focus:ring-primary px-6 py-4"
+              className="flex-1 rounded-xl bg-white border-none focus:ring-2 focus:ring-[#c3a2ab] px-6 py-4"
             />
             <button
               type="submit"
