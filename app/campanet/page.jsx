@@ -1,10 +1,30 @@
 "use client";
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { motion } from "framer-motion"
+
+// Fade upward animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 }
+  }
+};
 
 export default function CustomerForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [hasMounted, setHasMounted] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,131 +62,175 @@ export default function CustomerForm() {
       setIsSubmitting(false);
     }
   }
+
+  if (!hasMounted) return null;
     
   return (
-    <div className="bg-brand-beige  min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-125 bg-white  rounded-xl shadow-[0_32px_64px_-15px_rgba(0,0,0,0.08)] overflow-hidden border border-stone-100/50 ">
-        
-        <div className="px-8 pt-12 pb-10 flex flex-col items-center">
+    <main className="relative min-h-screen overflow-hidden bg-[#161314] flex items-center justify-center p-6 sm:p-12">
+      
+      {/* Immersive Dark Pearl Silk Background */}
+      <div className="absolute inset-0 pointer-events-none z-0" 
+           style={{ 
+             background: `radial-gradient(circle at 10% 10%, #2c282a 0%, transparent 40%),
+                          radial-gradient(circle at 90% 90%, #1c1a1b 0%, transparent 40%),
+                          radial-gradient(circle at 50% 10%, #221f21 0%, transparent 50%)` 
+           }} 
+      />
 
-          <div className="mb-8 text-center">
-            <span className="text-stone-400 tracking-[0.4em] uppercase text-[10px] font-bold block mb-3">
-              Richse Official
-            </span>
+      {/* Large "REGISTRY" Background Typography */}
+      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-1 overflow-hidden">
+        <motion.h2 
+          initial={{ opacity: 0, scale: 1.2 }}
+          whileInView={{ opacity: 0.04, scale: 1 }}
+          transition={{ duration: 3, ease: "easeOut" }}
+          className="text-[25vw] font-display font-black tracking-[-0.05em] select-none text-white whitespace-nowrap uppercase"
+        >
+          REGISTRY
+        </motion.h2>
+      </div>
 
-            <h1 className="text-stone-800  text-3xl font-medium tracking-tight brand-heading">
-              Customer Information
-            </h1>
+      <motion.div 
+        initial="hidden" 
+        whileInView="visible" 
+        viewport={{ once: true }} 
+        variants={staggerContainer}
+        className="w-full max-w-lg relative z-10"
+      >
+        {/* Elite Glassmorphism Container */}
+        <div className="relative p-10 md:p-14 rounded-[40px] bg-white/5 backdrop-blur-3xl border border-white/10 shadow-2xl overflow-hidden">
+          
+          {/* Corner Accents */}
+          <div className="absolute top-8 left-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
+          <div className="absolute top-8 right-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
+          <div className="absolute bottom-8 left-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
+          <div className="absolute bottom-8 right-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
 
-            <p className="text-stone-500  text-sm mt-2">
-              Please provide your details to process your request
-            </p>
+          <div className="text-center space-y-4 relative z-20 mb-12">
+            <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-[0.5em] uppercase text-[11px] block">Security Verified</motion.span>
+            <motion.h1 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold tracking-tighter text-white">
+              Elite <span className="text-[#c3a2ab] italic font-medium">Registry.</span>
+            </motion.h1>
+            <motion.div variants={fadeInUp} className="flex items-center justify-center gap-4 py-2">
+              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[#c3a2ab]/40" />
+              <span className="text-[#c3a2ab]/40 text-xs">✦</span>
+              <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[#c3a2ab]/40" />
+            </motion.div>
+            <motion.p variants={fadeInUp} className="text-gray-400 text-sm font-light leading-relaxed max-w-xs mx-auto">
+              Please finalize your ritual details below for verified membership confirmation.
+            </motion.p>
           </div>
 
           <form 
             onSubmit={handleSubmit}
-            className="w-full space-y-6">
-
-
-            {/* Name */}
-            <div className="space-y-2">
-              <label className="block text-stone-500  text-[11px] font-bold tracking-widest uppercase">
-                Full Name (ชื่อ-นามสกุล)
+            className="space-y-8 relative z-20"
+          >
+            {/* Full Name */}
+            <motion.div variants={fadeInUp} className="space-y-3">
+              <label className="block text-[#c3a2ab] text-[10px] font-bold tracking-[0.3em] uppercase ml-1 opacity-80">
+                Full Identity (ชื่อ-นามสกุล)
               </label>
-
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined notranslate text-stone-400 group-focus-within:text-primary transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                  <span className="material-symbols-outlined notranslate text-[#c3a2ab]/40 group-focus-within:text-[#c3a2ab] transition-colors text-[20px]">
                     person
                   </span>
                 </div>
-
                 <input
                   type="text"
-                  placeholder="Enter your full name"
+                  required
                   name="name"
-                  className="w-full pl-12 pr-4 py-4 rounded-lg bg-white  border border-stone-200  text-stone-900  placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
+                  placeholder="Enter your full name"
+                  className="w-full pl-14 pr-6 py-5 rounded-[20px] bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:border-[#c3a2ab]/50 focus:ring-1 focus:ring-[#c3a2ab]/20 transition-all outline-none"
                 />
               </div>
-            </div>
+            </motion.div>
 
             {/* Phone */}
-            <div className="space-y-2">
-              <label className="block text-stone-500  text-[11px] font-bold tracking-widest uppercase">
-                Phone Number (เบอร์โทรศัพท์)
+            <motion.div variants={fadeInUp} className="space-y-3">
+              <label className="block text-[#c3a2ab] text-[10px] font-bold tracking-[0.3em] uppercase ml-1 opacity-80">
+                Contact Number (เบอร์โทรศัพท์)
               </label>
-
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined notranslate text-stone-400 group-focus-within:text-primary transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                  <span className="material-symbols-outlined notranslate text-[#c3a2ab]/40 group-focus-within:text-[#c3a2ab] transition-colors text-[20px]">
                     call
                   </span>
                 </div>
-
                 <input
                   type="tel"
-                  placeholder="08X-XXX-XXXX"
+                  required
                   name="phone"
-                  className="w-full pl-12 pr-4 py-4 rounded-lg bg-white  border-stone-200  text-stone-900  placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
+                  placeholder="08X-XXX-XXXX"
+                  className="w-full pl-14 pr-6 py-5 rounded-[20px] bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:border-[#c3a2ab]/50 focus:ring-1 focus:ring-[#c3a2ab]/20 transition-all outline-none"
                 />
               </div>
-            </div>
+            </motion.div>
 
             {/* Order Number */}
-            <div className="space-y-2">
-              <label className="block text-stone-500  text-[11px] font-bold tracking-widest uppercase">
-                Order Number (เลขที่คำสั่งซื้อ)
+            <motion.div variants={fadeInUp} className="space-y-3">
+              <label className="block text-[#c3a2ab] text-[10px] font-bold tracking-[0.3em] uppercase ml-1 opacity-80">
+                Ritual Reference (เลขที่คำสั่งซื้อ)
               </label>
-
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined notranslate text-stone-400 group-focus-within:text-primary transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                  <span className="material-symbols-outlined notranslate text-[#c3a2ab]/40 group-focus-within:text-[#c3a2ab] transition-colors text-[20px]">
                     shopping_bag
                   </span>
                 </div>
-
                 <input
                   type="text"
-                  placeholder="#12345"
+                  required
                   name="order"
-                  className="w-full pl-12 pr-4 py-4 rounded-lg bg-white  border border-stone-200  text-stone-900  placeholder-stone-300 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
+                  placeholder="#00000"
+                  className="w-full pl-14 pr-6 py-5 rounded-[20px] bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:border-[#c3a2ab]/50 focus:ring-1 focus:ring-[#c3a2ab]/20 transition-all outline-none"
                 />
               </div>
-            </div>
+            </motion.div>
 
-            {/* Button */}
-            <div className="pt-6">
-             
-<button
-  type="submit"
-  disabled={isSubmitting}
-  className={`w-full bg-[#c3a2ab] text-white font-medium py-5 rounded-lg
-  transition-all duration-300 ease-out flex items-center justify-center gap-3 group
-  ${isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#c3a2ab]/30 active:scale-[0.97]"}`}
->
-  <span className="tracking-wide">
-    {isSubmitting ? "Submitting..." : "Submit Information"}
-  </span>
+            {/* Submit Button */}
+            <motion.div variants={fadeInUp} className="pt-8">
+              <motion.button
+                type="submit"
+                disabled={isSubmitting}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                animate={{ boxShadow: ["0 0 0 rgba(195,162,171,0)", "0 0 30px rgba(195,162,171,0.25)", "0 0 0 rgba(195,162,171,0)"] }}
+                transition={{ boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" } }}
+                className="relative overflow-hidden w-full bg-gradient-to-r from-[#c3a2ab] via-[#d4b5bc] to-[#c3a2ab] text-white font-black py-5 rounded-[22px] shadow-2xl transition-all disabled:opacity-50 uppercase tracking-[0.3em] text-[13px] flex items-center justify-center gap-4 group"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-shimmer" />
+                <span className="relative z-10">
+                  {isSubmitting ? "Authenticating..." : "Finalize Registration"}
+                </span>
+                {!isSubmitting && (
+                  <span className="material-symbols-outlined notranslate relative z-10 text-[18px] transition-transform duration-500 group-hover:translate-x-2">
+                    arrow_forward
+                  </span>
+                )}
+              </motion.button>
+            </motion.div>
 
-  {!isSubmitting && (
-    <span className="material-symbols-outlined notranslate text-[20px] transition-all duration-300 group-hover:translate-x-2">
-      arrow_forward
-    </span>
-  )}
-</button>
-            </div>
-
-            <div className="flex items-center justify-center gap-2 mt-8 opacity-40">
-              <span className="h-px w-8 bg-stone-400"></span>
-              <span className="text-[10px] tracking-widest uppercase font-bold text-stone-900 ">
-                Secure Form
+            {/* Bottom Footer Accent */}
+            <motion.div variants={fadeInUp} className="flex items-center justify-center gap-4 opacity-30 pt-4">
+              <div className="h-px w-8 bg-white/40"></div>
+              <span className="text-[9px] tracking-[0.4em] uppercase font-bold text-white">
+                Richse Official Discrete Registry
               </span>
-              <span className="h-px w-8 bg-stone-400"></span>
-            </div>
-
+              <div className="h-px w-8 bg-white/40"></div>
+            </motion.div>
           </form>
         </div>
-      </div>
-    </div>
+      </motion.div>
+      
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite ease-in-out;
+        }
+      `}</style>
+    </main>
   )
 }
