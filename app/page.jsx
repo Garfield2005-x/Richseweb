@@ -257,15 +257,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- WHY RICHSE --- */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center mb-16 space-y-4">
-            <motion.h2 variants={fadeInUp} className="font-display text-3xl md:text-4xl font-bold">The Philosophy of Richse</motion.h2>
-            <motion.div variants={fadeInUp} className="w-16 h-0.5 bg-[#c3a2ab] mx-auto"></motion.div>
+      {/* --- THE PHILOSOPHY of RICHSE (Premium Editorial Upgrade) --- */}
+      <section className="relative py-32 overflow-hidden bg-[#fdfafb]">
+        
+        {/* Silk Mesh Background Layer */}
+        <div className="absolute inset-0 pointer-events-none z-0" 
+             style={{ 
+               background: `
+                 radial-gradient(circle at 5% 5%, #fce7ef 0%, transparent 35%),
+                 radial-gradient(circle at 95% 95%, #f3edf0 0%, transparent 35%),
+                 radial-gradient(circle at 50% 50%, #faf3f6 0%, transparent 60%)
+               ` 
+             }} 
+        />
+
+        {/* Large Luxury Typography Layer (The Essence) */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-1 overflow-hidden">
+          <motion.h2 
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 0.04, scale: 1 }}
+            transition={{ duration: 2.5, ease: "easeOut" }}
+            className="text-[20vw] font-display font-black tracking-[-0.05em] select-none text-[#c3a2ab]"
+          >
+            ESSENCE
+          </motion.h2>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center mb-24 space-y-4">
+            <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-[0.4em] uppercase text-[12px]">Our Core Value</motion.span>
+            <motion.h2 variants={fadeInUp} className="font-display text-5xl md:text-6xl font-bold tracking-tighter text-[#161314]">
+              The Philosophy <span className="text-[#c3a2ab] italic font-medium">of Richse.</span>
+            </motion.h2>
+            <motion.div variants={fadeInUp} className="flex items-center justify-center gap-4 pt-4">
+              <div className="h-[1px] w-12 bg-[#c3a2ab]/30" />
+              <div className="text-[#c3a2ab] text-sm">✦</div>
+              <div className="h-[1px] w-12 bg-[#c3a2ab]/30" />
+            </motion.div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {[
               { icon: "shield_with_heart", title: "Dermatologist Tested", desc: "Clinically formulated and rigorously tested by dermatology experts. Pure, gentle, and safe for all skin types, including sensitive skin." },
               { icon: "eco", title: "Clean & Ethical Beauty", desc: "Consciously crafted with 100% Vegan & Cruelty-Free ingredients. Ethical beauty that respects both your skin and the environment." },
@@ -273,74 +304,139 @@ export default function Home() {
             ].map((feature, i) => (
               <motion.div
                 key={i}
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.15 }}
-                className="p-8 rounded-2xl border border-[#dfd8da] hover:shadow-xl hover:-translate-y-1 transition-all group h-full flex flex-col"
+                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.2 }}
+                className="group relative p-10 rounded-[30px] bg-white/40 backdrop-blur-3xl border border-white/50 hover:bg-white/60 transition-all duration-500 shadow-[0_20px_50px_rgba(195,162,171,0.05)] hover:shadow-[0_40px_80px_rgba(195,162,171,0.12)] hover:-translate-y-2"
               >
-                <div className="size-12 rounded-xl bg-[#c3a2ab]/10 flex items-center justify-center text-[#c3a2ab] mb-6 group-hover:bg-[#c3a2ab] group-hover:text-white transition-colors">
-                  <span className="material-symbols-outlined notranslate">{feature.icon}</span>
+                {/* Floating Aura Icon Container */}
+                <div className="relative mb-8">
+                  <div className="absolute -inset-4 bg-[#c3a2ab]/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <motion.div 
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+                    className="relative size-16 rounded-2xl bg-white border border-[#c3a2ab]/20 flex items-center justify-center text-[#c3a2ab] shadow-[0_10px_25px_rgba(195,162,171,0.08)] group-hover:bg-[#c3a2ab] group-hover:text-white group-hover:scale-110 transition-all duration-300"
+                  >
+                    <span className="material-symbols-outlined notranslate text-3xl">{feature.icon}</span>
+                  </motion.div>
                 </div>
-                <h3 className="font-display text-2xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-[18px] text-gray-600 leading-relaxed">{feature.desc}</p>
+                <h3 className="font-display text-2xl font-bold mb-4 text-[#161314] tracking-tight">{feature.title}</h3>
+                <p className="text-[17px] text-gray-600 leading-relaxed font-light">{feature.desc}</p>
+                
+                {/* Bottom Corner Accent */}
+                <div className="absolute bottom-6 right-6 text-[#c3a2ab]/10 text-xl group-hover:text-[#c3a2ab]/30 transition-colors">✦</div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 hero-mesh overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-between items-end mb-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer}>
-              <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-widest uppercase text-[15px]">Curated Selection</motion.span>
-              <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold mt-2">The Icons of Richse</motion.h2>
+      {/* --- THE ICONS of RICHSE (Elite Gallery Upgrade) --- */}
+      <section className="relative py-32 overflow-hidden bg-[#fcf8fa]">
+        
+        {/* Pearlescent Silk Mesh Layer */}
+        <div className="absolute inset-0 pointer-events-none z-0" 
+             style={{ 
+               background: `radial-gradient(circle at 80% 20%, #fdf2f6 0%, transparent 45%),
+                            radial-gradient(circle at 20% 80%, #f3edf0 0%, transparent 45%)` 
+             }} 
+        />
+
+        {/* Large "COLLECTION" Background Typography */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-1 overflow-hidden">
+          <motion.h2 
+            initial={{ opacity: 0, x: -100 }}
+            whileInView={{ opacity: 0.03, x: 0 }}
+            transition={{ duration: 3, ease: "easeOut" }}
+            className="text-[22vw] font-display font-black tracking-[-0.05em] select-none text-[#c3a2ab] whitespace-nowrap uppercase"
+          >
+            COLLECTION
+          </motion.h2>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="space-y-3">
+              <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-[0.5em] uppercase text-[12px] block">Iconic Selection</motion.span>
+              <motion.h2 variants={fadeInUp} className="font-display text-5xl md:text-6xl font-bold tracking-tighter text-[#161314]">
+                The Icons <span className="text-[#c3a2ab] italic font-medium">of Richse.</span>
+              </motion.h2>
             </motion.div>
-            <div className="flex gap-3">
+            
+            {/* Diamond-Cut Navigation Buttons */}
+            <div className="flex gap-4 p-2 rounded-full border border-white/40 bg-white/30 backdrop-blur-md shadow-[0_10px_30px_rgba(195,162,171,0.08)]">
               <button
                 onClick={() => scroll('left')}
-                className="size-12 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm bg-white/50 backdrop-blur-sm"
+                className="size-14 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm group relative overflow-hidden"
               >
-                <span className="material-symbols-outlined notranslate text-xl">chevron_left</span>
+                <div className="absolute inset-0 bg-[#c3a2ab]/5 blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="material-symbols-outlined notranslate text-2xl relative z-10 transition-transform group-hover:-translate-x-1">chevron_left</span>
               </button>
               <button
                 onClick={() => scroll('right')}
-                className="size-12 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm bg-white/50 backdrop-blur-sm"
+                className="size-14 rounded-full border border-[#c3a2ab]/20 flex items-center justify-center hover:bg-[#c3a2ab] hover:text-white transition-all shadow-sm group relative overflow-hidden"
               >
-                <span className="material-symbols-outlined notranslate text-xl">chevron_right</span>
+                <div className="absolute inset-0 bg-[#c3a2ab]/5 blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="material-symbols-outlined notranslate text-2xl relative z-10 transition-transform group-hover:translate-x-1">chevron_right</span>
               </button>
             </div>
           </div>
 
           <div
             ref={scrollRef}
-            className="flex gap-8 overflow-x-auto no-scrollbar pb-10 snap-x snap-mandatory items-stretch scroll-smooth"
+            className="flex gap-10 overflow-x-auto no-scrollbar pb-16 snap-x snap-mandatory items-stretch scroll-smooth px-4"
           >
             {loadingProducts ? (
-              <div className="py-10 px-6 text-gray-500 tracking-widest uppercase text-sm w-full text-center">Loading Best Sellers...</div>
+              <div className="py-20 px-6 text-[#c3a2ab]/60 tracking-[0.3em] uppercase text-xs w-full text-center font-bold">Revealing Best Sellers...</div>
             ) : products.length > 0 ? (
               products.map((product, i) => (
                 <motion.div
                   key={product.id}
-                  initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.1 }}
-                  className="w-[280px] md:w-[320px] shrink-0 group snap-start flex flex-col"
+                  initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.15 }}
+                  style={{ perspective: 1200 }}
+                  className="w-[300px] md:w-[380px] shrink-0 group snap-start"
                 >
-                  {/* รูปสินค้า */}
-                  <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 mb-4 shadow-sm border border-gray-100 shrink-0">
-                    <Link href={`/product/${product.id}`}>
+                  <motion.div 
+                    whileHover={{ rotateY: 8, rotateX: -5, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="relative aspect-[3/4] rounded-[40px] overflow-hidden bg-white mb-6 shadow-[0_20px_50px_rgba(195,162,171,0.08)] group-hover:shadow-[0_45px_100px_rgba(195,162,171,0.15)] transition-all border border-white/50"
+                  >
+                    {/* Inner Radiant Glow */}
+                    <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-[#c3a2ab]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    
+                    <Link href={`/product/${product.id}`} className="block h-full">
                       <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out group-hover:scale-110"
                         style={{ backgroundImage: `url('${product.image || "/G11.png"}')` }}
-                      />
+                      >
+                         {/* Subtle Glare Effect */}
+                         <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
                     </Link>
 
-                    {/* ป้าย Limited */}
+                    {/* Elite Glassmorphism Tag */}
+                    <div className="absolute bottom-6 left-6 right-6 p-6 rounded-[28px] bg-white/40 backdrop-blur-3xl border border-white/50 translate-y-4 group-hover:translate-y-0 transition-all duration-500 opacity-0 group-hover:opacity-100">
+                      <div className="flex justify-between items-end">
+                        <div className="space-y-1">
+                          <span className="text-[#c3a2ab] text-[10px] font-bold uppercase tracking-[0.2em] block mb-1">Luxury Ritual</span>
+                          <h3 className="font-display text-xl font-bold text-[#161314] tracking-tight truncate max-w-[160px]">{product.name}</h3>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[#c3a2ab] font-display text-lg font-bold">฿{product.flashSalePrice || product.price}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Limited Edition Pulse Badge */}
                     {product.id === 3 && (
-                      <div className="absolute top-5 left-5 bg-[#c3a2ab] text-white px-4 py-1.5 rounded-full text-[13px] font-bold uppercase tracking-wider">
-                        Limited Edition
+                      <div className="absolute top-6 left-6 flex items-center gap-2 bg-[#c3a2ab] text-white px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-[0.2em] shadow-lg shadow-[#c3a2ab]/30 animate-pulse">
+                        <span className="size-2 rounded-full bg-white shadow-[0_0_10px_white]" />
+                        Limited
                       </div>
                     )}
 
-                    {/* Quick Add */}
-                    <button
+                    {/* Quick Add Shimmer Button */}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       onClick={(e) => {
                         e.stopPropagation()
                         const now = new Date();
@@ -348,15 +444,16 @@ export default function Home() {
                         addToCart({
                           ...product,
                           price: isFlashSale ? product.flashSalePrice : product.price,
-                          originalPrice: product.price,
-                          taxe: product.description
-                        })
+                          qty: 1
+                        });
+                        window.dispatchEvent(new Event('cart-updated'));
+                        toast.success("Added to ritual collection");
                       }}
-                      className="absolute bottom-4 left-4 right-4 bg-white text-[#161314] py-4 rounded-xl font-bold text-[16px] opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl text-center"
+                      className="absolute top-6 right-6 size-12 rounded-full bg-white text-[#c3a2ab] flex items-center justify-center shadow-xl md:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#c3a2ab] hover:text-white z-20"
                     >
-                      Quick Add
-                    </button>
-                  </div>
+                      <span className="material-symbols-outlined notranslate text-xl">shopping_bag</span>
+                    </motion.button>
+                  </motion.div>
 
                   {/* รายละเอียด */}
                   <div className="flex-1 flex flex-col justify-between space-y-3">
@@ -682,34 +779,90 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- JOIN THE INNER CIRCLE --- */}
-      <section className="py-20 bg-[#c3a2ab]/10 border-t border-[#c3a2ab]/20">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="max-w-200 mx-auto px-6 text-center">
-          <motion.h2 variants={fadeInUp} className="font-display text-3xl font-bold mb-4 text-[#161314]">Richse Exclusive Club</motion.h2>
-          <motion.p variants={fadeInUp} className="text-gray-600 mb-8">
-            Join our inner circle for early access to new rituals, exclusive events, and expert skincare advice.
+      {/* --- RICHSE EXCLUSIVE CLUB (Luxury Invitation Upgrade) --- */}
+      <section className="relative py-32 overflow-hidden bg-[#161314]">
+        
+        {/* Dark Silk Mystery Background */}
+        <div className="absolute inset-0 pointer-events-none z-0" 
+             style={{ 
+               background: `radial-gradient(circle at 10% 10%, #2c282a 0%, transparent 40%),
+                            radial-gradient(circle at 90% 90%, #1c1a1b 0%, transparent 40%)` 
+             }} 
+        />
+
+        {/* Large "EXCLUSIVE" Background Typography */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-1 overflow-hidden">
+          <motion.h2 
+            initial={{ opacity: 0, scale: 1.2 }}
+            whileInView={{ opacity: 0.03, scale: 1 }}
+            transition={{ duration: 3, ease: "easeOut" }}
+            className="text-[25vw] font-display font-black tracking-[-0.05em] select-none text-white whitespace-nowrap"
+          >
+            EXCLUSIVE
+          </motion.h2>
+        </div>
+
+        {/* Floating Diamond Dust Particles */}
+        <div className="absolute inset-0 pointer-events-none z-2">
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute size-0.5 bg-white/20 rounded-full"
+              initial={{ x: Math.random() * 100 + "%", y: Math.random() * 100 + "%", opacity: 0 }}
+              animate={{ 
+                y: [null, (Math.random() - 0.5) * 200 + "%"],
+                opacity: [0, 0.4, 0] 
+              }}
+              transition={{ 
+                duration: 10 + Math.random() * 20, 
+                repeat: Infinity, 
+                ease: "linear",
+                delay: Math.random() * 10 
+              }}
+            />
+          ))}
+        </div>
+
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="max-w-4xl mx-auto px-6 text-center relative z-10">
+          <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-[0.5em] uppercase text-[12px] mb-4 block">Private Membership</motion.span>
+          <motion.h2 variants={fadeInUp} className="font-display text-5xl md:text-6xl font-bold mb-6 text-white tracking-tighter">
+            Richse <span className="text-[#c3a2ab] italic font-medium">Exclusive Club.</span>
+          </motion.h2>
+          <motion.p variants={fadeInUp} className="text-gray-400 mb-12 text-lg max-w-2xl mx-auto font-light leading-relaxed">
+            Join our elite inner circle for early access to new rituals, exclusive events, and expert skincare advice tailored for the few.
           </motion.p>
 
-          <motion.form variants={fadeInUp} onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4 max-w-lg mx-auto">
+          <motion.form 
+            variants={fadeInUp} 
+            onSubmit={handleSubmit} 
+            className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto p-2 rounded-[24px] bg-white/5 backdrop-blur-3xl border border-white/10 shadow-2xl"
+          >
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Your email address"
-              className="flex-1 rounded-xl bg-white border-none focus:ring-2 focus:ring-[#c3a2ab] px-6 py-4"
+              className="flex-1 rounded-[18px] bg-transparent border-none focus:ring-1 focus:ring-[#c3a2ab]/50 px-8 py-5 text-white placeholder:text-gray-500 transition-all"
             />
-            <button
+            <motion.button
               type="submit"
               disabled={loading}
-              className="bg-[#c3a2ab] text-white font-bold px-10 py-4 rounded-xl shadow-lg hover:opacity-90 transition-all disabled:opacity-50"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              animate={{ boxShadow: ["0 0 0 rgba(195,162,171,0)", "0 0 40px rgba(195,162,171,0.3)", "0 0 0 rgba(195,162,171,0)"] }}
+              transition={{ boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" } }}
+              className="relative overflow-hidden bg-gradient-to-r from-[#c3a2ab] via-[#d4b5bc] to-[#c3a2ab] text-white font-black px-12 py-5 rounded-[18px] shadow-xl transition-all disabled:opacity-50 uppercase tracking-[0.2em] text-xs"
             >
-              {loading ? "Sending..." : "Subscribe"}
-            </button>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-shimmer" />
+              {loading ? "Joining..." : "Join the Club"}
+            </motion.button>
           </motion.form>
-          {message && <p className="text-sm mt-2 w-full text-center">{message}</p>}
-          <motion.p variants={fadeInUp} className="text-[10px] text-gray-400 mt-6 uppercase tracking-widest">
-            Privacy Respected. Unsubscribe Anytime.
+          
+          {message && <p className="text-sm mt-6 w-full text-center text-[#c3a2ab] font-medium tracking-wide">{message}</p>}
+          
+          <motion.p variants={fadeInUp} className="text-[10px] text-gray-500 mt-10 uppercase tracking-[0.3em] font-medium opacity-60">
+            Privacy Respected. Membership is Discrete.
           </motion.p>
         </motion.div>
       </section>
