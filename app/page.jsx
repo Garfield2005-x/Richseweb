@@ -590,6 +590,8 @@ export default function Home() {
                     src={homeVideos[idx] || `/videos/tiktok-${item}.mp4`}
                     loop
                     playsInline
+                    autoPlay
+                    muted
                   />
 
                   {/* Enhanced Gradient Overlay */}
