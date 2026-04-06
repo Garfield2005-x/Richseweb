@@ -2,42 +2,41 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import NextImage from "next/image";
-import { Package, MapPin, Award, Camera, Loader2, User as UserIcon, LayoutDashboard, Ticket } from "lucide-react";
+import { Package, MapPin, Award, Camera, User as UserIcon, LayoutDashboard, Ticket } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
+import LoadingRichse from "@/app/components/LoadingRichse";
 
 export default function AccountOverview() {
   const { data: session } = useSession();
   const [profile, setProfile] = useState<{ points?: number } | null>(null);
   const [discounts, setDiscounts] = useState<{code: string, discount_percent: number, min_purchase: number | null, max_discount: number | null, description: string}[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchProfile() {
+    async function fetchData() {
       try {
-        const res = await fetch("/api/account/profile");
-        if (res.ok) {
-          const data = await res.json();
+        const [profileRes, discountsRes] = await Promise.all([
+          fetch("/api/account/profile"),
+          fetch("/api/account/discounts")
+        ]);
+
+        if (profileRes.ok) {
+          const data = await profileRes.json();
           setProfile(data);
         }
-      } catch (e) {
-        console.error("Failed to load profile", e);
-      }
-    }
-    
-    async function fetchDiscounts() {
-      try {
-        const res = await fetch("/api/account/discounts");
-        if (res.ok) {
-          const data = await res.json();
+        if (discountsRes.ok) {
+          const data = await discountsRes.json();
           setDiscounts(data);
         }
       } catch (e) {
-        console.error("Failed to load discounts", e);
+        console.error("Failed to load account data", e);
+      } finally {
+        setLoading(false);
       }
     }
 
-    fetchProfile();
-    fetchDiscounts();
+    fetchData();
   }, []);
 
   const [uploading, setUploading] = useState(false);
@@ -116,27 +115,31 @@ export default function AccountOverview() {
     }
   };
 
+  if (loading) {
+    return <LoadingRichse message="Syncing your profile data..." />;
+  }
+
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-6">
+    <div className="space-y-12">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8">
+        <div className="flex items-center gap-8">
           <div className="relative group shrink-0">
-            <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200 shadow-sm flex items-center justify-center relative">
+            <div className="w-28 h-28 rounded-full overflow-hidden bg-white/5 border-2 border-white/10 shadow-2xl flex items-center justify-center relative transition-all duration-500 group-hover:border-[#F07098]/50">
               {avatar ? (
-                <NextImage src={avatar} alt="Profile" fill className="object-cover" />
+                <NextImage src={avatar} alt="Profile" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
               ) : (
-                <UserIcon className="w-12 h-12 text-gray-400" />
+                <UserIcon className="w-12 h-12 text-white/20" />
               )}
               {uploading && (
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                  <Loader2 className="w-6 h-6 text-white animate-spin" />
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
+                  <LoadingRichse inline message="" />
                 </div>
               )}
             </div>
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="absolute bottom-0 right-0 bg-[#c3a2ab] text-white p-2 rounded-full shadow-md hover:bg-[#a88891] transition-colors focus:outline-none disabled:opacity-50"
+              className="absolute bottom-1 right-1 bg-[#F07098] text-white p-2.5 rounded-full shadow-xl hover:bg-[#F394B8] transition-all duration-300 focus:outline-none disabled:opacity-50 scale-90 group-hover:scale-100"
               title="Change Photo"
             >
               <Camera className="w-4 h-4" />
@@ -149,24 +152,25 @@ export default function AccountOverview() {
               onChange={handleImageUpload}
             />
           </div>
-          <div>
-            <h1 className="text-[36px] font-display font-medium text-gray-900 uppercase tracking-widest">
-              Account Overview
+          <div className="space-y-3">
+            <h1 className="text-[32px] md:text-[44px] font-luxury font-bold text-white uppercase tracking-tight">
+              Account <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-[#F07098] to-[#F8E1EB]">Overview</span>
             </h1>
-            <p className="mt-2 text-gray-600">
-              Welcome back, {session?.user?.name || "Guest"}! Manage your orders, addresses, and account details here.
+            <p className="text-white/40 font-light tracking-wide text-[13px] uppercase tracking-[0.2em]">
+              Welcome back, <span className="text-white font-bold">{session?.user?.name || "Guest"}</span> ✦
             </p>
           </div>
         </div>
         
-        {/* Points Display */}
-        <div className="bg-gradient-to-r from-[#c3a2ab] to-[#e4cbd1] p-6 rounded-2xl shadow-sm text-white flex items-center gap-4 min-w-[240px]">
-          <div className="bg-white/20 p-3 rounded-full">
+        {/* Points Display - Luxury Card */}
+        <div className="bg-gradient-to-br from-[#F07098] via-[#F394B8] to-[#F07098] p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(240,112,152,0.2)] text-white flex items-center gap-6 min-w-[300px] relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
+          <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-md relative z-10">
             <Award className="h-8 w-8 text-white" />
           </div>
-          <div>
-            <p className="text-[22px] font-medium opacity-90 uppercase tracking-wider">Richse Points</p>
-            <h2 className="text-[44px] font-display font-bold">
+          <div className="relative z-10">
+            <p className="text-[12px] font-bold opacity-80 uppercase tracking-[0.3em] mb-1">Richse Points</p>
+            <h2 className="text-[48px] font-luxury font-black leading-tight tracking-tight">
               {profile ? profile.points?.toLocaleString() : "..."}
             </h2>
           </div>
@@ -177,18 +181,19 @@ export default function AccountOverview() {
         {(session?.user as { role?: string })?.role === "ADMIN" && (
           <Link
             href="/admin"
-            className="group block p-6 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow hover:border-[#c3a2ab]"
+            className="group block p-8 bg-white/5 rounded-[2.5rem] border border-white/10 shadow-sm hover:border-[#F07098]/30 transition-all duration-500 relative overflow-hidden"
           >
-            <div className="flex items-center">
-              <div className="flex bg-[#f8f6f4] p-3 rounded-lg text-[#c3a2ab]">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#F07098]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="flex items-center relative z-10">
+              <div className="flex bg-white/5 p-4 rounded-2xl text-[#F07098] border border-white/5 group-hover:bg-[#F07098] group-hover:text-white transition-colors duration-500">
                 <LayoutDashboard className="h-6 w-6" />
               </div>
-              <div className="ml-4">
-                <h3 className="text-[26px] font-medium text-gray-900 group-hover:text-[#c3a2ab] transition-colors">
-                  Admin Dashboard
+              <div className="ml-6">
+                <h3 className="text-[20px] font-bold text-white group-hover:text-[#F07098] transition-colors uppercase tracking-widest">
+                  Admin Panel
                 </h3>
-                <p className="mt-1 text-[22px] text-gray-500">
-                  Manage products, orders, and rewards
+                <p className="mt-1 text-[13px] text-white/30 font-light tracking-wide">
+                  Master dashboard for brand management
                 </p>
               </div>
             </div>
@@ -196,18 +201,19 @@ export default function AccountOverview() {
         )}
         <Link
           href="/account/orders"
-          className="group block p-6 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow hover:border-[#c3a2ab]"
+          className="group block p-8 bg-white/5 rounded-[2.5rem] border border-white/10 shadow-sm hover:border-[#F07098]/30 transition-all duration-500 relative overflow-hidden"
         >
-          <div className="flex items-center">
-            <div className="flex bg-[#f8f6f4] p-3 rounded-lg text-[#c3a2ab]">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#F394B8]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="flex items-center relative z-10">
+            <div className="flex bg-white/5 p-4 rounded-2xl text-[#F07098] border border-white/5 group-hover:bg-[#F07098] group-hover:text-white transition-colors duration-500">
               <Package className="h-6 w-6" />
             </div>
-            <div className="ml-4">
-              <h3 className="text-[26px] font-medium text-gray-900 group-hover:text-[#c3a2ab] transition-colors">
+            <div className="ml-6">
+              <h3 className="text-[20px] font-bold text-white group-hover:text-[#F07098] transition-colors uppercase tracking-widest">
                 My Orders
               </h3>
-              <p className="mt-1 text-[22px] text-gray-500">
-                Track, return, or buy things again
+              <p className="mt-1 text-[13px] text-white/30 font-light tracking-wide">
+                Track your ritual collections
               </p>
             </div>
           </div>
@@ -215,18 +221,19 @@ export default function AccountOverview() {
 
         <Link
           href="/account/address"
-          className="group block p-6 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow hover:border-[#c3a2ab]"
+          className="group block p-8 bg-white/5 rounded-[2.5rem] border border-white/10 shadow-sm hover:border-[#F07098]/30 transition-all duration-500 relative overflow-hidden"
         >
-          <div className="flex items-center">
-            <div className="flex bg-[#f8f6f4] p-3 rounded-lg text-[#c3a2ab]">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#F07098]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="flex items-center relative z-10">
+            <div className="flex bg-white/5 p-4 rounded-2xl text-[#F07098] border border-white/5 group-hover:bg-[#F07098] group-hover:text-white transition-colors duration-500">
               <MapPin className="h-6 w-6" />
             </div>
-            <div className="ml-4">
-              <h3 className="text-[26px] font-medium text-gray-900 group-hover:text-[#c3a2ab] transition-colors">
+            <div className="ml-6">
+              <h3 className="text-[20px] font-bold text-white group-hover:text-[#F07098] transition-colors uppercase tracking-widest">
                 Address Book
               </h3>
-              <p className="mt-1 text-[22px] text-gray-500">
-                Edit addresses for orders and gifts
+              <p className="mt-1 text-[13px] text-white/30 font-light tracking-wide">
+                Manage your shipping destinations
               </p>
             </div>
           </div>
@@ -234,55 +241,61 @@ export default function AccountOverview() {
       </div>
 
       {/* My Coupons Section */}
-      <div className="pt-6 border-t border-gray-100">
-         <div className="flex items-center gap-2 mb-6">
-            <Ticket className="w-6 h-6 text-[#c3a2ab]" />
-            <h3 className="text-[30px] font-display font-bold text-gray-900">My Coupons / โค้ดส่วนลดของคุณ</h3>
-         </div>
+      <div className="pt-12 border-t border-white/5">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="p-2 bg-[#F07098]/10 rounded-lg">
+              <Ticket className="w-5 h-5 text-[#F07098]" />
+            </div>
+            <h3 className="text-[24px] font-luxury font-bold text-white tracking-tight uppercase">My Rewards <span className="italic font-light">✦</span></h3>
+          </div>
          
          {discounts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                {discounts.map((discount) => (
-                  <div key={discount.code} className="border border-gray-100 rounded-2xl p-5 hover:border-[#c3a2ab] hover:shadow-lg hover:shadow-[#c3a2ab]/10 transition-all bg-white flex flex-col justify-between">
-                     <div>
-                        <div className="flex justify-between items-start mb-2">
-                           <span className="bg-[#f8f6f4] text-[#c3a2ab] text-[20px] font-black uppercase tracking-widest px-3 py-1 rounded-full">{discount.discount_percent}% OFF</span>
+                  <div key={discount.code} className="group relative bg-white/5 border border-white/10 rounded-[2rem] p-6 hover:border-[#F07098]/50 transition-all duration-500 overflow-hidden">
+                     <div className="absolute inset-0 bg-gradient-to-tr from-[#F07098]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                     <div className="relative z-10">
+                        <div className="flex justify-between items-start mb-4">
+                           <span className="bg-[#F07098] text-white text-[10px] font-bold uppercase tracking-[0.2em] px-3 py-1.5 rounded-full shadow-lg shadow-[#F07098]/20">{discount.discount_percent}% OFF</span>
                         </div>
-                        <h4 className="text-[26px] font-bold text-gray-900 mt-2 tracking-wide break-all">{discount.code}</h4>
-                        <p className="text-[22px] text-gray-500 mt-1">{discount.description}</p>
+                        <h4 className="text-[22px] font-luxury font-bold text-white mt-4 tracking-tight break-all uppercase group-hover:text-[#F07098] transition-colors">{discount.code}</h4>
+                        <p className="text-[13px] text-white/40 mt-2 font-light line-clamp-2">{discount.description}</p>
+                        
+                        <button
+                          onClick={() => {
+                             navigator.clipboard.writeText(discount.code);
+                             toast.success("คัดลอกโค้ดส่วนลดแล้ว!", {
+                               style: { background: '#010000', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }
+                             });
+                          }}
+                          className="mt-6 w-full bg-white/5 text-white/60 hover:bg-[#F07098] hover:text-white font-bold py-3.5 rounded-xl transition-all duration-300 text-[12px] uppercase tracking-widest border border-white/5 group-hover:border-[#F07098]"
+                        >
+                          Copy Ritual Code
+                        </button>
                      </div>
-                     <button
-                        onClick={() => {
-                           navigator.clipboard.writeText(discount.code);
-                           toast.success("คัดลอกโค้ดส่วนลดแล้ว!");
-                        }}
-                        className="mt-4 w-full bg-gray-50 text-gray-700 hover:bg-[#c3a2ab] hover:text-white font-bold py-2 rounded-xl transition-colors text-[22px]"
-                     >
-                        Copy Code
-                     </button>
                   </div>
                ))}
             </div>
          ) : (
-            <div className="text-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-               <Ticket className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-               <p className="text-gray-500 font-medium">คุณยังไม่มีโค้ดส่วนลดชั่วคราวในขณะนี้</p>
+            <div className="text-center py-16 bg-white/5 rounded-[2.5rem] border border-dashed border-white/10">
+               <Ticket className="w-12 h-12 text-white/10 mx-auto mb-4" />
+               <p className="text-white/30 font-light text-[15px] tracking-wide uppercase tracking-[0.1em]">No rewards available yet</p>
             </div>
          )}
       </div>
 
-      <div className="pt-6 border-t border-gray-100">
-        <h3 className="text-[26px] font-medium text-gray-900 mb-4">Personal Details</h3>
-        <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-          <div className="sm:col-span-1">
-            <dt className="text-[22px] font-medium text-gray-500">Full name</dt>
-            <dd className="mt-1 text-[22px] text-gray-900">{session?.user?.name || "N/A"}</dd>
+      <div className="pt-12 border-t border-white/5">
+        <h3 className="text-[24px] font-luxury font-bold text-white mb-8 tracking-tight uppercase">Profile Details <span className="italic font-light">✦</span></h3>
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 max-w-2xl bg-white/5 p-8 rounded-[2rem] border border-white/10">
+          <div className="space-y-1">
+            <dt className="text-[10px] font-bold text-[#F07098] uppercase tracking-[0.3em]">Full Name</dt>
+            <dd className="text-[18px] text-white font-medium">{session?.user?.name || "N/A"}</dd>
           </div>
-          <div className="sm:col-span-1">
-            <dt className="text-[22px] font-medium text-gray-500">Email address</dt>
-            <dd className="mt-1 text-[22px] text-gray-900">{session?.user?.email || "N/A"}</dd>
+          <div className="space-y-1">
+            <dt className="text-[10px] font-bold text-[#F07098] uppercase tracking-[0.3em]">Email Portal</dt>
+            <dd className="text-[18px] text-white font-medium break-all">{session?.user?.email || "N/A"}</dd>
           </div>
-        </dl>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import { 
   Bolt, 
   Search, 
-  Loader2, 
   TrendingDown, 
   Calendar, 
   Package, 
@@ -17,6 +16,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import Image from "next/image";
+import LoadingRichse from "@/app/components/LoadingRichse";
 
 export default function FlashSaleManagement() {
   const [products, setProducts] = useState([]);
@@ -31,24 +31,23 @@ export default function FlashSaleManagement() {
   const [bulkDiscountPercent, setBulkDiscountPercent] = useState("");
 
   useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/admin/products");
+        if (res.ok) {
+          const data = await res.json();
+          setProducts(data);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to load products");
+      } finally {
+        setLoading(false);
+      }
+    }
     fetchProducts();
   }, []);
-
-  async function fetchProducts() {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/admin/products");
-      if (res.ok) {
-        const data = await res.json();
-        setProducts(data);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to load products");
-    } finally {
-      setLoading(false);
-    }
-  }
 
   const handleUpdate = async (product) => {
     setSaving(product.id);
@@ -165,12 +164,9 @@ export default function FlashSaleManagement() {
     return matchesSearch;
   });
 
-  if (loading && products.length === 0) return (
-     <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <div className="w-10 h-10 border-4 border-[#c3a2ab] border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-500 font-medium">Loading Campaign Data...</p>
-     </div>
-  );
+  if (loading && products.length === 0) {
+    return <LoadingRichse fullScreen message="Synchronizing campaign data..." />;
+  }
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 pb-24">
@@ -402,8 +398,13 @@ export default function FlashSaleManagement() {
                                   disabled={saving === p.id}
                                   className="px-6 py-2.5 bg-[#161314] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-black transition-all shadow-lg shadow-black/10 disabled:opacity-50 flex items-center gap-2"
                                 >
-                                  {saving === p.id ? <Loader2 size={12} className="animate-spin" /> : <CheckCircle size={12} />}
-                                  {saving === p.id ? "Saving" : "Commit Changes"}
+                                  {saving === p.id ? (
+                                     <LoadingRichse inline message="Saving" />
+                                  ) : (
+                                     <>
+                                        <CheckCircle size={12} /> Commit Changes
+                                     </>
+                                  )}
                                 </button>
                              </div>
                           </td>

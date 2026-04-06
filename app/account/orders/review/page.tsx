@@ -3,8 +3,9 @@ import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
-import { Star, Loader2 } from "lucide-react";
+import { Star } from "lucide-react";
 import toast from "react-hot-toast";
+import LoadingRichse from "@/app/components/LoadingRichse";
 
 function ReviewContent() {
   const searchParams = useSearchParams();
@@ -100,10 +101,11 @@ function ReviewContent() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-all disabled:opacity-50 flex items-center justify-center gap-2 overflow-hidden relative"
         >
-          {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-          {loading ? "Submitting..." : "Submit Review"}
+          {loading ? (
+             <LoadingRichse inline message="Publishing..." />
+          ) : "Submit Review"}
         </button>
       </form>
     </div>
@@ -114,7 +116,7 @@ export default function OrderReviewPage() {
   return (
     <div className="min-h-screen bg-[#f8f6f4] pt-32 pb-20 px-4">
       <Navbar />
-      <Suspense fallback={<div className="text-center py-20"><Loader2 className="animate-spin mx-auto" /></div>}>
+      <Suspense fallback={<div className="flex items-center justify-center py-40"><LoadingRichse message="Syncing feedback portal..." /></div>}>
         <ReviewContent />
       </Suspense>
       <Footer />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import LoadingRichse from "@/app/components/LoadingRichse";
 
 export default function AdminDiscounts() {
   const [discounts, setDiscounts] = useState([]);
@@ -25,22 +26,21 @@ export default function AdminDiscounts() {
   const [fetchingUsage, setFetchingUsage] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  async function fetchDiscounts() {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/admin/discounts");
-      if (res.ok) {
-        const data = await res.json();
-        setDiscounts(data);
-      }
-    } catch (error) {
-      console.error("Failed to load discounts", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
+    async function fetchDiscounts() {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/admin/discounts");
+        if (res.ok) {
+          const data = await res.json();
+          setDiscounts(data);
+        }
+      } catch (error) {
+        console.error("Failed to load discounts", error);
+      } finally {
+        setLoading(false);
+      }
+    }
     fetchDiscounts();
   }, []);
 
@@ -222,8 +222,14 @@ export default function AdminDiscounts() {
             disabled={isSyncing}
             className={`px-6 py-3.5 rounded-xl font-bold border transition-all flex items-center gap-2 ${isSyncing ? "bg-gray-100 text-gray-400 border-gray-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 active:scale-95"}`}
           >
-            <span className={`material-symbols-outlined text-[20px] ${isSyncing ? "animate-spin" : ""}`}>sync</span>
-            <span className="text-[17px]">{isSyncing ? "Syncing..." : "Sync Counts"}</span>
+            {isSyncing ? (
+              <LoadingRichse inline message="Syncing" />
+            ) : (
+              <>
+                 <span className="material-symbols-outlined text-[20px]">sync</span>
+                 <span className="text-[17px]">Sync Counts</span>
+              </>
+            )}
           </button>
           <button
             onClick={() => handleOpenModal()}

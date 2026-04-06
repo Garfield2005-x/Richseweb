@@ -17,7 +17,7 @@ import {
   ClipboardList,
   Trash2
 } from "lucide-react";
-import toast from "react-hot-toast";
+import LoadingRichse from "@/app/components/LoadingRichse"
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -141,12 +141,7 @@ export default function AdminOrders() {
   };
 
   if (loading && orders.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-[#c3a2ab] border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-500 font-medium">Loading orders data...</p>
-      </div>
-    );
+    return <LoadingRichse message="Accessing order archives..." />;
   }
 
   return (

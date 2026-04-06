@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 
+import LoadingRichse from "@/app/components/LoadingRichse";
+import toast from "react-hot-toast";
+
 type OrderItem = {
   id: string;
   product_id: number;
@@ -26,97 +29,99 @@ export default function AccountOrders() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchOrders() {
-      try {
-        const res = await fetch("/api/account/orders");
-        if (res.ok) {
-          const data = await res.json();
-          setOrders(data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch orders:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
     fetchOrders();
   }, []);
+
+  async function fetchOrders() {
+    try {
+      const res = await fetch("/api/account/orders");
+      if (res.ok) {
+        const data = await res.json();
+        setOrders(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch orders:", error);
+      toast.error("Failed to load orders");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const getStatusColor = (status: string) => {
     switch (status.toUpperCase()) {
       case "COMPLETED":
       case "DELIVERED":
-        return "bg-green-100 text-green-800";
+        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
       case "PROCESSING":
       case "SHIPPED":
-        return "bg-blue-100 text-blue-800";
+        return "bg-sky-500/10 text-sky-400 border-sky-500/20";
       case "CANCELLED":
-        return "bg-red-100 text-red-800";
+        return "bg-rose-500/10 text-rose-400 border-rose-500/20";
       default:
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-amber-500/10 text-amber-400 border-amber-500/20";
     }
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#c3a2ab]"></div>
-      </div>
-    );
+    return <LoadingRichse message="Syncing your ritual history..." />;
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-[36px] font-display font-medium text-gray-900 uppercase tracking-widest border-b border-gray-200 pb-4">
-        My Orders
-      </h1>
+    <div className="space-y-12">
+      <div className="border-b border-white/5 pb-8">
+        <h1 className="text-[32px] md:text-[44px] font-luxury font-bold text-white uppercase tracking-tight">
+          My <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-[#F07098] to-[#F8E1EB]">Orders</span>
+        </h1>
+        <p className="mt-4 text-white/30 font-light tracking-[0.2em] text-[12px] uppercase">Review your collection ritual</p>
+      </div>
 
       {orders.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-          <h3 className="text-[26px] font-medium text-gray-900">No orders yet</h3>
-          <p className="mt-1 text-[22px] text-gray-500">Looks like you haven&apos;t made your first purchase yet.</p>
-          <div className="mt-6">
-            <Link
-              href="/ProductAll"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-[22px] font-medium rounded-md shadow-sm text-white bg-[#c3a2ab] hover:bg-[#b08c95] uppercase tracking-wider transition-colors"
-            >
-              Start Shopping
-            </Link>
+        <div className="text-center py-24 bg-white/5 rounded-[2.5rem] border border-dashed border-white/10 space-y-8">
+          <div className="space-y-2">
+            <h3 className="text-[24px] font-display font-bold text-white">Your collection is empty</h3>
+            <p className="text-white/30 font-light tracking-wide text-[16px]">Manifest your first ritual today.</p>
           </div>
+          <Link
+            href="/ProductAll"
+            className="inline-flex items-center px-12 py-5 border border-transparent text-[12px] font-bold rounded-2xl shadow-xl text-white bg-[#F07098] hover:bg-[#F394B8] hover:shadow-[0_10px_40px_rgba(240,112,152,0.3)] transition-all duration-500 uppercase tracking-[0.2em]"
+          >
+            Start Discovery
+          </Link>
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-10">
           {orders.map((order) => (
-            <div key={order.id} className="bg-white border border-gray-200 shadow-sm rounded-lg overflow-hidden">
+            <div key={order.id} className="bg-white/5 backdrop-blur-3xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-[2.5rem] overflow-hidden group hover:border-[#F07098]/30 transition-all duration-500">
               {/* Order Header */}
-              <div className="bg-gray-50 border-b border-gray-200 p-4 sm:p-6">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2 text-[22px]">
-                    <div>
-                      <dt className="font-medium text-gray-900">Order</dt>
-                      <dd className="mt-1 text-gray-500">#{order.order_number || order.id.slice(-8).toUpperCase()}</dd>
+              <div className="bg-white/5 border-b border-white/5 p-6 sm:p-10 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#F07098]/5 blur-3xl rounded-full translate-x-1/3 -translate-y-1/2 pointer-events-none" />
+                <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-8 relative z-10">
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div className="space-y-2">
+                      <dt className="text-[10px] font-bold text-[#F07098] uppercase tracking-[0.3em]">Order Identifier</dt>
+                      <dd className="text-white font-bold tracking-tight">#{order.order_number || order.id.slice(-8).toUpperCase()}</dd>
                     </div>
-                    <div>
-                      <dt className="font-medium text-gray-900">Date</dt>
-                      <dd className="mt-1 text-gray-500">
-                        {format(new Date(order.created_at), "MMM d, yyyy")}
+                    <div className="space-y-2">
+                      <dt className="text-[10px] font-bold text-[#F07098] uppercase tracking-[0.3em]">Ritual Date</dt>
+                      <dd className="text-white/70 font-medium">
+                        {format(new Date(order.created_at), "MMMM d, yyyy")}
                       </dd>
                     </div>
-                    <div>
-                      <dt className="font-medium text-gray-900">Total</dt>
-                      <dd className="mt-1 font-medium text-gray-900">฿{order.total.toLocaleString("th-TH", { minimumFractionDigits: 2 })}</dd>
+                    <div className="space-y-2">
+                      <dt className="text-[10px] font-bold text-[#F07098] uppercase tracking-[0.3em]">Total Investment</dt>
+                      <dd className="text-white font-black text-xl tracking-tighter">฿{order.total.toLocaleString("th-TH")}</dd>
                     </div>
-                  </dl>
-                  <div className="flex flex-col items-end gap-2 mt-4 sm:mt-0">
+                  </div>
+                  <div className="flex flex-col sm:flex-row xl:flex-col items-start xl:items-end gap-3 mt-4 sm:mt-0">
                     <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-[20px] font-bold uppercase tracking-wider ${getStatusColor(order.status || "PENDING")}`}
+                      className={`inline-flex items-center px-4 py-2 border rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg ${getStatusColor(order.status || "PENDING")}`}
                     >
                       {order.status || "PENDING"}
                     </span>
                     {order.tracking_number && (
-                      <div className="flex items-center gap-1.5 text-[20px] text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-md font-mono">
-                        <span className="material-symbols-outlined notranslate text-[14px]">local_shipping</span>
-                        Tracking: <span className="font-bold text-gray-900">{order.tracking_number}</span>
+                      <div className="flex items-center gap-3 text-[11px] text-white/50 bg-black/40 border border-white/10 px-4 py-2.5 rounded-xl font-mono tracking-widest group-hover:border-[#F07098]/30 transition-colors">
+                        <span className="material-symbols-outlined notranslate text-[14px] text-[#F07098]">local_shipping</span>
+                        TRACK: <span className="font-bold text-white">{order.tracking_number}</span>
                       </div>
                     )}
                   </div>
@@ -124,21 +129,21 @@ export default function AccountOrders() {
               </div>
 
               {/* Items list */}
-              <ul className="divide-y divide-gray-100">
+              <ul className="divide-y divide-white/5 px-6 sm:px-10">
                 {order.order_items.map((item) => (
-                  <li key={item.id} className="p-4 sm:p-6 flex justify-between items-center gap-4">
-                    <div>
-                      <p className="font-medium text-gray-900">{item.product_name}</p>
-                      <p className="text-[22px] text-gray-500 mt-1">Qty: {item.quantity}</p>
+                  <li key={item.id} className="py-8 flex justify-between items-center gap-4">
+                    <div className="space-y-1">
+                      <p className="font-bold text-white text-lg tracking-tight group-hover:text-[#F07098] transition-colors">{item.product_name}</p>
+                      <p className="text-[12px] text-white/30 font-light uppercase tracking-widest">Quantity: <span className="text-white font-bold">{item.quantity}</span></p>
                     </div>
-                    <div className="flex flex-col items-end gap-2 text-right">
-                      <p className="font-medium text-gray-900 whitespace-nowrap">
-                        ฿{item.price.toLocaleString("th-TH", { minimumFractionDigits: 2 })}
+                    <div className="flex flex-col items-end gap-4 text-right">
+                      <p className="font-black text-white text-xl tracking-tighter whitespace-nowrap">
+                        ฿{item.price.toLocaleString("th-TH")}
                       </p>
                       {["SHIPPED", "DELIVERED", "COMPLETED"].includes(order.status.toUpperCase()) && (
                         <Link
                           href={`/account/orders/review?orderId=${order.id}&productId=${item.product_id}&productName=${encodeURIComponent(item.product_name)}`}
-                          className="text-[20px] font-bold text-[#c3a2ab] hover:text-[#b08c95] border border-[#c3a2ab] px-2 py-1 rounded transition-colors"
+                          className="text-[10px] font-bold text-[#F07098] hover:text-[#F8E1EB] border border-[#F07098]/30 px-5 py-2 rounded-xl transition-all hover:bg-[#F07098]/10 tracking-[0.2em] uppercase"
                         >
                           Write Review
                         </Link>
@@ -153,4 +158,5 @@ export default function AccountOrders() {
       )}
     </div>
   );
+
 }

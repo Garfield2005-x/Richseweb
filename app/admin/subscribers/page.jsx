@@ -1,8 +1,8 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Search, Mailbox, UserCheck, Ghost, Trash2 } from "lucide-react";
+import LoadingRichse from "@/app/components/LoadingRichse";
 
 export default function AdminSubscribers() {
   const [subscribers, setSubscribers] = useState([]);
@@ -164,8 +164,7 @@ export default function AdminSubscribers() {
         <div className="overflow-x-auto">
           {loading ? (
             <div className="p-20 flex flex-col items-center justify-center text-gray-400 space-y-4">
-              <div className="w-10 h-10 border-4 border-gray-200 border-t-[#c3a2ab] rounded-full animate-spin"></div>
-              <p className="font-medium tracking-wider uppercase text-[22px]">Scanning Inbox...</p>
+              <LoadingRichse message="Scanning Inbox..." />
             </div>
           ) : (
             <table className="w-full text-left border-collapse">

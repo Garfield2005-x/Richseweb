@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import LoadingRichse from "@/app/components/LoadingRichse";
 
 export default function AccountAddress() {
   const [loading, setLoading] = useState(true);
@@ -69,148 +70,130 @@ export default function AccountAddress() {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#c3a2ab]"></div>
-      </div>
-    );
+    return <LoadingRichse message="Locating your sanctuary..." />;
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-[36px] font-display font-medium text-gray-900 uppercase tracking-widest border-b border-gray-200 pb-4">
-          Address Book
+    <div className="max-w-4xl mx-auto space-y-12">
+      <div className="border-b border-white/5 pb-8">
+        <h1 className="text-[32px] md:text-[44px] font-luxury font-bold text-white uppercase tracking-tight">
+          Address <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-[#F07098] to-[#F8E1EB]">Portal</span>
         </h1>
-        <p className="mt-2 text-[22px] text-gray-500">
-          Set up your primary address for faster checkout.
-        </p>
+        <p className="mt-4 text-white/30 font-light tracking-[0.2em] text-[12px] uppercase">Coordinate your ritual deliveries</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white px-2 py-4">
-        <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
-          <div className="sm:col-span-2">
-            <label htmlFor="name" className="block text-[22px] font-medium text-gray-700">
+      <form onSubmit={handleSubmit} className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#F07098]/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        
+        <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 sm:gap-x-10 relative z-10">
+          <div className="sm:col-span-2 group">
+            <label htmlFor="name" className="block text-[12px] font-bold text-[#F07098] uppercase tracking-[0.3em] mb-4 ml-1">
               Full Name
             </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                name="name"
-                id="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#c3a2ab] focus:ring-[#c3a2ab] sm:text-[22px] border p-2"
-                placeholder="Name"
-              />
-            </div>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="block w-full rounded-2xl bg-white/5 border border-white/10 px-6 py-4 text-white placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-[#F07098] focus:border-[#F07098] transition-all duration-300 text-[18px]"
+              placeholder="Your divine name"
+            />
           </div>
 
-          <div className="sm:col-span-2">
-            <label htmlFor="phone" className="block text-[22px] font-medium text-gray-700">
+          <div className="sm:col-span-2 group">
+            <label htmlFor="phone" className="block text-[12px] font-bold text-[#F07098] uppercase tracking-[0.3em] mb-4 ml-1">
               Phone Number
             </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                name="phone"
-                id="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#c3a2ab] focus:ring-[#c3a2ab] sm:text-[22px] border p-2"
-                placeholder="099-999-9999"
-              />
-            </div>
+            <input
+              type="text"
+              name="phone"
+              id="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="block w-full rounded-2xl bg-white/5 border border-white/10 px-6 py-4 text-white placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-[#F07098] focus:border-[#F07098] transition-all duration-300 text-[18px]"
+              placeholder="0XX-XXX-XXXX"
+            />
           </div>
 
-          <div className="sm:col-span-2">
-            <label htmlFor="address" className="block text-[22px] font-medium text-gray-700">
-              Address
+          <div className="sm:col-span-2 group">
+            <label htmlFor="address" className="block text-[12px] font-bold text-[#F07098] uppercase tracking-[0.3em] mb-4 ml-1">
+              Delivery Address
             </label>
-            <div className="mt-1">
-              <textarea
-                name="address"
-                id="address"
-                rows={3}
-                value={formData.address}
-                onChange={handleChange}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#c3a2ab] focus:ring-[#c3a2ab] sm:text-[22px] border p-2"
-                placeholder="House no., Building, Street, etc."
-              />
-            </div>
+            <textarea
+              name="address"
+              id="address"
+              rows={3}
+              value={formData.address}
+              onChange={handleChange}
+              className="block w-full rounded-2xl bg-white/5 border border-white/10 px-6 py-4 text-white placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-[#F07098] focus:border-[#F07098] transition-all duration-300 text-[18px] resize-none"
+              placeholder="House no., Building, Street, etc."
+            />
           </div>
 
-          <div>
-            <label htmlFor="subdistrict" className="block text-[22px] font-medium text-gray-700">
-              แขวง/ตำบล
+          <div className="group">
+            <label htmlFor="subdistrict" className="block text-[12px] font-bold text-[#F07098] uppercase tracking-[0.3em] mb-4 ml-1">
+              Sub-district / แขวง/ตำบล
             </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                name="subdistrict"
-                id="subdistrict"
-                value={formData.subdistrict}
-                onChange={handleChange}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#c3a2ab] focus:ring-[#c3a2ab] sm:text-[22px] border p-2"
-              />
-            </div>
+            <input
+              type="text"
+              name="subdistrict"
+              id="subdistrict"
+              value={formData.subdistrict}
+              onChange={handleChange}
+              className="block w-full rounded-2xl bg-white/5 border border-white/10 px-6 py-4 text-white placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-[#F07098] focus:border-[#F07098] transition-all duration-300 text-[18px]"
+            />
           </div>
 
-          <div>
-            <label htmlFor="district" className="block text-[22px] font-medium text-gray-700">
-              เขต/อำเภอ
+          <div className="group">
+            <label htmlFor="district" className="block text-[12px] font-bold text-[#F07098] uppercase tracking-[0.3em] mb-4 ml-1">
+              District / เขต/อำเภอ
             </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                name="district"
-                id="district"
-                value={formData.district}
-                onChange={handleChange}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#c3a2ab] focus:ring-[#c3a2ab] sm:text-[22px] border p-2"
-              />
-            </div>
+            <input
+              type="text"
+              name="district"
+              id="district"
+              value={formData.district}
+              onChange={handleChange}
+              className="block w-full rounded-2xl bg-white/5 border border-white/10 px-6 py-4 text-white placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-[#F07098] focus:border-[#F07098] transition-all duration-300 text-[18px]"
+            />
           </div>
 
-          <div>
-            <label htmlFor="province" className="block text-[22px] font-medium text-gray-700">
-              จังหวัด
+          <div className="group">
+            <label htmlFor="province" className="block text-[12px] font-bold text-[#F07098] uppercase tracking-[0.3em] mb-4 ml-1">
+              Province / จังหวัด
             </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                name="province"
-                id="province"
-                value={formData.province}
-                onChange={handleChange}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#c3a2ab] focus:ring-[#c3a2ab] sm:text-[22px] border p-2"
-              />
-            </div>
+            <input
+              type="text"
+              name="province"
+              id="province"
+              value={formData.province}
+              onChange={handleChange}
+              className="block w-full rounded-2xl bg-white/5 border border-white/10 px-6 py-4 text-white placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-[#F07098] focus:border-[#F07098] transition-all duration-300 text-[18px]"
+            />
           </div>
 
-          <div>
-            <label htmlFor="postal_code" className="block text-[22px] font-medium text-gray-700">
-              รหัสไปรษณีย์
+          <div className="group">
+            <label htmlFor="postal_code" className="block text-[12px] font-bold text-[#F07098] uppercase tracking-[0.3em] mb-4 ml-1">
+              Postal Code / รหัสไปรษณีย์
             </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                name="postal_code"
-                id="postal_code"
-                value={formData.postal_code}
-                onChange={handleChange}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#c3a2ab] focus:ring-[#c3a2ab] sm:text-[22px] border p-2"
-              />
-            </div>
+            <input
+              type="text"
+              name="postal_code"
+              id="postal_code"
+              value={formData.postal_code}
+              onChange={handleChange}
+              className="block w-full rounded-2xl bg-white/5 border border-white/10 px-6 py-4 text-white placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-[#F07098] focus:border-[#F07098] transition-all duration-300 text-[18px]"
+            />
           </div>
 
-          <div className="sm:col-span-2 pt-4">
+          <div className="sm:col-span-2 pt-10">
             <button
               type="submit"
               disabled={saving}
-              className="w-full sm:w-auto inline-flex justify-center items-center px-8 py-3 border border-transparent text-[22px] font-medium rounded-md shadow-sm text-white bg-[#c3a2ab] hover:bg-[#b08c95] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c3a2ab] transition-colors disabled:opacity-50 uppercase tracking-widest"
+              className="w-full sm:w-auto inline-flex justify-center items-center px-16 py-5 border border-transparent text-[14px] font-bold rounded-2xl shadow-xl text-white bg-[#F07098] hover:bg-[#F394B8] hover:shadow-[0_10px_40px_rgba(240,112,152,0.4)] active:scale-[0.98] focus:outline-none transition-all duration-500 uppercase tracking-[0.3em] disabled:opacity-50"
             >
-              {saving ? "Saving..." : "Save Changes"}
+              {saving ? "Persisting changes..." : "Save Ritual Address"}
             </button>
           </div>
         </div>

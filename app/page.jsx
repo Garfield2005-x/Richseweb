@@ -115,14 +115,34 @@ export default function Home() {
       {/* --- PREMIUM BANNER HERO SECTION --- */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden ">
 
-        {/* Full-width High-Res Banner Background */}
-        <div className="absolute inset-0 z-0 ">
-          <div
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-1000"
-            style={{ backgroundImage: "url('/ban.jpg')" }}
+        {/* Full-width High-Res Banner Background with Parallax */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <motion.div
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ 
+              backgroundImage: "url('/ban.jpg')",
+              y: typeof window !== 'undefined' ? '0%' : '0%' 
+            }}
           />
           {/* Editorial Gradient Overlay - Optimized for Right-side block */}
           <div className="absolute inset-0 bg-gradient-to-l from-[#010000]/85 via-[#010000]/30 to-transparent " />
+          
+          {/* Modern Floating Ornaments */}
+          <div className="absolute inset-0 pointer-events-none z-1">
+             <motion.div 
+               animate={{ y: [0, -30, 0], x: [0, 20, 0], opacity: [0.3, 0.6, 0.3] }}
+               transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+               className="absolute top-[15%] left-[10%] text-[#F07098]/30 text-4xl"
+             >✦</motion.div>
+             <motion.div 
+               animate={{ y: [0, 40, 0], x: [0, -25, 0], opacity: [0.2, 0.5, 0.2] }}
+               transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+               className="absolute bottom-[20%] right-[35%] text-white/20 text-2xl"
+             >✦</motion.div>
+          </div>
         </div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 w-full h-full flex items-center justify-center lg:justify-start mt-20 lg:ml-250">
@@ -145,13 +165,13 @@ export default function Home() {
                 <div className="space-y-0 text-white -mt-2 md:-mt-5">
                   <motion.h1
                     variants={fadeInUp}
-                    className="font-display text-4xl md:text-7xl lg:text-[95px] font-black leading-[0.9] tracking-tighter text-[#010000]"
+                    className="font-display text-4xl md:text-7xl lg:text-[95px] font-black leading-[0.9] tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#010000] via-[#262626] to-[#010000] drop-shadow-sm"
                   >
-                    RICHSE <span className="text-white">SUI</span>
+                    RICHSE <span className="text-white drop-shadow-md">SUI</span>
                   </motion.h1>
                   <motion.h2
                     variants={fadeInUp}
-                    className="font-display text-[#F394B8] text-4xl md:text-7xl lg:text-[95px] font-black tracking-tighter leading-[0.9] -mt-2 md:-mt-5"
+                    className="font-display text-4xl md:text-7xl lg:text-[95px] font-black tracking-tighter leading-[0.9] -mt-2 md:-mt-5 text-transparent bg-clip-text bg-gradient-to-r from-[#F07098] via-[#F394B8] to-[#F07098]"
                   >
                     MOISTURIZER
                   </motion.h2>
@@ -191,121 +211,49 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- THE PHILOSOPHY of RICHSE (Premium Editorial Upgrade) --- */}
-      <section className="relative py-32 overflow-hidden bg-[#F8E1EB]">
-
-        {/* Silk Mesh Background Layer */}
-        <div className="absolute inset-0 pointer-events-none z-0"
-          style={{
-            background: `
-                 radial-gradient(circle at 5% 5%, #F0709810 0%, transparent 35%),
-                 radial-gradient(circle at 95% 95%, #F394B810 0%, transparent 35%),
-                 radial-gradient(circle at 50% 50%, #F8E1EB 0%, transparent 60%)
-               `
-          }}
-        />
-
-        {/* Large Luxury Typography Layer (The Essence) */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-1 overflow-hidden">
-          <motion.h2
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 0.04, scale: 1 }}
-            transition={{ duration: 2.5, ease: "easeOut" }}
-            className="text-[20vw] font-display font-black tracking-[-0.05em] select-none text-[#F07098]"
-          >
-            ESSENCE
-          </motion.h2>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center mb-24 space-y-4">
-            <motion.span variants={fadeInUp} className="text-[#F07098] font-bold tracking-[0.4em] uppercase text-[12px]">Our Core Value</motion.span>
-            <motion.h2 variants={fadeInUp} className="font-display text-5xl md:text-6xl font-bold tracking-tighter text-[#010000]">
-              The Philosophy <span className="text-[#F07098] italic font-medium">of Richse.</span>
-            </motion.h2>
-            <motion.div variants={fadeInUp} className="flex items-center justify-center gap-4 pt-4">
-              <div className="h-[1px] w-12 bg-[#F07098]/30" />
-              <div className="text-[#F07098] text-sm">✦</div>
-              <div className="h-[1px] w-12 bg-[#F07098]/30" />
-            </motion.div>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {[
-              { icon: "shield_with_heart", title: "Dermatologist Tested", desc: "Clinically formulated and rigorously tested by dermatology experts. Pure, gentle, and safe for all skin types, including sensitive skin." },
-              { icon: "eco", title: "Clean & Ethical Beauty", desc: "Consciously crafted with 100% Vegan & Cruelty-Free ingredients. Ethical beauty that respects both your skin and the environment." },
-              { icon: "auto_awesome", title: "Proven Clinical Results", desc: "Advanced proprietary formulas delivering visible, transformative results. Restores the skin barrier for lasting strength and radiant clarity." }
-            ].map((feature, i) => (
-              <motion.div
-                key={i}
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.2 }}
-                className="group relative p-10 rounded-[30px] bg-white/40 backdrop-blur-3xl border border-white/50 hover:bg-white/60 transition-all duration-500 shadow-[0_20px_50px_rgba(195,162,171,0.05)] hover:shadow-[0_40px_80px_rgba(195,162,171,0.12)] hover:-translate-y-2"
-              >
-                {/* Floating Aura Icon Container */}
-                <div className="relative mb-8">
-                  <div className="absolute -inset-4 bg-[#F07098]/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <motion.div
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
-                    className="relative size-16 rounded-2xl bg-white border border-[#F07098]/20 flex items-center justify-center text-[#F07098] shadow-[0_10px_25px_rgba(240,112,152,0.08)] group-hover:bg-[#F07098] group-hover:text-white group-hover:scale-110 transition-all duration-300"
-                  >
-                    <span className="material-symbols-outlined notranslate text-3xl">{feature.icon}</span>
-                  </motion.div>
-                </div>
-                <h3 className="font-display text-2xl font-bold mb-4 text-[#010000] tracking-tight">{feature.title}</h3>
-                <p className="text-[17px] text-[#262626] leading-relaxed font-light">{feature.desc}</p>
-
-                {/* Bottom Corner Accent */}
-                <div className="absolute bottom-6 right-6 text-[#F07098]/10 text-xl group-hover:text-[#F07098]/30 transition-colors">✦</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* --- THE ICONS of RICHSE (Elite Gallery Upgrade) --- */}
-      <section className="relative py-32 overflow-hidden bg-[#010000]">
+      {/* --- THE ICONS of RICHSE (Elite Gallery Upgrade - Section 2: Pink) --- */}
+      <section className="relative py-12 overflow-hidden bg-[#F8E1EB]">
 
         {/* Pearlescent Silk Mesh Layer */}
         <div className="absolute inset-0 pointer-events-none z-0"
           style={{
-            background: `radial-gradient(circle at 80% 20%, #F0709810 0%, transparent 45%),
-                            radial-gradient(circle at 20% 80%, #26262640 0%, transparent 45%)`
+            background: `radial-gradient(circle at 80% 20%, #F0709815 0%, transparent 45%),
+                            radial-gradient(circle at 20% 80%, #F394B815 0%, transparent 45%)`
           }}
         />
 
-        {/* Large "COLLECTION" Background Typography */}
+        {/* Large "COLLECTION" Background Typography (Light Theme) */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-1 overflow-hidden">
           <motion.h2
             initial={{ opacity: 0, x: -100 }}
-            whileInView={{ opacity: 0.03, x: 0 }}
+            whileInView={{ opacity: 0.05, x: 0 }}
             transition={{ duration: 3, ease: "easeOut" }}
-            className="text-[22vw] font-display font-black tracking-[-0.05em] select-none text-white whitespace-nowrap uppercase"
+            className="text-[22vw] font-display font-black tracking-[-0.05em] select-none text-[#F07098] whitespace-nowrap uppercase"
           >
             COLLECTION
           </motion.h2>
         </div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="space-y-3">
-              <motion.span variants={fadeInUp} className="text-[#F07098] font-bold tracking-[0.5em] uppercase text-[12px] block">Iconic Selection</motion.span>
-              <motion.h2 variants={fadeInUp} className="font-display text-5xl md:text-6xl font-bold tracking-tighter text-white">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-2 gap-6">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="space-y-2">
+              <motion.span variants={fadeInUp} className="text-[#F07098] font-bold tracking-[0.5em] uppercase text-[10px] block">Iconic Selection</motion.span>
+              <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold tracking-tighter text-[#010000]">
                 The Icons <span className="text-[#F07098] italic font-medium">of Richse.</span>
               </motion.h2>
             </motion.div>
 
-            {/* Diamond-Cut Navigation Buttons */}
-            <div className="flex gap-4 p-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-3xl shadow-2xl">
+            {/* Diamond-Cut Navigation Buttons (Light Theme) */}
+            <div className="flex gap-4 p-2 rounded-full border border-[#F07098]/20 bg-white/40 backdrop-blur-3xl shadow-xl">
               <button
                 onClick={() => scroll('left')}
-                className="size-14 rounded-full border border-white/10 bg-white/5 text-white flex items-center justify-center hover:bg-[#F07098] hover:border-[#F07098] hover:scale-110 transition-all duration-300 group"
+                className="size-14 rounded-full border border-[#F07098]/10 bg-white text-[#F07098] flex items-center justify-center hover:bg-[#F07098] hover:text-white hover:scale-110 transition-all duration-300 group shadow-sm"
               >
                 <span className="material-symbols-outlined notranslate text-2xl transition-transform group-hover:-translate-x-1">chevron_left</span>
               </button>
               <button
                 onClick={() => scroll('right')}
-                className="size-14 rounded-full border border-white/10 bg-white/5 text-white flex items-center justify-center hover:bg-[#F07098] hover:border-[#F07098] hover:scale-110 transition-all duration-300 group"
+                className="size-14 rounded-full border border-[#F07098]/10 bg-white text-[#F07098] flex items-center justify-center hover:bg-[#F07098] hover:text-white hover:scale-110 transition-all duration-300 group shadow-sm"
               >
                 <span className="material-symbols-outlined notranslate text-2xl transition-transform group-hover:translate-x-1">chevron_right</span>
               </button>
@@ -314,7 +262,7 @@ export default function Home() {
 
           <div
             ref={scrollRef}
-            className="flex gap-10 overflow-x-auto no-scrollbar pb-16 snap-x snap-mandatory items-stretch scroll-smooth px-4"
+            className="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar pb-16 snap-x snap-mandatory items-stretch scroll-smooth px-4"
           >
             {loadingProducts ? (
               <div className="py-20 px-6 text-[#F07098]/60 tracking-[0.3em] uppercase text-xs w-full text-center font-bold">Revealing Best Sellers...</div>
@@ -324,35 +272,36 @@ export default function Home() {
                   key={product.id}
                   initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.15 }}
                   style={{ perspective: 1200 }}
-                  className="w-[300px] md:w-[380px] shrink-0 group snap-start"
+                  className="w-[200px] md:w-[270px] shrink-0 group snap-start"
                 >
                   <motion.div
-                    whileHover={{ rotateY: 8, rotateX: -5, scale: 1.02 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    className="relative aspect-[3/4] rounded-[40px] overflow-hidden bg-white mb-6 shadow-[0_20px_50px_rgba(240,112,152,0.08)] group-hover:shadow-[0_45px_100px_rgba(240,112,152,0.15)] transition-all border border-white/50"
+                    whileHover={{ rotateY: 12, rotateX: -6, scale: 1.03 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    style={{ perspective: 1200 }}
+                    className="relative aspect-square rounded-[45px] overflow-hidden bg-white mb-6 shadow-[0_25px_60px_rgba(0,0,0,0.05)] group-hover:shadow-[0_60px_120px_rgba(240,112,152,0.18)] transition-all border border-white/50"
                   >
                     {/* Inner Radiant Glow */}
-                    <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-[#F07098]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-[#F07098]/10 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
                     <Link href={`/product/${product.id}`} className="block h-full">
                       <div
                         className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out group-hover:scale-110"
                         style={{ backgroundImage: `url('${product.image || "/G11.png"}')` }}
                       >
-                        {/* Subtle Glare Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        {/* High-End Glare Effect */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                       </div>
                     </Link>
 
-                    {/* Elite Glassmorphism Tag */}
-                    <div className="absolute bottom-6 left-6 right-6 p-6 rounded-[28px] bg-white/40 backdrop-blur-3xl border border-white/50 translate-y-4 group-hover:translate-y-0 transition-all duration-500 opacity-0 group-hover:opacity-100">
+                    {/* Elite Glassmorphism Tag (Compact for visibility) */}
+                    <div className="absolute bottom-4 left-4 right-4 p-4 rounded-[24px] bg-white/20 backdrop-blur-3xl border border-white/40 translate-y-4 group-hover:translate-y-0 transition-all duration-700 opacity-0 group-hover:opacity-100 shadow-[0_10px_30px_rgba(240,112,152,0.1)]">
                       <div className="flex justify-between items-end">
                         <div className="space-y-1">
-                          <span className="text-[#F07098] text-[10px] font-bold uppercase tracking-[0.2em] block mb-1">Luxury Ritual</span>
-                          <h3 className="font-display text-xl font-bold text-[#010000] tracking-tight truncate max-w-[160px]">{product.name}</h3>
+                          <span className="text-[#F07098] text-[10px] font-bold uppercase tracking-[0.3em] block mb-1">Elite Selection</span>
+                          <h3 className="font-display text-base font-bold text-[#010000] tracking-tight truncate max-w-[120px]">{product.name}</h3>
                         </div>
                         <div className="text-right">
-                          <p className="text-[#F07098] font-display text-lg font-bold">฿{product.flashSalePrice || product.price}</p>
+                          <p className="text-[#F07098] font-display text-sm font-bold">฿{product.flashSalePrice || product.price}</p>
                         </div>
                       </div>
                     </div>
@@ -390,8 +339,8 @@ export default function Home() {
                   {/* รายละเอียด */}
                   <div className="flex-1 flex flex-col justify-between space-y-3">
                     <div className="space-y-1">
-                      <p className="font-display text-2xl font-bold leading-tight line-clamp-1 text-white">{product.name}</p>
-                      <p className="text-[17px] text-white/60 line-clamp-2 h-12 overflow-hidden">{product.description}</p>
+                      <p className="font-display text-2xl font-bold leading-tight line-clamp-1 text-[#010000]">{product.name}</p>
+                      <p className="text-[17px] text-[#262626]/70 line-clamp-2 h-12 overflow-hidden font-light">{product.description}</p>
                     </div>
 
                     <div className="pt-2">
@@ -417,30 +366,109 @@ export default function Home() {
                 </motion.div>
               ))
             ) : (
-              <div className="py-10 px-6 text-white/50 w-full text-center">No products available.</div>
+              <div className="py-10 px-6 text-[#010000]/50 w-full text-center">No products available.</div>
             )}
           </div>
         </div>
       </section>
 
-      {/* --- AS SEEN ON TIKTOK (Luxury Gallery) --- */}
+      {/* --- THE PHILOSOPHY of RICHSE (Premium Editorial Upgrade - Section 3: Black) --- */}
+      <section className="relative py-24 overflow-hidden bg-[#010000]">
+
+        {/* Silk Mesh Background Layer */}
+        <div className="absolute inset-0 pointer-events-none z-0"
+          style={{
+            background: `
+                 radial-gradient(circle at 5% 5%, #F0709810 0%, transparent 35%),
+                 radial-gradient(circle at 95% 95%, #F394B810 0%, transparent 35%),
+                 radial-gradient(circle at 50% 50%, #010000 0%, transparent 70%)
+               `
+          }}
+        />
+
+        {/* Large Luxury Typography Layer (The Essence - Dark Theme) */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-1 overflow-hidden">
+          <motion.h2
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 0.04, scale: 1 }}
+            transition={{ duration: 2.5, ease: "easeOut" }}
+            className="text-[20vw] font-display font-black tracking-[-0.05em] select-none text-white"
+          >
+            ESSENCE
+          </motion.h2>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center mb-24 space-y-4">
+            <motion.span variants={fadeInUp} className="text-[#F07098] font-bold tracking-[0.4em] uppercase text-[12px]">Our Core Value</motion.span>
+            <motion.h2 variants={fadeInUp} className="font-display text-5xl md:text-6xl font-bold tracking-tighter text-white">
+              The Philosophy <span className="text-[#F07098] italic font-medium">of Richse.</span>
+            </motion.h2>
+            <motion.div variants={fadeInUp} className="flex items-center justify-center gap-4 pt-4">
+              <div className="h-[1px] w-12 bg-[#F07098]/30" />
+              <div className="text-[#F07098] text-sm">✦</div>
+              <div className="h-[1px] w-12 bg-[#F07098]/30" />
+            </motion.div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {[
+              { icon: "shield_with_heart", title: "Dermatologist Tested", desc: "Clinically formulated and rigorously tested by dermatology experts. Pure, gentle, and safe for all skin types, including sensitive skin." },
+              { icon: "eco", title: "Clean & Ethical Beauty", desc: "Consciously crafted with 100% Vegan & Cruelty-Free ingredients. Ethical beauty that respects both your skin and the environment." },
+              { icon: "auto_awesome", title: "Proven Clinical Results", desc: "Advanced proprietary formulas delivering visible, transformative results. Restores the skin barrier for lasting strength and radiant clarity." }
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
+                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: i * 0.2 }}
+                whileHover={{ rotateY: 8, rotateX: -4, scale: 1.02 }}
+                style={{ perspective: 1000 }}
+                className="group relative p-10 rounded-[35px] bg-white/5 backdrop-blur-3xl border border-white/10 transition-all duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.2)] hover:shadow-[0_50px_100px_rgba(240,112,152,0.15)]"
+              >
+                {/* Floating Aura Icon Container */}
+                <div className="relative mb-8">
+                  <div className="absolute -inset-4 bg-[#F07098]/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <motion.div
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+                    className="relative size-20 rounded-[22px] bg-white/10 border border-white/20 flex items-center justify-center text-[#F07098] shadow-2xl group-hover:bg-[#F07098] group-hover:text-white transition-all duration-500"
+                  >
+                    <span className="material-symbols-outlined notranslate text-4xl leading-none">{feature.icon}</span>
+                  </motion.div>
+                </div>
+                <h3 className="font-display text-2xl font-bold mb-4 text-white tracking-tight">{feature.title}</h3>
+                <p className="text-[17px] text-white/60 leading-relaxed font-light">{feature.desc}</p>
+
+                {/* Bottom Corner Accent */}
+                <div className="absolute bottom-6 right-6 text-[#F07098] opacity-10 group-hover:opacity-40 group-hover:rotate-45 transition-all duration-700">✦</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- AS SEEN ON TIKTOK (Luxury Gallery Modernized) --- */}
       <section className="relative py-28 bg-[#F8E1EB] overflow-hidden">
 
-        {/* Ambient Glow behind section */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-[#F07098]/10 rounded-full blur-[160px] pointer-events-none" />
+        {/* Liquid Mesh Background Accent */}
+        <div className="absolute inset-0 pointer-events-none z-0"
+          style={{
+            background: `radial-gradient(circle at 70% 30%, #F0709815 0%, transparent 45%),
+                            radial-gradient(circle at 30% 70%, #F394B815 0%, transparent 45%)`
+          }}
+        />
 
         <div className="max-w-7xl mx-auto px-6 mb-16 relative z-10">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="text-center space-y-5">
-            <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-[#F07098]/30 bg-white/50 backdrop-blur-sm shadow-sm">
-              <span className="text-[#F07098] font-bold tracking-[0.2em] uppercase text-[10px]">Community Magic</span>
+            <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-[#F07098]/30 bg-white/40 backdrop-blur-md shadow-lg shadow-[#F07098]/5">
+              <span className="text-[#F07098] font-bold tracking-[0.3em] uppercase text-[10px]">Real Rituals</span>
             </div>
-            <motion.h2 variants={fadeInUp} className="font-display text-5xl md:text-6xl font-bold tracking-tight text-[#010000]">
-              Real Glow, <span className="text-[#F07098] italic font-medium">Real Results.</span>
+            <motion.h2 variants={fadeInUp} className="font-display text-5xl md:text-7xl font-bold tracking-tighter text-[#010000]">
+              Real Glow, <span className="text-[#F07098] italic font-medium">Real Vision.</span>
             </motion.h2>
-            <motion.div variants={fadeInUp} className="flex items-center justify-center gap-4">
-              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[#F07098]/60" />
-              <span className="text-[#F07098]/50 text-xs">✦</span>
-              <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[#F07098]/60" />
+            <motion.div variants={fadeInUp} className="flex items-center justify-center gap-6">
+              <div className="h-[1px] w-16 bg-gradient-to-r from-transparent via-[#F07098]/40 to-[#F07098]" />
+              <span className="text-[#F07098] text-sm animate-pulse">✦</span>
+              <div className="h-[1px] w-16 bg-gradient-to-l from-transparent via-[#F07098]/40 to-[#F07098]" />
             </motion.div>
           </motion.div>
         </div>
@@ -568,7 +596,7 @@ export default function Home() {
       </section>
 
       {/* --- COMMUNITY VOICES (Interactive Floating Social Cloud Update to Black) --- */}
-      <section ref={communityRef} className="relative py-40 overflow-hidden text-white min-h-[900px] flex items-center w-full bg-[#010000]">
+      <section ref={communityRef} className="relative py-32 overflow-hidden text-white min-h-[900px] flex items-center w-full bg-[#010000]">
 
         {/* Premium Background Layer (Deep Mesh Gradient for Black Theme) */}
         <div className="absolute inset-0 pointer-events-none z-0"
@@ -713,16 +741,34 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- RICHSE EXCLUSIVE CLUB (Updating to Pink Theme) --- */}
+      {/* --- RICHSE EXCLUSIVE CLUB (Final Modernized Masterpiece) --- */}
       <section className="relative py-32 overflow-hidden bg-[#F394B8]">
 
-        {/* Vibrant Pink Silk Mesh Background */}
-        <div className="absolute inset-0 pointer-events-none z-0"
-          style={{
-            background: `radial-gradient(circle at 10% 10%, #F8E1EB 0%, transparent 40%),
-                            radial-gradient(circle at 90% 90%, #F07098 0%, transparent 40%)`
-          }}
-        />
+        {/* Liquid Silk Animated Background */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <motion.div 
+            animate={{ 
+              background: [
+                "radial-gradient(circle at 10% 10%, #F8E1EB 0%, transparent 40%)",
+                "radial-gradient(circle at 40% 40%, #F8E1EB 0%, transparent 40%)",
+                "radial-gradient(circle at 10% 10%, #F8E1EB 0%, transparent 40%)"
+              ]
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-0 opacity-60"
+          />
+          <motion.div 
+            animate={{ 
+              background: [
+                "radial-gradient(circle at 90% 90%, #F07098 0%, transparent 40%)",
+                "radial-gradient(circle at 60% 60%, #F07098 0%, transparent 40%)",
+                "radial-gradient(circle at 90% 90%, #F07098 0%, transparent 40%)"
+              ]
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-0 opacity-80"
+          />
+        </div>
 
         {/* Large "EXCLUSIVE" Background Typography */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-1 overflow-hidden">
@@ -782,9 +828,13 @@ export default function Home() {
             <motion.button
               type="submit"
               disabled={loading}
-              className="bg-[#010000] text-white px-10 py-5 rounded-[18px] font-bold tracking-widest text-sm hover:bg-[#262626] transition-all disabled:opacity-50"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative overflow-hidden bg-[#010000] text-white px-10 py-5 rounded-[18px] font-bold tracking-[0.2em] text-xs transition-all disabled:opacity-50 group/btn"
             >
-              {loading ? "Joining..." : "JOIN THE CLUB"}
+              {/* Shimmer Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]" />
+              <span className="relative z-10">{loading ? "JOINING..." : "JOIN THE CLUB"}</span>
             </motion.button>
           </motion.form>
 

@@ -7,11 +7,7 @@ export default function Page() {
     <div>
 <Navbar />
     
-    <div className="pt-32 pb-12 md:pt-40 md:pb-20">
-      
-      <SkinQuiz />
-     
-    </div>
+    <SkinQuiz />
      <Footer />
     </div>
   );

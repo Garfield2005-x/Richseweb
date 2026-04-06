@@ -20,6 +20,19 @@
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
   --font-serif: var(--font-display); /* Map serif to Montserrat for older header styles */
+  
+  --animate-shimmer: shimmer 2s infinite linear;
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes shimmer {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+  }
 }
 
 /* ---------- Base ---------- */
@@ -27,16 +40,18 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
-  font-size: 21px; /* Global scale shift for DB Heavent (+25% approx) */
-  line-height: 1.6;
+  font-size: 20px; /* Refined base size for DB Heavent */
+  line-height: 1.55; /* Safe zone for Thai tone marks */
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Headings */
+/* Headings - Using Tight instead of None for Thai safety */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-sans), var(--font-display), sans-serif;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  letter-spacing: -0.02em;
   font-weight: 700;
+  line-height: 1.25; /* Prevents Thai character clipping */
 }
 
 /* ---------- Icons ---------- */
@@ -69,7 +84,12 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ---------- Utilities ---------- */
 .font-display {
-  font-family: var(--font-sans), var(--font-display), serif;
+  font-family: var(--font-display), var(--font-sans), serif;
+}
+
+.font-luxury {
+  font-family: var(--font-display), sans-serif;
+  letter-spacing: -0.05em;
 }
 
 .no-scrollbar::-webkit-scrollbar {

@@ -6,6 +6,7 @@ import Link from "next/link"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import { CheckCircle2, Package, Truck, Lock, ShieldCheck, Copy, ArrowLeft } from "lucide-react"
+import LoadingRichse from "../components/LoadingRichse"
 
 export default function Success() {
   const searchParams = useSearchParams()
@@ -48,14 +49,7 @@ export default function Success() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-[#c3a2ab]/20 border-t-[#c3a2ab] rounded-full animate-spin" />
-          <p className="text-sm font-medium text-gray-400 uppercase tracking-widest">Retrieving order details...</p>
-        </div>
-      </div>
-    )
+    return <LoadingRichse fullScreen message="Confirming your selection..." />
   }
 
   if (!order) return null

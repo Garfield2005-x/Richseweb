@@ -16,12 +16,12 @@ const AccordionItem = ({ title, defaultOpen = false, children }) => {
     <div className="border-b border-gray-100">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex justify-between items-center py-5 text-left focus:outline-none focus:ring-none group hover:bg-[#faf9f8] px-2 -mx-2 rounded-xl transition-all"
+        className="w-full flex justify-between items-center py-5 text-left focus:outline-none focus:ring-none group hover:bg-[#F8E1EB]/30 px-4 -mx-4 rounded-xl transition-all duration-300"
       >
-        <span className="font-display font-medium text-2xl tracking-wide text-[#161314] group-hover:text-[#c3a2ab] transition-colors">
+        <span className="font-display font-bold text-2xl tracking-wide text-[#010000] group-hover:text-[#F07098] transition-colors">
           {title}
         </span>
-        <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 group-hover:bg-[#f3edf0] transition-colors text-[#161314]">
+        <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 group-hover:bg-[#F8E1EB] transition-colors text-[#010000] group-hover:text-[#F07098]">
           {/* Horizontal line */}
           <span className="absolute w-[14px] h-[1.5px] bg-current rounded-full transition-transform duration-300"></span>
           {/* Vertical line - hidden when open */}
@@ -29,15 +29,16 @@ const AccordionItem = ({ title, defaultOpen = false, children }) => {
         </div>
       </button>
       <div 
-        className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] px-2 ${isOpen ? "max-h-[800px] opacity-100 pb-6" : "max-h-0 opacity-0 pb-0"}`}
+        className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] px-4 ${isOpen ? "max-h-[800px] opacity-100 pb-6" : "max-h-0 opacity-0 pb-0"}`}
       >
-        <div className="text-gray-600 leading-relaxed font-sans text-[20px] whitespace-pre-wrap">
+        <div className="text-[#262626]/80 leading-relaxed font-light text-[17px] whitespace-pre-wrap">
           {children}
         </div>
       </div>
     </div>
   );
 };
+import LoadingRichse from "@/app/components/LoadingRichse";
 
 export default function ProductDetailPage(props) {
   const params = use(props.params);
@@ -127,11 +128,7 @@ export default function ProductDetailPage(props) {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl font-display text-gray-500 tracking-widest uppercase">Loading...</div>
-      </div>
-    );
+    return <LoadingRichse fullScreen message="Unveiling the essence..." />;
   }
 
   if (!product) return <div>Product not found</div>;
@@ -174,10 +171,10 @@ export default function ProductDetailPage(props) {
           <div className="lg:col-span-5 sticky top-12">
             <div className="flex flex-col gap-6">
               <div>
-                <span className="text-[16px] uppercase tracking-[0.2em] text-[#c3a2ab] font-bold mb-3 block">
+                <span className="text-[10px] text-[#F07098] font-bold tracking-[0.3em] uppercase block mb-3">
                   The Radiance Collection
                 </span>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-[#161314] leading-tight mb-4">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-black text-[#010000] tracking-tighter leading-none mb-4">
                   {product.name}
                 </h2>
                 <div className="flex items-center gap-4">
@@ -232,7 +229,7 @@ export default function ProductDetailPage(props) {
                     {product.variants?.length > 0 && !selectedVariant && (
                       <span className="text-base text-gray-500 font-medium">Starting from</span>
                     )}
-                    <span className="text-3xl font-light text-[#161314]">
+                    <span className="text-4xl font-display font-bold text-[#F07098]">
                       ฿{product.variants?.length > 0 && !selectedVariant 
                           ? Math.min(...product.variants.map(v => v.price)).toLocaleString(undefined, { minimumFractionDigits: 2 })
                           : currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })
@@ -250,12 +247,12 @@ export default function ProductDetailPage(props) {
                     {product.description || "RICHSE is a skincare brand dedicated to enhancing natural beauty through thoughtful care and refined formulas. Focused on quality, balance, and skin wellness, RICHSE helps support healthier-looking, radiant skin as part of a modern self-care routine."}
                  </AccordionItem>
                  
-                 <AccordionItem title="การดูแลปัญหาผิว (Skin Type)">
-                    <div className="bg-[#fcfaf9] p-4 rounded-2xl border border-[#f3edf0] mb-5 inline-flex items-start gap-4 shadow-sm w-full">
-                       <span className="material-symbols-outlined text-[#c3a2ab] text-3xl">verified</span>
+                  <AccordionItem title="การดูแลปัญหาผิว (Skin Type)">
+                    <div className="bg-[#F8E1EB] p-4 rounded-[20px] border border-[#F07098]/20 mb-5 inline-flex items-start gap-4 shadow-sm w-full">
+                       <span className="material-symbols-outlined text-[#F07098] text-3xl">verified</span>
                        <div>
-                          <strong className="block text-[#161314] mb-1">เหมาะสำหรับ</strong>
-                          <span className="text-[#161314] font-medium">{product.skinType || "ทุกสภาพผิว (All Skin Types)"}</span>
+                          <strong className="block text-[#010000] mb-1">เหมาะสำหรับ</strong>
+                          <span className="text-[#010000]/80 font-medium">{product.skinType || "ทุกสภาพผิว (All Skin Types)"}</span>
                        </div>
                     </div>
                     <strong>✨ วิธีการใช้งาน:</strong><br/>
@@ -264,25 +261,25 @@ export default function ProductDetailPage(props) {
 
                  <AccordionItem title="ข้อมูลจำเพาะ (Product Info)">
                     <ul className="space-y-5 list-none py-2 m-0">
-                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors">
-                          <span className="material-symbols-outlined text-gray-400 text-3xl">category</span>
+                       <li className="flex items-start gap-4 p-4 hover:bg-[#F8E1EB]/50 rounded-[18px] transition-colors">
+                          <span className="material-symbols-outlined text-[#F07098] text-3xl">category</span>
                           <div>
-                             <strong className="block text-[#161314] text-[16px] mb-0.5 uppercase tracking-widest">Category</strong>
-                             <span className="text-[18px] text-gray-600">{product.category || "สกินแคร์ / ความงาม"}</span>
+                             <strong className="block text-[#010000] text-[16px] mb-0.5 uppercase tracking-widest leading-none">Category</strong>
+                             <span className="text-[17px] text-[#262626]/80">{product.category || "สกินแคร์ / ความงาม"}</span>
                           </div>
                        </li>
-                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors">
-                          <span className="material-symbols-outlined text-emerald-500 text-3xl">eco</span>
+                       <li className="flex items-start gap-4 p-4 hover:bg-[#F8E1EB]/50 rounded-[18px] transition-colors">
+                          <span className="material-symbols-outlined text-[#F07098] text-3xl">eco</span>
                           <div>
-                             <strong className="block text-[#161314] text-[16px] mb-0.5 uppercase tracking-widest">Clean Beauty Paradigm</strong>
-                             <span className="text-[18px] text-gray-600">100% Vegan & Cruelty-Free ปราศจากการทารุณกรรมสัตว์ ปราศจากพาราเบน ซิลิโคน และสารแต่งกลิ่นสังเคราะห์</span>
+                             <strong className="block text-[#010000] text-[16px] mb-0.5 uppercase tracking-widest leading-none">Clean Beauty Paradigm</strong>
+                             <span className="text-[17px] text-[#262626]/80">100% Vegan & Cruelty-Free ปราศจากการทารุณกรรมสัตว์ ปราศจากพาราเบน ซิลิโคน และสารแต่งกลิ่นสังเคราะห์</span>
                           </div>
                        </li>
-                       <li className="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors">
-                          <span className="material-symbols-outlined text-blue-400 text-3xl">health_and_safety</span>
+                       <li className="flex items-start gap-4 p-4 hover:bg-[#F8E1EB]/50 rounded-[18px] transition-colors">
+                          <span className="material-symbols-outlined text-[#F07098] text-3xl">health_and_safety</span>
                           <div>
-                             <strong className="block text-[#161314] text-[16px] mb-0.5 uppercase tracking-widest">Dermatologically Endorsed</strong>
-                             <span className="text-[18px] text-gray-600">Formula พัฒนาและผ่านการทดสอบโดยผู้เชี่ยวชาญด้านผิวหนัง อ่อนโยนแต่ให้ผลลัพธ์สูง</span>
+                             <strong className="block text-[#010000] text-[16px] mb-0.5 uppercase tracking-widest leading-none">Dermatologically Endorsed</strong>
+                             <span className="text-[17px] text-[#262626]/80">Formula พัฒนาและผ่านการทดสอบโดยผู้เชี่ยวชาญด้านผิวหนัง อ่อนโยนแต่ให้ผลลัพธ์สูง</span>
                           </div>
                        </li>
                     </ul>
@@ -296,9 +293,9 @@ export default function ProductDetailPage(props) {
               </div>
               <div className="space-y-4 pt-6 border-t border-gray-100">
                 {product.variants?.length > 0 && (
-                  <div className="mb-6">
-                    <span className="text-xs uppercase tracking-[0.2em] font-bold text-gray-400 mb-3 block">Select Size</span>
-                    <div className="flex flex-wrap gap-3">
+                  <div className="mb-8">
+                    <span className="text-[10px] text-[#F07098] font-bold tracking-[0.3em] uppercase block mb-4">Select Size</span>
+                    <div className="flex flex-wrap gap-4">
                       {product.variants.map(v => (
                         <button
                           key={v.id}
@@ -306,18 +303,18 @@ export default function ProductDetailPage(props) {
                             setSelectedVariant(v);
                             setQuantity(1); // Reset quantity when variant changes
                           }}
-                          className={`px-5 py-3 border rounded-lg text-[17px] font-bold transition-all uppercase tracking-wider ${
+                          className={`relative px-6 py-4 rounded-[20px] text-[15px] font-bold transition-all duration-300 uppercase tracking-widest border-2 ${
                             selectedVariant?.id === v.id 
-                              ? "border-[#161314] bg-[#161314] text-white" 
+                              ? "border-[#010000] bg-[#010000] text-white shadow-[0_15px_30px_rgba(0,0,0,0.15)] scale-105" 
                               : v.stock <= 0 
-                                ? "border-gray-200 bg-gray-50 text-gray-400 opacity-50 relative overflow-hidden"
-                                : "border-gray-200 text-gray-600 hover:border-gray-400"
+                                ? "border-gray-100 bg-gray-50 text-gray-400 opacity-60 cursor-not-allowed"
+                                : "border-gray-200 text-[#010000] bg-white hover:border-[#F07098] hover:shadow-[0_15px_30px_rgba(240,112,152,0.15)] hover:-translate-y-1"
                           }`}
                         >
-                          {v.name}
+                          <span className="relative z-10">{v.name}</span>
                           {v.stock <= 0 && (
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="w-full h-px bg-gray-400 rotate-[-12deg] transform origin-center"></div>
+                              <div className="w-[80%] h-[1.5px] bg-gray-300 rotate-[-15deg] transform origin-center"></div>
                             </div>
                           )}
                         </button>
@@ -366,16 +363,16 @@ export default function ProductDetailPage(props) {
                       }, quantity);
                       // alert is removed as toast.success is handled in CartContext
                     }}
-                    className="flex-3 bg-[#c3a2ab] hover:bg-[#c3a2ab]/90 text-white font-bold py-5 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 uppercase tracking-widest text-[18px] disabled:opacity-50"
+                    className="flex-3 bg-[#010000] hover:bg-[#262626] text-white font-bold py-5 rounded-[18px] transition-all transform hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.15)] active:scale-[0.98] uppercase tracking-[0.2em] text-[14px] disabled:opacity-50"
                     disabled={currentStock <= 0}
                   >
-                    {currentStock > 0 ? "Add to Cart" : "Out of Stock"}
+                    {currentStock > 0 ? "ADD TO RITUAL" : "OUT OF STOCK"}
                   </button>
                   <button
                     onClick={toggleWishlist}
-                    className="flex-1 max-w-[64px] rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-red-500 transition-colors flex items-center justify-center bg-white"
+                    className="flex-1 max-w-[70px] rounded-[18px] border-2 border-gray-100 text-gray-400 hover:bg-gray-50 hover:border-[#F07098] hover:text-[#F07098] transition-all duration-300 flex items-center justify-center bg-white"
                   >
-                    <span className={`material-symbols-outlined text-xl ${isWishlisted ? "text-red-500 fill-red-500" : ""}`} style={{ fontVariationSettings: isWishlisted ? "'FILL' 1" : "'FILL' 0" }}>
+                    <span className={`material-symbols-outlined text-2xl transition-transform ${isWishlisted ? "text-[#F07098] fill-1 scale-110" : ""}`}>
                       favorite
                     </span>
                   </button>
@@ -383,9 +380,9 @@ export default function ProductDetailPage(props) {
                 {currentStock > 0 && (
                   <Link
                     href="/Checkout"
-                    className="w-full border-2 border-[#161314] text-[#161314] font-bold py-5 rounded-lg hover:bg-[#161314] hover:text-white transition-all uppercase tracking-widest text-[18px] block text-center"
+                    className="w-full border-2 border-[#F07098] text-[#F07098] font-bold py-5 rounded-[18px] hover:bg-[#F07098] hover:text-white transition-all duration-300 uppercase tracking-[0.2em] text-[14px] block text-center"
                   >
-                    Buy It Now
+                    BUY IT NOW
                   </Link>
                 )}
               </div>
@@ -422,54 +419,57 @@ export default function ProductDetailPage(props) {
         <div className="mt-16 sm:mt-32 space-y-16 sm:space-y-32">
           {reviews.length > 0 && (
           <section className="landing-section">
-            <div className="flex flex-col lg:flex-row gap-16 p-12 lg:p-16 bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-primary/5">
-              <div className="flex flex-col gap-6 lg:w-1/3">
-                <h3 className="text-4xl font-display">Customer Praise</h3>
+            <div className="flex flex-col lg:flex-row gap-16 p-12 lg:p-16 bg-[#F8E1EB]/30 rounded-[40px] border border-[#F07098]/10 shadow-[0_30px_60px_rgba(240,112,152,0.05)] relative overflow-hidden">
+              {/* Blur accent */}
+              <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#F07098]/10 blur-[100px] rounded-full pointer-events-none" />
+
+              <div className="flex flex-col gap-6 lg:w-1/3 relative z-10">
+                <h3 className="text-4xl lg:text-5xl font-display font-black tracking-tight text-[#010000]">Customer Praise</h3>
                 <div className="space-y-1">
-                  <p className="text-7xl font-display font-bold text-[#c3a2ab]">{avgRating || "5.0"}</p>
-                  <div className="flex gap-1 text-[#C9A961]">
+                  <p className="text-7xl lg:text-8xl font-display font-bold text-[#F07098]">{avgRating || "5.0"}</p>
+                  <div className="flex gap-1 text-[#F07098]">
                     {[1, 2, 3, 4, 5].map((s) => (
-                      <span key={s} className={`material-symbols-outlined text-2xl ${s <= Math.round(avgRating || 5) ? "fill-1" : ""}`}>
+                       <span key={s} className={`material-symbols-outlined text-2xl ${s <= Math.round(avgRating || 5) ? "fill-1" : ""}`}>
                         {s <= Math.floor(avgRating || 5) ? "star" : "star"}
                       </span>
                     ))}
                   </div>
-                  <p className="text-sm text-gray-500 uppercase tracking-widest mt-2">{reviews.length} Verified Reviews</p>
+                  <p className="text-[12px] text-[#010000]/60 uppercase tracking-[0.2em] mt-3 font-bold">{reviews.length} Verified Reviews</p>
                 </div>
               </div>
-              <div className="flex-1 space-y-8">
+              <div className="flex-1 space-y-8 relative z-10">
                 {reviewsLoading ? (
                   <div className="animate-pulse space-y-4">
-                    <div className="h-4 bg-gray-100 rounded w-3/4"></div>
-                    <div className="h-4 bg-gray-100 rounded w-1/2"></div>
+                    <div className="h-4 bg-[#F07098]/20 rounded w-3/4"></div>
+                    <div className="h-4 bg-[#F07098]/10 rounded w-1/2"></div>
                   </div>
                 ) : reviews.length === 0 ? (
-                  <div className="text-gray-400 italic py-10">No reviews yet. Be the first to share your experience!</div>
+                  <div className="text-[#010000]/50 italic py-10 font-light">No reviews yet. Be the first to share your experience!</div>
                 ) : (
-                  <div className="max-h-[500px] overflow-y-auto pr-4 space-y-8 custom-scrollbar">
+                  <div className="max-h-[500px] overflow-y-auto pr-6 space-y-8 custom-scrollbar">
                     {reviews.map((rev) => (
-                      <div key={rev.id} className="border-b border-gray-50 pb-8 last:border-0">
+                      <div key={rev.id} className="border-b border-[#F07098]/10 pb-8 last:border-0">
                         <div className="flex justify-between items-start mb-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-white border border-[#F07098]/20 flex items-center justify-center overflow-hidden shadow-sm">
                               {rev.user.image ? (
                                 <img src={rev.user.image} alt={rev.user.name} className="w-full h-full object-cover" />
                               ) : (
-                                <span className="material-symbols-outlined notranslate text-gray-400">person</span>
+                                <span className="material-symbols-outlined notranslate text-[#F07098]/50">person</span>
                               )}
                             </div>
                             <div>
-                              <p className="font-bold text-gray-900 text-sm">{rev.user.name || "Verified Buyer"}</p>
-                              <p className="text-[10px] text-gray-400 uppercase tracking-tighter">{new Date(rev.created_at).toLocaleDateString()}</p>
+                              <p className="font-bold text-[#010000] text-[16px]">{rev.user.name || "Verified Buyer"}</p>
+                              <p className="text-[11px] text-[#010000]/50 uppercase tracking-[0.1em]">{new Date(rev.created_at).toLocaleDateString()}</p>
                             </div>
                           </div>
-                          <div className="flex text-amber-400 gap-0.5">
+                          <div className="flex text-[#F07098] gap-0.5">
                             {[1, 2, 3, 4, 5].map((s) => (
                               <span key={s} className={`material-symbols-outlined text-sm ${s <= rev.rating ? "fill-1" : ""}`}>star</span>
                             ))}
                           </div>
                         </div>
-                        <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">
+                        <p className="text-[#262626]/80 text-[16px] leading-relaxed whitespace-pre-wrap font-light">
                           {rev.comment}
                         </p>
                       </div>

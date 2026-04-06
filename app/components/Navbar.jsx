@@ -33,8 +33,8 @@ function Navbar() {
       <header 
         className={`fixed top-0 left-0 right-0 z-50 w-full flex flex-col transition-all duration-700 ease-[0.16,1,0.3,1] ${
           scrolled 
-            ? "bg-[#010000]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgb(0,0,0,0.2)]" 
-            : "bg-[#010000] border-b border-white/5"
+            ? "bg-[#010000]/95 backdrop-blur-3xl border-b border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]" 
+            : "bg-gradient-to-b from-[#010000]/90 via-[#010000]/50 to-transparent border-b border-transparent shadow-none"
         }`}
       >
         {!scrolled && !session && (
@@ -145,57 +145,58 @@ function Navbar() {
                     />
                     
                     <motion.div 
-                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                      initial={{ opacity: 0, x: "100%" }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: "100%" }}
                       transition={{ duration: 0.4, ease: [0.16,1,0.3,1] }}
-                      className="absolute right-0 mt-4 w-[360px] bg-white border border-gray-100 shadow-[0_20px_60px_rgba(0,0,0,0.06)] p-6 rounded-[2rem] z-[52]"
+                      className="absolute right-0 top-0 h-screen w-full sm:w-[420px] bg-[#010000] sm:bg-[#010000]/95 backdrop-blur-3xl border-l border-[#F07098]/20 shadow-[-20px_0_60px_rgba(0,0,0,0.6)] p-6 z-[52] overflow-hidden flex flex-col"
                     >
+                      <div className="absolute top-0 right-0 w-40 h-40 bg-[#F07098]/10 blur-[60px] pointer-events-none rounded-full z-0" />
                       
-                      <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
-                        <h3 className="font-serif text-xl tracking-wide text-[#010000]">Your Ritual</h3>
-                        <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-[#010000] transition-colors">
+                      <div className="flex justify-between items-center mb-6 mt-4 border-b border-white/10 pb-4 relative z-10">
+                        <h3 className="font-display text-2xl tracking-widest text-white uppercase font-bold">Your Ritual</h3>
+                        <button onClick={() => setOpen(false)} className="text-white/40 hover:text-[#F07098] transition-colors relative z-10 bg-white/5 p-2 rounded-full">
                           <span className="material-symbols-outlined notranslate font-light">close</span>
                         </button>
                       </div>
 
                       {cart.length === 0 ? (
-                        <div className="py-12 text-center text-gray-400">
-                          <span className="material-symbols-outlined notranslate text-4xl mb-4 font-light opacity-50">shopping_bag</span>
-                          <p className="text-[11px] uppercase tracking-[0.2em]">Your bag is empty.</p>
+                        <div className="flex-1 flex flex-col justify-center items-center text-center text-white/30 relative z-10 py-20">
+                          <span className="material-symbols-outlined notranslate text-5xl mb-4 font-light opacity-30">shopping_bag</span>
+                          <p className="text-[12px] uppercase tracking-[0.2em] font-medium">Your bag is empty.</p>
                         </div>
                       ) : (
-                        <div className="max-h-[50vh] overflow-y-auto pr-2 no-scrollbar">
+                        <div className="flex-1 overflow-y-auto pr-2 no-scrollbar relative z-10 w-full mb-6">
                           {cart.map(item => (
-                            <div key={item.id} className="flex gap-4 mb-6 group">
-                              <div className="relative w-20 h-[100px] bg-gray-50 rounded-xl overflow-hidden shrink-0">
+                            <div key={item.id} className="flex gap-4 mb-6 group bg-white/5 p-3 rounded-[20px] border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all duration-300">
+                              <div className="relative w-16 h-[80px] bg-black/50 rounded-xl overflow-hidden shrink-0 border border-white/10">
                                 <Image
                                   src={item.image}
                                   alt={item.name}
                                   fill
-                                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                  className="object-cover group-hover:scale-110 transition-transform duration-700"
                                 />
                               </div>
 
                               <div className="flex-1 flex flex-col justify-between py-1">
                                 <div>
-                                  <p className="font-serif text-base text-[#010000] line-clamp-1">{item.name}</p>
-                                  <p className="text-[#F07098] text-[13px] mt-1 tracking-wide">
+                                  <p className="font-display font-medium text-[15px] text-white line-clamp-1 tracking-tight">{item.name}</p>
+                                  <p className="text-[#F07098] text-[12px] mt-1 font-bold tracking-wide">
                                     ฿{item.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                   </p>
                                 </div>
 
-                                <div className="flex items-center gap-4 mt-2 border border-gray-200 rounded-full w-max px-3 py-1 bg-white">
+                                <div className="flex items-center gap-4 mt-2 border border-white/20 rounded-full w-max px-3 py-1 bg-black/40">
                                   <button
                                     onClick={() => decreaseQty(item.id)}
-                                    className="text-gray-400 hover:text-[#010000] text-lg font-light leading-none"
+                                    className="text-white/40 hover:text-[#F07098] text-lg font-light leading-none transition-colors"
                                   >
                                     -
                                   </button>
-                                  <span className="text-xs text-[#010000] w-4 text-center font-medium">{item.quantity}</span>
+                                  <span className="text-xs text-white w-4 text-center font-medium">{item.quantity}</span>
                                   <button
                                     onClick={() => increaseQty(item.id)}
-                                    className="text-gray-400 hover:text-[#F07098] text-lg font-light leading-none"
+                                    className="text-white/40 hover:text-[#F07098] text-lg font-light leading-none transition-colors"
                                   >
                                     +
                                   </button>
@@ -207,20 +208,20 @@ function Navbar() {
                       )}
 
                       {cart.length > 0 && (
-                        <div className="mt-4 pt-6 border-t border-gray-100">
+                        <div className="mt-4 pt-6 border-t border-white/10 relative z-10">
                           <div className="flex justify-between items-end mb-6">
-                            <span className="text-[11px] uppercase tracking-[0.2em] text-gray-500">Subtotal</span>
-                            <span className="font-serif text-2xl text-[#010000]">
+                            <span className="text-[11px] uppercase tracking-[0.2em] text-white/50">Subtotal</span>
+                            <span className="font-display font-bold text-2xl text-[#F07098]">
                               ฿{total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </span>
                           </div>
 
                           <Link
                             href="/Checkout"
-                            className="bg-[#010000] text-white block text-center py-4 rounded-full text-[18px] uppercase tracking-[0.1em] font-medium hover:bg-[#F07098] transition-colors duration-500"
+                            className="bg-[#F07098] text-white block text-center py-4 rounded-[16px] text-[14px] uppercase tracking-[0.2em] font-bold hover:bg-white hover:text-[#010000] transition-all duration-300 shadow-[0_10px_30px_rgba(240,112,152,0.3)] transform hover:-translate-y-1"
                             onClick={() => setOpen(false)}
                           >
-                            Proceed to Checkout
+                            Checkout
                           </Link>
                         </div>
                       )}
@@ -253,51 +254,53 @@ function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.4, ease: [0.16,1,0.3,1] }}
-              className="fixed top-0 left-0 w-[80vw] max-w-[320px] h-screen bg-white shadow-2xl z-[61] flex flex-col pt-24 px-10"
+              className="fixed top-0 left-0 w-[85vw] max-w-[340px] h-screen bg-[#010000] border-r border-[#F07098]/30 shadow-[40px_0_100px_rgba(0,0,0,0.8)] z-[61] flex flex-col pt-24 px-10 overflow-hidden"
             >
+              <div className="absolute top-[-10%] left-[-20%] w-[300px] h-[300px] bg-[#F07098]/10 blur-[80px] rounded-full pointer-events-none" />
+
               <button 
                 onClick={() => setMobileMenuOpen(false)}
-                className="absolute top-6 right-6 p-2 text-gray-400 hover:text-[#010000] transition-colors"
+                className="absolute top-6 right-6 p-2 text-white/40 hover:text-[#F07098] transition-colors z-10"
               >
                 <span className="material-symbols-outlined notranslate font-light text-2xl">close</span>
               </button>
 
-              <nav className="flex flex-col gap-8">
+              <nav className="flex flex-col gap-8 relative z-10">
                 <Link
                   href="/ProductAll"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#010000] hover:text-[#F07098] transition-colors border-b border-gray-100 pb-4"
+                  className="text-lg font-display font-medium uppercase tracking-[0.1em] text-white hover:text-[#F07098] transition-colors border-b border-white/10 pb-4"
                 >
                   The Collection
                 </Link>
                 <Link
                   href="/skin-quiz"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#010000] hover:text-[#F07098] transition-colors border-b border-gray-100 pb-4"
+                  className="text-lg font-display font-medium uppercase tracking-[0.1em] text-white hover:text-[#F07098] transition-colors border-b border-white/10 pb-4"
                 >
                   Skin Quiz
                 </Link>
                 <Link
                   href="/Contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#010000] hover:text-[#F07098] transition-colors border-b border-gray-100 pb-4"
+                  className="text-lg font-display font-medium uppercase tracking-[0.1em] text-white hover:text-[#F07098] transition-colors border-b border-white/10 pb-4"
                 >
                   Contact
                 </Link>
                 <Link
                   href="/rewards"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-base font-sans font-bold uppercase tracking-[0.05em] text-[#F07098] flex items-center gap-2 pt-2"
+                  className="text-sm font-sans font-bold uppercase tracking-[0.1em] text-[#F07098] flex items-center gap-2 pt-2 group"
                 >
-                  REWARDS 🎁
+                  <span className="group-hover:text-white transition-colors">REWARDS 🎁</span>
                 </Link>
               </nav>
 
-              <div className="mt-auto mb-10 flex flex-col gap-4">
-                <Link href="/account" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium tracking-widest uppercase text-gray-500 hover:text-black">
+              <div className="mt-auto mb-10 flex flex-col gap-4 relative z-10">
+                <Link href="/account" onClick={() => setMobileMenuOpen(false)} className="text-[11px] font-bold tracking-widest uppercase text-white/50 hover:text-white transition-colors">
                   My Account
                 </Link>
-                <p className="text-[10px] text-gray-400 tracking-widest uppercase">Richse Limited</p>
+                <p className="text-[10px] text-white/20 tracking-[0.3em] uppercase font-bold">Richse Limited</p>
               </div>
             </motion.div>
           </>

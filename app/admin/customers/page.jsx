@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Search, Users, ShieldCheck, Award } from "lucide-react";
 import Link from "next/link";
+import LoadingRichse from "@/app/components/LoadingRichse";
 
 export default function AdminCustomers() {
   const [customers, setCustomers] = useState([]);
@@ -49,6 +50,10 @@ export default function AdminCustomers() {
   const avgPoints = totalCustomers > 0 
     ? Math.round(customers.reduce((acc, curr) => acc + (curr.points || 0), 0) / totalCustomers) 
     : 0;
+
+  if (loading && customers.length === 0) {
+    return <LoadingRichse fullScreen message="Loading customer profiles..." />;
+  }
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -131,12 +136,6 @@ export default function AdminCustomers() {
       {/* Customers List */}
       <div className="bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/20 border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
-          {loading ? (
-            <div className="p-20 flex flex-col items-center justify-center text-gray-400 space-y-4">
-              <div className="w-10 h-10 border-4 border-gray-200 border-t-[#c3a2ab] rounded-full animate-spin"></div>
-              <p className="font-medium tracking-wider uppercase text-[22px]">Loading profiles...</p>
-            </div>
-          ) : (
             <table className="w-full text-left border-collapse">
               <thead className="bg-gray-50/80 backdrop-blur-md sticky top-0 z-10 border-b border-gray-100 text-gray-400 text-[20px] uppercase tracking-widest font-bold">
                 <tr>
@@ -224,7 +223,6 @@ export default function AdminCustomers() {
                 )}
               </tbody>
             </table>
-          )}
         </div>
       </div>
     </div>

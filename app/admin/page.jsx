@@ -20,6 +20,8 @@ import {
   CheckCircle2
 } from "lucide-react";
 
+import LoadingRichse from "@/app/components/LoadingRichse";
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [abandoned, setAbandoned] = useState([]);
@@ -83,12 +85,7 @@ export default function AdminDashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="p-12 min-h-screen flex flex-col items-center justify-center bg-[#fafafa]">
-        <div className="w-12 h-12 border-4 border-[#c3a2ab]/20 border-t-[#c3a2ab] rounded-full animate-spin"></div>
-        <p className="mt-4 text-[22px] font-black uppercase tracking-widest text-gray-400">Initializing War Room...</p>
-      </div>
-    );
+    return <LoadingRichse fullScreen message="Initializing War Room..." />;
   }
 
   if (!stats) return <div className="p-8 text-red-500">Failed to load statistics.</div>;

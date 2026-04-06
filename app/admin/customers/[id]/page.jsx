@@ -5,6 +5,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { ArrowLeft, MapPin, Package, Heart, Laptop, Calendar, ShieldAlert, KeyRound, Award, Shield } from "lucide-react";
 import Image from "next/image";
+import LoadingRichse from "@/app/components/LoadingRichse";
 
 export default function CustomerDetail(props) {
   const params = use(props.params);
@@ -436,7 +437,9 @@ export default function CustomerDetail(props) {
                  disabled={isUpdating}
                  className="flex-1 py-4 bg-[#161314] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50 shadow-xl shadow-black/10 flex items-center justify-center gap-2"
                >
-                 {isUpdating ? "Executing..." : "Confirm Execution"}
+                 {isUpdating ? (
+                    <LoadingRichse inline message="Executing" />
+                 ) : "Confirm Execution"}
                </button>
             </div>
           </div>

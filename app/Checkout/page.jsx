@@ -5,6 +5,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { useCart } from "@/context/CartContext"
+import LoadingRichse from "../components/LoadingRichse"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import ReCAPTCHA from "react-google-recaptcha"
@@ -17,7 +18,6 @@ import {
   Package, 
   Gift, 
   ArrowLeft,
-  Loader2,
   Lock,
   Globe,
   CheckCircle2,
@@ -30,6 +30,7 @@ export default function Checkout() {
   const [discountCode, setDiscountCode] = useState("")
   const [discountAmount, setDiscountAmount] = useState(0)
   const [loading, setLoading] = useState(false)
+
   const [shipping, setShipping] = useState("Cash on Delivery (+$30 Fee)")
   const [shippingInfo, setShippingInfo] = useState({
     fullName: "",
@@ -50,7 +51,7 @@ export default function Checkout() {
   const [welcomeCode, setWelcomeCode] = useState(null)
   const router = useRouter()
   const { cart, clearCart } = useCart()
-  const tax = 0
+  const tax = 0;
 
   const provinces = [...new Set(thaiAddress.map(i => i.district.province.name_th))]
 
@@ -125,14 +126,7 @@ export default function Checkout() {
   }, [shippingInfo.phone, shipping, cart]);
 
   if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 text-[#c3a2ab] animate-spin" />
-          <p className="text-sm font-medium text-gray-400 uppercase tracking-widest">Securing your session...</p>
-        </div>
-      </div>
-    )
+    return <LoadingRichse fullScreen message="Securing your session..." />
   }
 
   const districts = [
@@ -587,17 +581,17 @@ export default function Checkout() {
                       </div>
                    </div>
 
-                   <button
-                     disabled={loading || !verified || cart.length === 0}
-                     onClick={handleCheckout}
-                     className="w-full mt-10 py-6 bg-black text-white rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-black/20 disabled:opacity-30 disabled:hover:scale-100 flex items-center justify-center gap-3 group"
-                   >
-                     {loading ? (
-                       <Loader2 className="animate-spin" size={20} />
-                     ) : (
-                       <>Complete Purchase <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
-                     )}
-                   </button>
+                    <button
+                      disabled={loading || !verified || cart.length === 0}
+                      onClick={handleCheckout}
+                      className="w-full mt-10 py-6 bg-black text-white rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-black/20 disabled:opacity-30 disabled:hover:scale-100 flex items-center justify-center gap-3 group"
+                    >
+                      {loading ? (
+                        <LoadingRichse inline message="Securing Transaction" />
+                      ) : (
+                        <>Complete Purchase <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
+                      )}
+                    </button>
 
                    <div className="mt-8 flex items-center justify-center gap-4 py-4 md:px-6 bg-white/50 rounded-2xl border border-gray-100/50">
                       <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">

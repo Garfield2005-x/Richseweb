@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useSession } from "next-auth/react";
-import toast from "react-hot-toast";
+import LoadingRichse from "../components/LoadingRichse";
 
 export default function RewardsCatalog() {
   const { status } = useSession();
@@ -33,6 +33,18 @@ export default function RewardsCatalog() {
       fetch("/api/rewards").then((r) => r.json()).then(data => setRewards(data || [])).finally(() => setLoading(false));
     }
   }, [status]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col pt-32 pb-10">
+        <Navbar />
+        <main className="flex-grow flex items-center justify-center">
+          <LoadingRichse message="Curating your rewards..." />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const handleRedeem = async (reward) => {
     if (status !== "authenticated") {
@@ -148,11 +160,7 @@ export default function RewardsCatalog() {
           Exclusive Gifts
         </h2>
 
-        {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-[#c3a2ab]"></div>
-          </div>
-        ) : rewards.length === 0 ? (
+        {rewards.length === 0 ? (
           <div className="text-center py-20 break-words w-full">
             <p className="text-gray-500 text-lg">No rewards are currently available. Check back soon!</p>
           </div>

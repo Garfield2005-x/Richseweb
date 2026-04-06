@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
+import LoadingRichse from "@/app/components/LoadingRichse";
 import { 
   Search, 
   Trash2, 
@@ -171,12 +172,9 @@ export default function AdminCampanet() {
     }
   };
 
-  if (loading && forms.length === 0) return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh]">
-       <div className="w-10 h-10 border-4 border-[#c3a2ab] border-t-transparent rounded-full animate-spin mb-4"></div>
-       <p className="text-gray-500 font-medium">Initializing CRM Dashboard...</p>
-    </div>
-  );
+  if (loading && forms.length === 0) {
+    return <LoadingRichse fullScreen message="Initializing CRM Dashboard..." />;
+  }
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 pb-24">
@@ -198,10 +196,13 @@ export default function AdminCampanet() {
              disabled={exporting}
              className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-100 text-gray-700 rounded-2xl text-[20px] font-bold uppercase tracking-widest hover:bg-gray-50 transition-all shadow-sm disabled:opacity-50"
            >
-             {exporting
-               ? <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-               : <Download size={16} />}
-             {exporting ? "Exporting..." : "Export Excel"}
+             {exporting ? (
+               <LoadingRichse inline message="Exporting..." />
+             ) : (
+               <>
+                 <Download size={16} /> Export Excel
+               </>
+             )}
            </button>
            <button 
              onClick={fetchForms}
