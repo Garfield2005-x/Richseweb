@@ -31,72 +31,75 @@ function Navbar() {
   return (
     <>
       <header 
-        className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-700 ease-[0.16,1,0.3,1] ${
+        className={`fixed top-0 left-0 right-0 z-50 w-full flex flex-col transition-all duration-700 ease-[0.16,1,0.3,1] ${
           scrolled 
-            ? "bg-white/90 backdrop-blur-xl border-b border-gray-100/50 shadow-[0_4px_30px_rgb(0,0,0,0.03)] py-3" 
-            : "bg-transparent border-b border-transparent py-5"
+            ? "bg-[#010000]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgb(0,0,0,0.2)]" 
+            : "bg-[#010000] border-b border-white/5"
         }`}
       >
-        {!scrolled && !session && <PromoBanner />}
-        <div className="max-w-[100rem] mx-auto px-6 md:px-12 flex items-center justify-between">
+        {!scrolled && !session && (
+          <div className="w-full">
+            <PromoBanner />
+          </div>
+        )}
+        <div className={`max-w-[100rem] mx-auto px-6 md:px-12 flex items-center justify-between w-full transition-all duration-500 ${scrolled ? "py-3" : "py-5"}`}>
           
           {/* LEFT: Menu / Links */}
           <div className="flex-1 flex items-center">
             <nav className="hidden lg:flex items-center gap-10">
               <Link
                 href="/ProductAll"
-                className="text-[18px] font-medium uppercase tracking-[0.05em] font-sans text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
+                className="text-[17px] font-medium uppercase tracking-[0.05em] font-sans text-[#F8E1EB] hover:text-[#F07098] transition-colors duration-500 relative group"
               >
                 The Collection
-                <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-full"></span>
+                <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#F07098] transition-all duration-500 group-hover:w-full"></span>
               </Link>
               <Link
                 href="/skin-quiz"
-                className="text-[18px] font-medium uppercase tracking-[0.05em] font-sans text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
+                className="text-[17px] font-medium uppercase tracking-[0.05em] font-sans text-[#F8E1EB] hover:text-[#F07098] transition-colors duration-500 relative group"
               >
                 Skin Quiz
-                <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-full"></span>
+                <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#F07098] transition-all duration-500 group-hover:w-full"></span>
               </Link>
               <Link
                 href="/Contact"
-                className="text-[18px] font-medium uppercase tracking-[0.05em] font-sans text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 relative group"
+                className="text-[17px] font-medium uppercase tracking-[0.05em] font-sans text-[#F8E1EB] hover:text-[#F07098] transition-colors duration-500 relative group"
               >
                 Contact
-                <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-full"></span>
+                <span className="absolute -bottom-2 left-0 w-0 h-px bg-[#F07098] transition-all duration-500 group-hover:w-full"></span>
               </Link>
               <Link
                 href="/rewards"
-                className="text-[13px] font-bold uppercase tracking-[0.1em] font-sans text-indigo-600 hover:text-[#c3a2ab] transition-colors duration-500 relative group flex items-center gap-1 bg-indigo-50/50 px-3 py-1 rounded-full border border-indigo-100"
+                className="text-[13px] font-bold uppercase tracking-[0.1em] font-sans text-[#F07098] hover:text-[#F07098] transition-colors duration-500 relative group flex items-center gap-1 bg-[#F07098]/10 px-3 py-1 rounded-full border border-[#F07098]/20"
               >
                 <span>REWARDS 🎁</span>
-                <span className="absolute -bottom-1 left-3 w-0 h-px bg-[#c3a2ab] transition-all duration-500 group-hover:w-[calc(100%-1.5rem)]"></span>
               </Link>
             </nav>
             {/* Hamburger for mobile */}
             <button 
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 text-[#161314]"
+              className="lg:hidden p-2 text-[#F8E1EB]"
             >
                <span className="material-symbols-outlined notranslate font-light text-[26px]">menu</span>
             </button>
           </div>
 
           {/* CENTER: BRAND */}
-          <Link className="flex-1 flex justify-center items-center gap-4 group" href="/">
-            <div className="h-12 md:h-14 max-w-[80px] flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity duration-500">
-              <img src="/logo.png" alt="Richse Logo" className="h-full w-auto object-contain"/>
+          <Link className="flex-1 flex justify-center items-center gap-3 group" href="/">
+            <div className="h-10 md:h-12 max-w-[70px] flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity duration-500">
+              <img src="/logo.png" alt="Richse Logo" className="h-full w-auto object-contain brightness-110"/>
             </div>
-            <span className="font-display font-bold text-3xl md:text-3xl text-[#161314] tracking-wider leading-none">
+            <span className="font-display font-bold text-2xl md:text-3xl text-[#F8E1EB] tracking-[0.15em] leading-none">
               RICHSE
             </span>
           </Link>
 
           {/* RIGHT: Accounts & Cart */}
-          <div className="flex-1 flex items-center justify-end gap-5">
+          <div className="flex-1 flex items-center justify-end gap-6">
             {session ? (
               <Link
                 href="/account"
-                className="text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 flex items-center"
+                className="text-[#F8E1EB] hover:text-[#F07098] transition-colors duration-500 flex items-center"
                 title="My Account"
               >
                 <span className="material-symbols-outlined notranslate font-light text-[26px]">person</span>
@@ -104,7 +107,7 @@ function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 flex items-center"
+                className="text-[#F8E1EB] hover:text-[#F07098] transition-colors duration-500 flex items-center"
                 title="Login"
               >
                 <span className="material-symbols-outlined notranslate font-light text-[26px]">person</span>
@@ -115,14 +118,14 @@ function Navbar() {
               {/* CART BUTTON */}
               <button
                 onClick={() => setOpen(!open)}
-                className="text-[#161314] hover:text-[#c3a2ab] transition-colors duration-500 flex items-center relative"
+                className="text-[#F8E1EB] hover:text-[#F07098] transition-colors duration-500 flex items-center relative"
               >
                 <span className="material-symbols-outlined notranslate font-light text-[26px]">
                   shopping_bag
                 </span>
 
                 {cart.length > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center bg-[#c3a2ab] text-white text-[9px] w-4 h-4 rounded-full font-medium shadow-sm">
+                  <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center bg-[#F07098] text-white text-[9px] w-4 h-4 rounded-full font-bold shadow-sm">
                     {cart.length}
                   </span>
                 )}
@@ -150,8 +153,8 @@ function Navbar() {
                     >
                       
                       <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
-                        <h3 className="font-serif text-xl tracking-wide text-[#161314]">Your Ritual</h3>
-                        <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-[#161314] transition-colors">
+                        <h3 className="font-serif text-xl tracking-wide text-[#010000]">Your Ritual</h3>
+                        <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-[#010000] transition-colors">
                           <span className="material-symbols-outlined notranslate font-light">close</span>
                         </button>
                       </div>
@@ -176,8 +179,8 @@ function Navbar() {
 
                               <div className="flex-1 flex flex-col justify-between py-1">
                                 <div>
-                                  <p className="font-serif text-base text-[#161314] line-clamp-1">{item.name}</p>
-                                  <p className="text-[#c3a2ab] text-[13px] mt-1 tracking-wide">
+                                  <p className="font-serif text-base text-[#010000] line-clamp-1">{item.name}</p>
+                                  <p className="text-[#F07098] text-[13px] mt-1 tracking-wide">
                                     ฿{item.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                   </p>
                                 </div>
@@ -185,14 +188,14 @@ function Navbar() {
                                 <div className="flex items-center gap-4 mt-2 border border-gray-200 rounded-full w-max px-3 py-1 bg-white">
                                   <button
                                     onClick={() => decreaseQty(item.id)}
-                                    className="text-gray-400 hover:text-[#161314] text-lg font-light leading-none"
+                                    className="text-gray-400 hover:text-[#010000] text-lg font-light leading-none"
                                   >
                                     -
                                   </button>
-                                  <span className="text-xs text-[#161314] w-4 text-center font-medium">{item.quantity}</span>
+                                  <span className="text-xs text-[#010000] w-4 text-center font-medium">{item.quantity}</span>
                                   <button
                                     onClick={() => increaseQty(item.id)}
-                                    className="text-gray-400 hover:text-[#c3a2ab] text-lg font-light leading-none"
+                                    className="text-gray-400 hover:text-[#F07098] text-lg font-light leading-none"
                                   >
                                     +
                                   </button>
@@ -207,14 +210,14 @@ function Navbar() {
                         <div className="mt-4 pt-6 border-t border-gray-100">
                           <div className="flex justify-between items-end mb-6">
                             <span className="text-[11px] uppercase tracking-[0.2em] text-gray-500">Subtotal</span>
-                            <span className="font-serif text-2xl text-[#161314]">
+                            <span className="font-serif text-2xl text-[#010000]">
                               ฿{total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </span>
                           </div>
 
                           <Link
                             href="/Checkout"
-                            className="bg-[#161314] text-white block text-center py-4 rounded-full text-[18px] uppercase tracking-[0.1em] font-medium hover:bg-[#c3a2ab] transition-colors duration-500"
+                            className="bg-[#010000] text-white block text-center py-4 rounded-full text-[18px] uppercase tracking-[0.1em] font-medium hover:bg-[#F07098] transition-colors duration-500"
                             onClick={() => setOpen(false)}
                           >
                             Proceed to Checkout
@@ -254,7 +257,7 @@ function Navbar() {
             >
               <button 
                 onClick={() => setMobileMenuOpen(false)}
-                className="absolute top-6 right-6 p-2 text-gray-400 hover:text-[#161314] transition-colors"
+                className="absolute top-6 right-6 p-2 text-gray-400 hover:text-[#010000] transition-colors"
               >
                 <span className="material-symbols-outlined notranslate font-light text-2xl">close</span>
               </button>
@@ -263,28 +266,28 @@ function Navbar() {
                 <Link
                   href="/ProductAll"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#161314] hover:text-[#c3a2ab] transition-colors border-b border-gray-100 pb-4"
+                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#010000] hover:text-[#F07098] transition-colors border-b border-gray-100 pb-4"
                 >
                   The Collection
                 </Link>
                 <Link
                   href="/skin-quiz"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#161314] hover:text-[#c3a2ab] transition-colors border-b border-gray-100 pb-4"
+                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#010000] hover:text-[#F07098] transition-colors border-b border-gray-100 pb-4"
                 >
                   Skin Quiz
                 </Link>
                 <Link
                   href="/Contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#161314] hover:text-[#c3a2ab] transition-colors border-b border-gray-100 pb-4"
+                  className="text-lg font-sans font-medium uppercase tracking-[0.05em] text-[#010000] hover:text-[#F07098] transition-colors border-b border-gray-100 pb-4"
                 >
                   Contact
                 </Link>
                 <Link
                   href="/rewards"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-base font-sans font-bold uppercase tracking-[0.05em] text-[#c3a2ab] flex items-center gap-2 pt-2"
+                  className="text-base font-sans font-bold uppercase tracking-[0.05em] text-[#F07098] flex items-center gap-2 pt-2"
                 >
                   REWARDS 🎁
                 </Link>

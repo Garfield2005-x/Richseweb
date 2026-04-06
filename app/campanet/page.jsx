@@ -66,14 +66,14 @@ export default function CustomerForm() {
   if (!hasMounted) return null;
     
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#161314] flex items-center justify-center p-6 sm:p-12">
+    <main className="relative min-h-screen overflow-hidden bg-[#010000] flex items-center justify-center p-6 sm:p-12">
       
       {/* Immersive Dark Pearl Silk Background */}
       <div className="absolute inset-0 pointer-events-none z-0" 
            style={{ 
-             background: `radial-gradient(circle at 10% 10%, #2c282a 0%, transparent 40%),
-                          radial-gradient(circle at 90% 90%, #1c1a1b 0%, transparent 40%),
-                          radial-gradient(circle at 50% 10%, #221f21 0%, transparent 50%)` 
+             background: `radial-gradient(circle at 10% 10%, #26262670 0%, transparent 40%),
+                          radial-gradient(circle at 90% 90%, #010000 0%, transparent 40%),
+                          radial-gradient(circle at 50% 10%, #26262650 0%, transparent 50%)` 
            }} 
       />
 
@@ -100,20 +100,20 @@ export default function CustomerForm() {
         <div className="relative p-10 md:p-14 rounded-[40px] bg-white/5 backdrop-blur-3xl border border-white/10 shadow-2xl overflow-hidden">
           
           {/* Corner Accents */}
-          <div className="absolute top-8 left-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
-          <div className="absolute top-8 right-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
-          <div className="absolute bottom-8 left-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
-          <div className="absolute bottom-8 right-8 text-[#c3a2ab] opacity-40 text-xl">✦</div>
+          <div className="absolute top-8 left-8 text-[#F07098] opacity-40 text-xl">✦</div>
+          <div className="absolute top-8 right-8 text-[#F07098] opacity-40 text-xl">✦</div>
+          <div className="absolute bottom-8 left-8 text-[#F07098] opacity-40 text-xl">✦</div>
+          <div className="absolute bottom-8 right-8 text-[#F07098] opacity-40 text-xl">✦</div>
 
           <div className="text-center space-y-4 relative z-20 mb-12">
-            <motion.span variants={fadeInUp} className="text-[#c3a2ab] font-bold tracking-[0.5em] uppercase text-[11px] block">Security Verified</motion.span>
+            <motion.span variants={fadeInUp} className="text-[#F07098] font-bold tracking-[0.5em] uppercase text-[11px] block">Security Verified</motion.span>
             <motion.h1 variants={fadeInUp} className="font-display text-4xl md:text-5xl font-bold tracking-tighter text-white">
-              Elite <span className="text-[#c3a2ab] italic font-medium">Registry.</span>
+              Elite <span className="text-[#F07098] italic font-medium">Registry.</span>
             </motion.h1>
             <motion.div variants={fadeInUp} className="flex items-center justify-center gap-4 py-2">
-              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[#c3a2ab]/40" />
-              <span className="text-[#c3a2ab]/40 text-xs">✦</span>
-              <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[#c3a2ab]/40" />
+              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[#F07098]/40" />
+              <span className="text-[#F07098]/40 text-xs">✦</span>
+              <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[#F07098]/40" />
             </motion.div>
             <motion.p variants={fadeInUp} className="text-gray-400 text-sm font-light leading-relaxed max-w-xs mx-auto">
               Please finalize your ritual details below for verified membership confirmation.
@@ -126,12 +126,12 @@ export default function CustomerForm() {
           >
             {/* Full Name */}
             <motion.div variants={fadeInUp} className="space-y-3">
-              <label className="block text-[#c3a2ab] text-[10px] font-bold tracking-[0.3em] uppercase ml-1 opacity-80">
+              <label className="block text-[#F07098] text-[10px] font-bold tracking-[0.3em] uppercase ml-1 opacity-80">
                 Full Identity (ชื่อ-นามสกุล)
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined notranslate text-[#c3a2ab]/40 group-focus-within:text-[#c3a2ab] transition-colors text-[20px]">
+                  <span className="material-symbols-outlined notranslate text-[#F07098]/40 group-focus-within:text-[#F07098] transition-colors text-[20px]">
                     person
                   </span>
                 </div>
@@ -140,19 +140,19 @@ export default function CustomerForm() {
                   required
                   name="name"
                   placeholder="Enter your full name"
-                  className="w-full pl-14 pr-6 py-5 rounded-[20px] bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:border-[#c3a2ab]/50 focus:ring-1 focus:ring-[#c3a2ab]/20 transition-all outline-none"
+                  className="w-full pl-14 pr-6 py-5 rounded-[20px] bg-white/5 border border-white/10 text-white placeholder-[#262626]/80 focus:border-[#F07098]/50 focus:ring-1 focus:ring-[#F07098]/20 transition-all outline-none"
                 />
               </div>
             </motion.div>
 
             {/* Phone */}
             <motion.div variants={fadeInUp} className="space-y-3">
-              <label className="block text-[#c3a2ab] text-[10px] font-bold tracking-[0.3em] uppercase ml-1 opacity-80">
+              <label className="block text-[#F07098] text-[10px] font-bold tracking-[0.3em] uppercase ml-1 opacity-80">
                 Contact Number (เบอร์โทรศัพท์)
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined notranslate text-[#c3a2ab]/40 group-focus-within:text-[#c3a2ab] transition-colors text-[20px]">
+                  <span className="material-symbols-outlined notranslate text-[#F07098]/40 group-focus-within:text-[#F07098] transition-colors text-[20px]">
                     call
                   </span>
                 </div>
@@ -161,19 +161,19 @@ export default function CustomerForm() {
                   required
                   name="phone"
                   placeholder="08X-XXX-XXXX"
-                  className="w-full pl-14 pr-6 py-5 rounded-[20px] bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:border-[#c3a2ab]/50 focus:ring-1 focus:ring-[#c3a2ab]/20 transition-all outline-none"
+                  className="w-full pl-14 pr-6 py-5 rounded-[20px] bg-white/5 border border-white/10 text-white placeholder-[#262626]/80 focus:border-[#F07098]/50 focus:ring-1 focus:ring-[#F07098]/20 transition-all outline-none"
                 />
               </div>
             </motion.div>
 
             {/* Order Number */}
             <motion.div variants={fadeInUp} className="space-y-3">
-              <label className="block text-[#c3a2ab] text-[10px] font-bold tracking-[0.3em] uppercase ml-1 opacity-80">
+              <label className="block text-[#F07098] text-[10px] font-bold tracking-[0.3em] uppercase ml-1 opacity-80">
                 Ritual Reference (เลขที่คำสั่งซื้อ)
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined notranslate text-[#c3a2ab]/40 group-focus-within:text-[#c3a2ab] transition-colors text-[20px]">
+                  <span className="material-symbols-outlined notranslate text-[#F07098]/40 group-focus-within:text-[#F07098] transition-colors text-[20px]">
                     shopping_bag
                   </span>
                 </div>
@@ -182,7 +182,7 @@ export default function CustomerForm() {
                   required
                   name="order"
                   placeholder="#00000"
-                  className="w-full pl-14 pr-6 py-5 rounded-[20px] bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:border-[#c3a2ab]/50 focus:ring-1 focus:ring-[#c3a2ab]/20 transition-all outline-none"
+                  className="w-full pl-14 pr-6 py-5 rounded-[20px] bg-white/5 border border-white/10 text-white placeholder-[#262626]/80 focus:border-[#F07098]/50 focus:ring-1 focus:ring-[#F07098]/20 transition-all outline-none"
                 />
               </div>
             </motion.div>
@@ -194,9 +194,9 @@ export default function CustomerForm() {
                 disabled={isSubmitting}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                animate={{ boxShadow: ["0 0 0 rgba(195,162,171,0)", "0 0 30px rgba(195,162,171,0.25)", "0 0 0 rgba(195,162,171,0)"] }}
+                animate={{ boxShadow: ["0 0 0 rgba(240,112,152,0)", "0 0 30px rgba(240,112,152,0.25)", "0 0 0 rgba(240,112,152,0)"] }}
                 transition={{ boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" } }}
-                className="relative overflow-hidden w-full bg-gradient-to-r from-[#c3a2ab] via-[#d4b5bc] to-[#c3a2ab] text-white font-black py-5 rounded-[22px] shadow-2xl transition-all disabled:opacity-50 uppercase tracking-[0.3em] text-[13px] flex items-center justify-center gap-4 group"
+                className="relative overflow-hidden w-full bg-gradient-to-r from-[#F07098] via-[#F394B8] to-[#F07098] text-white font-black py-5 rounded-[22px] shadow-2xl transition-all disabled:opacity-50 uppercase tracking-[0.3em] text-[13px] flex items-center justify-center gap-4 group"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-shimmer" />
                 <span className="relative z-10">

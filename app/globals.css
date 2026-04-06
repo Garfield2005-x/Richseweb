@@ -2,16 +2,17 @@
 
 /* ---------- Theme Variables ---------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F8E1EB;
+  --foreground: #262626;
 
-  --primary: #b88b8d;
-  --off-white: #faf9f8;
-  --dusty-rose: #c49293;
-  --rose-gold: #d4a3a5;
-  --rose-gold-dark: #b88b8d;
+  --primary: #F07098;
+  --secondary: #F394B8;
+  --off-white: #F8E1EB;
+  --dusty-rose: #D996B3;
+  --pearl: #F8E1EB;
+  --elite-black: #010000;
 
-  --text-main: #2d2425;
+  --text-main: #262626;
   --luxury-white: #ffffff;
 }
 
@@ -53,17 +54,17 @@ h1, h2, h3, h4, h5, h6 {
 .skin-glow-gradient {
   background: linear-gradient(
     135deg,
-    #f7f7f7 0%,
-    #fdf2f4 50%,
-    #f7f7f7 100%
+    #F8E1EB 0%,
+    #F394B8 50%,
+    #F8E1EB 100%
   );
 }
 
 .hero-mesh {
-  background-color: #f7f7f7;
+  background-color: #F8E1EB;
   background-image:
-    radial-gradient(at 0% 0%, rgba(195,162,171,0.15), transparent 50%),
-    radial-gradient(at 100% 100%, rgba(201,169,97,0.1), transparent 50%);
+    radial-gradient(at 0% 0%, rgba(240,112,152,0.15), transparent 50%),
+    radial-gradient(at 100% 100%, rgba(217,150,179,0.1), transparent 50%);
 }
 
 /* ---------- Utilities ---------- */
