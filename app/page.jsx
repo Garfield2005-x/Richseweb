@@ -31,17 +31,10 @@ export default function Home() {
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [homeVideos, setHomeVideos] = useState(["", "", "", "", ""]);
   const { addToCart } = useCart()
-  const scrollRef = useRef(null);
   const communityRef = useRef(null);
   const [hasMounted, setHasMounted] = useState(false);
 
-  const scroll = (direction) => {
-    if (scrollRef.current) {
-      const { scrollLeft, clientWidth } = scrollRef.current;
-      const scrollTo = direction === "left" ? scrollLeft - clientWidth / 2 : scrollLeft + clientWidth / 2;
-      scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
-    }
-  };
+
 
   useEffect(() => {
     async function fetchHomeVideos() {
@@ -243,25 +236,10 @@ export default function Home() {
               </motion.h2>
             </motion.div>
 
-            {/* Diamond-Cut Navigation Buttons (Light Theme) */}
-            <div className="flex gap-4 p-2 rounded-full border border-[#F07098]/20 bg-white/40 backdrop-blur-3xl shadow-xl">
-              <button
-                onClick={() => scroll('left')}
-                className="size-14 rounded-full border border-[#F07098]/10 bg-white text-[#F07098] flex items-center justify-center hover:bg-[#F07098] hover:text-white hover:scale-110 transition-all duration-300 group shadow-sm"
-              >
-                <span className="material-symbols-outlined notranslate text-2xl transition-transform group-hover:-translate-x-1">chevron_left</span>
-              </button>
-              <button
-                onClick={() => scroll('right')}
-                className="size-14 rounded-full border border-[#F07098]/10 bg-white text-[#F07098] flex items-center justify-center hover:bg-[#F07098] hover:text-white hover:scale-110 transition-all duration-300 group shadow-sm"
-              >
-                <span className="material-symbols-outlined notranslate text-2xl transition-transform group-hover:translate-x-1">chevron_right</span>
-              </button>
-            </div>
+
           </div>
 
           <div
-            ref={scrollRef}
             className="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar pb-16 snap-x snap-mandatory items-stretch scroll-smooth px-4"
           >
             {loadingProducts ? (
@@ -328,9 +306,8 @@ export default function Home() {
                           qty: 1
                         });
                         window.dispatchEvent(new Event('cart-updated'));
-                        toast.success("Added to ritual collection");
                       }}
-                      className="absolute top-6 right-6 size-12 rounded-full bg-white text-[#F07098] flex items-center justify-center shadow-xl md:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#F07098] hover:text-white z-20"
+                      className="absolute top-6 right-6 size-12 rounded-full bg-white text-[#F07098] flex items-center justify-center shadow-xl opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#F07098] hover:text-white z-30"
                     >
                       <span className="material-symbols-outlined notranslate text-xl">shopping_bag</span>
                     </motion.button>

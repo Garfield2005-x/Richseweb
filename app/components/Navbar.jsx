@@ -24,8 +24,15 @@ function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
     }
+    const handleCartUpdate = () => {
+      setOpen(true);
+    };
     window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    window.addEventListener("cart-updated", handleCartUpdate);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("cart-updated", handleCartUpdate);
+    };
   }, [])
 
   return (
@@ -149,7 +156,7 @@ function Navbar() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: "100%" }}
                       transition={{ duration: 0.4, ease: [0.16,1,0.3,1] }}
-                      className="absolute right-0 top-0 h-screen w-full sm:w-[420px] bg-[#010000] sm:bg-[#010000]/95 backdrop-blur-3xl border-l border-[#F07098]/20 shadow-[-20px_0_60px_rgba(0,0,0,0.6)] p-6 z-[52] overflow-hidden flex flex-col"
+                      className="fixed right-0 top-0 h-screen w-full sm:w-[420px] bg-[#010000] sm:bg-[#010000]/95 backdrop-blur-3xl border-l border-[#F07098]/20 shadow-[-20px_0_60px_rgba(0,0,0,0.6)] p-6 z-[52] overflow-hidden flex flex-col"
                     >
                       <div className="absolute top-0 right-0 w-40 h-40 bg-[#F07098]/10 blur-[60px] pointer-events-none rounded-full z-0" />
                       
