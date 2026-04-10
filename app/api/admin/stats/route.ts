@@ -57,7 +57,7 @@ export async function GET(req: Request) {
       take: 5,
     });
 
-    // --- NEW: Abandoned Checkout Stats ---
+    // --- NEW: Abandoned Checkout Stats (Normalized & Filtered) ---
     // Tracking logs that start with "Abandoned"
     const abandonedLogs = await prisma.advancedTrackingLog.findMany({
       where: {
@@ -66,8 +66,22 @@ export async function GET(req: Request) {
       },
       select: { phone: true }
     });
-    const uniqueAbandonedPhones = [...new Set(abandonedLogs.map(l => l.phone))];
-    const totalPotentialCustomers = uniqueAbandonedPhones.length;
+    
+    // 1. Identify unique normalized phones from logs
+    const uniqueAbandonedPhones = [...new Set(abandonedLogs.map(l => l.phone.replace(/[^\d]/g, '')))];
+
+    // 2. Find if any of these phones HAVE placed a successful order
+    const successfulOrderPhones = await prisma.order.findMany({
+      where: { 
+        status: { not: "CANCELLED" }
+      },
+      select: { phone: true }
+    });
+    const successPhoneSet = new Set(successfulOrderPhones.map(o => o.phone.replace(/[^\d]/g, '')));
+
+    // 3. Count only those who haven't ordered yet
+    const filteredPotential = uniqueAbandonedPhones.filter(p => !successPhoneSet.has(p));
+    const totalPotentialCustomers = filteredPotential.length;
     
     // Conversion Rate calculation
     const conversionRate = totalPotentialCustomers > 0 

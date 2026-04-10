@@ -83,16 +83,21 @@ ${
 }
 
 export async function POST(req: Request) {
+  let body: any = null;
   try {
-    const body = await req.json();
+    body = await req.json();
     const { 
       cart, 
       shippingInfo, 
       shippingMethod, 
       discountCode,
       pointsToUse, 
-      isInternational // We pass this from frontend
+      isInternational, // We pass this from frontend
+      normalizedPhone,
+      recaptchaToken
     } = body;
+
+    console.log(`[CHECKOUT START] Phone: ${normalizedPhone || shippingInfo?.phone} | Items: ${cart?.length}`);
 
     // 🚨 SECURE: Never trust the `userId` sent by the client. Always verify via server session!
     const session = await getServerSession(authOptions);
@@ -110,8 +115,29 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
     }
     if (!shippingInfo || !shippingInfo.fullName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.province || !shippingInfo.postcode) {
+      console.warn(`[CHECKOUT FAIL] Missing Shipping Info: ${JSON.stringify(shippingInfo)}`);
       return NextResponse.json({ error: "Missing required shipping info" }, { status: 400 });
     }
+
+    // 1.5 Server-Side RECAPTCHA Verification
+    if (!recaptchaToken) {
+       console.warn(`[CHECKOUT FAIL] Missing RECAPTCHA Token`);
+       return NextResponse.json({ error: "Security verification required. Please complete the CAPTCHA." }, { status: 400 });
+    }
+
+    try {
+      const gRes = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`, { method: 'POST' });
+      const gData = await gRes.json();
+      if (!gData.success) {
+        console.warn(`[CHECKOUT FAIL] RECAPTCHA Invalid: ${JSON.stringify(gData)}`);
+        return NextResponse.json({ error: "Security verification failed. Please try again." }, { status: 400 });
+      }
+    } catch (err) {
+      console.error("[CHECKOUT ERROR] RECAPTCHA Verify Exception:", err);
+      // We might allow fallthrough if Google is down, but safer to block
+    }
+
+    console.log(`[CHECKOUT VALIDATED] Ready for transaction...`);
 
     // Determine final address
     const finalAddress = isInternational 
@@ -119,7 +145,15 @@ export async function POST(req: Request) {
         : shippingInfo.address;
 
     let shippingCost = shippingMethod === "Cash on Delivery (+$30 Fee)" ? 30 : 0;
-    const cleanPhone = shippingInfo.phone.trim();
+    
+    // Normalize phone: prefer normalizedPhone from body, fallback to cleaning shippingInfo.phone
+    const rawPhone = normalizedPhone || shippingInfo.phone || "";
+    const cleanPhone = rawPhone.replace(/[^\d]/g, '');
+
+    if (!cleanPhone || cleanPhone.length < 8) {
+       return NextResponse.json({ error: "Invalid phone number format." }, { status: 400 });
+    }
+
     let isFirstOrderFree = false;
 
     // Fetch all automation rules at once
@@ -222,6 +256,8 @@ export async function POST(req: Request) {
         });
       }
 
+      console.log(`[CHECKOUT DB] Products verified. Subtotal: ${subtotal}`);
+
       const totalBeforeDiscount = subtotal + shippingCost;
       finalTotal = totalBeforeDiscount;
 
@@ -307,6 +343,8 @@ export async function POST(req: Request) {
           }
         }
       });
+
+      console.log(`[CHECKOUT DB] Order created: ${order.order_number}`);
 
       // --- C.2 Record First Order Free Shipping Audit ---
       if (isFirstOrderFree) {
@@ -441,10 +479,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, orderId: result.order.id });
 
   } catch (error) {
-    console.error("Secure Checkout Error:", error);
+    console.error("CRITICAL: Secure Checkout Failure Details:", {
+      error: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : null,
+      phone: body?.shippingInfo?.phone || "N/A",
+      cartSize: body?.cart?.length || 0
+    });
+    
     // Return friendly error message if it's our thrown custom validation errors
     return NextResponse.json(
-      { error: (error as Error).message || "An unexpected error occurred during checkout." },
+      { error: (error as Error).message || "An unexpected error occurred during checkout. Please try again or contact support." },
       { status: 400 }
     );
   }

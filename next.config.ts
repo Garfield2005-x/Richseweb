@@ -15,7 +15,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**", // Allows any safe https image domain. 
+        hostname: "cdn.simpleicons.org",
+        port: "",
+        pathname: "/**",
       },
     ],
   },

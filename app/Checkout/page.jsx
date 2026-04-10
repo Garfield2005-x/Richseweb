@@ -23,6 +23,7 @@ import {
   CheckCircle2,
   Info
 } from "lucide-react";
+import { Toast, useToast } from "../components/ui/Toast";
 
 export default function Checkout() {
   const { data: session, status } = useSession()
@@ -49,15 +50,22 @@ export default function Checkout() {
   const [isFreeShippingPromo, setIsFreeShippingPromo] = useState(false)
   const [freeShippingReason, setFreeShippingReason] = useState("")
   const [welcomeCode, setWelcomeCode] = useState(null)
+  const [recaptchaToken, setRecaptchaToken] = useState("")
+  const { toast, showToast, hideToast } = useToast()
   const router = useRouter()
   const { cart, clearCart } = useCart()
   const tax = 0;
 
   const provinces = [...new Set(thaiAddress.map(i => i.district.province.name_th))]
 
+  const normalizePhone = (phone) => {
+    return phone ? phone.replace(/[^\d]/g, '') : '';
+  };
+
   // --- SHADOW TRACKING (Abandoned Checkout Detection) ---
   useEffect(() => {
-    if (shippingInfo.phone && shippingInfo.phone.length >= 9 && shippingInfo.fullName.length >= 3) {
+    const cleanedPhone = normalizePhone(shippingInfo.phone);
+    if (cleanedPhone && cleanedPhone.length >= 9 && shippingInfo.fullName.length >= 3) {
       const timer = setTimeout(async () => {
         try {
           const cartSubtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
@@ -67,7 +75,7 @@ export default function Checkout() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
               name: shippingInfo.fullName, 
-              phone: shippingInfo.phone, 
+              phone: cleanedPhone, 
               order: `Abandoned [฿${cartSubtotal}]: ${cartSummary}` 
             })
           });
@@ -143,7 +151,10 @@ export default function Checkout() {
   )
   
   const handleCaptcha = (token) => {
-    if(token) setVerified(true);
+    if(token) {
+      setVerified(true);
+      setRecaptchaToken(token);
+    }
   }
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -165,21 +176,38 @@ export default function Checkout() {
       });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || "Invalid code");
+        showToast(data.error || "Invalid code", "error");
         return;
       }
       setDiscountAmount(data.discountAmount);
-      alert("Promo code applied! ✨");
+      showToast("Promo code applied! ✨", "success");
     } catch (error) {
       console.error(error);
-      alert("Error validating code");
+      showToast("Error validating code", "error");
     }
   }
 
+  const audit = async (phase, error = null) => {
+    try {
+      await fetch("/api/debug/audit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          phase, 
+          error, 
+          phone: shippingInfo.phone, 
+          name: shippingInfo.fullName,
+          cartSize: cart.length
+        })
+      });
+    } catch {}
+  }
+
   const handleCheckout = async () => {
+    await audit("START");
     try {
       if (cart.length === 0) {
-        alert("Your cart is empty");
+        showToast("Your cart is empty", "warning");
         return;
       }
       if (
@@ -191,11 +219,20 @@ export default function Checkout() {
         !shippingInfo.postcode ||
         !shippingInfo.phone
       ) {
-        alert("Please complete the shipping information");
+        showToast("Please complete the shipping information", "warning");
+        await audit("FAIL_VALIDATION", "Missing Fields");
         return;
+      }
+
+      if (!verified) {
+         showToast("Please complete the security verification", "warning");
+         return;
       }
       
       setLoading(true);
+      showToast("Securing your transaction...", "loading");
+      await audit("SENDING_API");
+
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -206,19 +243,29 @@ export default function Checkout() {
           discountCode: discountCode || null,
           pointsToUse: parsedPoints,
           userId: session?.user?.id || null,
-          isInternational: shippingCountry === "International"
+          isInternational: shippingCountry === "International",
+          normalizedPhone: normalizePhone(shippingInfo.phone),
+          recaptchaToken
         })
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Checkout failed");
+      if (!res.ok) {
+        await audit("API_ERROR", data.error);
+        throw new Error(data.error || "Checkout failed");
+      }
 
+      await audit("SUCCESS");
+      showToast("Order placed successfully! Redirecting...", "success");
+      
       clearCart();
-      router.push("/Success?orderId=" + data.orderId);
+      setTimeout(() => {
+        router.push("/Success?orderId=" + data.orderId);
+      }, 1500);
 
     } catch (err) {
       console.error(err);
-      alert(err.message);
+      showToast(err.message || "An error occurred", "error");
     } finally {
       setLoading(false);
     }
@@ -625,6 +672,7 @@ export default function Checkout() {
       </main>
       
       <Footer />
+      {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </div>
   )
 }

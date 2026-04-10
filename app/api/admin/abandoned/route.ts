@@ -8,10 +8,14 @@ import { prisma } from "@/lib/prisma";
  */
 export async function GET() {
   try {
-    // 1. Get all tracking logs that are marked as "Abandoned"
+    // 1. Get all tracking logs that are marked as "Abandoned" and are at least 10 minutes old
+    const tenMinutesAgo = new Date();
+    tenMinutesAgo.setMinutes(tenMinutesAgo.getMinutes() - 10);
+
     const trackingLogs = await prisma.advancedTrackingLog.findMany({
       where: {
-        order: { contains: "Abandoned" }
+        order: { contains: "Abandoned" },
+        createdAt: { lte: tenMinutesAgo }
       },
       orderBy: { createdAt: "desc" },
       take: 100
@@ -21,33 +25,36 @@ export async function GET() {
       return NextResponse.json({ abandoned: [] });
     }
 
-    // 2. Identify unique phones from logs
-    const phones = [...new Set(trackingLogs.map(log => log.phone))];
+    // 2. Identify unique phones from logs and normalize them
+    const logPhones = [...new Set(trackingLogs.map(log => log.phone.replace(/[^\d]/g, '')))];
 
-    // 3. Find if any of these phones HAVE placed a successful order recently (within last 3 days)
+    // 3. Find if any of these normalized phones HAVE placed a successful order recently (within last 3 days)
     const threeDaysAgo = new Date();
     threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
     const successfulOrders = await prisma.order.findMany({
       where: {
-        phone: { in: phones },
         created_at: { gte: threeDaysAgo },
         status: { not: "CANCELLED" }
       },
       select: { phone: true }
     });
 
-    const successPhoneSet = new Set(successfulOrders.map(o => o.phone));
+    const successPhoneSet = new Set(successfulOrders.map(o => o.phone.replace(/[^\d]/g, '')));
 
-    // 4. Filter out logs that eventually became orders
-    const result = trackingLogs.filter(log => !successPhoneSet.has(log.phone));
+    // 4. Filter out logs that eventually became orders (normalized match)
+    const result = trackingLogs.filter(log => {
+      const normalizedLogPhone = log.phone.replace(/[^\d]/g, '');
+      return !successPhoneSet.has(normalizedLogPhone);
+    });
 
     // Dedup by phone, keeping latest
     const seen = new Set();
     const uniqueResult = [];
     for (const log of result) {
-      if (!seen.has(log.phone)) {
-        seen.add(log.phone);
+      const normalizedPhone = log.phone.replace(/[^\d]/g, '');
+      if (!seen.has(normalizedPhone)) {
+        seen.add(normalizedPhone);
         uniqueResult.push(log);
       }
     }

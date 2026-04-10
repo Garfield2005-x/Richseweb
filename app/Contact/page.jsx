@@ -78,6 +78,7 @@ export default function ContactPage() {
                    <Image 
                      src={link.imgUrl} 
                      alt={link.title} 
+                     unoptimized
                      width={48}
                      height={48}
                      className="w-10 h-10 md:w-12 md:h-12 object-contain group-hover:scale-105 transition-all duration-500 relative z-10" 
