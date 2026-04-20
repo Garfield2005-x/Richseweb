@@ -424,3 +424,23 @@ model UnsubscribedEmail {
 
   @@map("unsubscribed_emails")
 }
+
+model AffiliateClip {
+  id            String   @id @default(cuid())
+  channel_name  String
+  clip_url      String   @unique
+  affiliate_url String
+  status        String   @default("pending") // pending, approved, rejected
+  created_at    DateTime @default(now())
+
+  @@map("clips")
+}
+
+model AffiliateChannel {
+  id         String   @id @default(cuid())
+  name       String   @unique
+  status     String   @default("pending") // pending, approved, rejected
+  created_at DateTime @default(now())
+
+  @@map("affiliate_channels")
+}

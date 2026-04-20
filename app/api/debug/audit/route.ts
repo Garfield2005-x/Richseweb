@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { phase, error, phone, name, cartSize } = body;
+    const { phase, error, phone, name } = body;
 
     console.log(`[CHECKOUT AUDIT] Phase: ${phase} | Error: ${error} | Customer: ${name} (${phone})`);
 
@@ -13,7 +12,7 @@ export async function POST(req: Request) {
     // This allows us to see if checkouts are failing before hitting the main API.
 
     return NextResponse.json({ success: true });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Audit failed" }, { status: 500 });
   }
 }

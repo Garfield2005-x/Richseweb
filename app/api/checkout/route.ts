@@ -82,8 +82,30 @@ ${
   }
 }
 
+interface ShippingInfo {
+  fullName: string;
+  phone: string;
+  address: string;
+  province: string;
+  district?: string;
+  subdistrict?: string;
+  postcode: string;
+  country?: string;
+}
+
+interface CheckoutRequest {
+  cart: CartItem[];
+  shippingInfo: ShippingInfo;
+  shippingMethod: string;
+  discountCode?: string;
+  pointsToUse?: number;
+  isInternational?: boolean;
+  normalizedPhone?: string;
+  recaptchaToken: string;
+}
+
 export async function POST(req: Request) {
-  let body: any = null;
+  let body: unknown = null;
   try {
     body = await req.json();
     const { 
@@ -92,10 +114,10 @@ export async function POST(req: Request) {
       shippingMethod, 
       discountCode,
       pointsToUse, 
-      isInternational, // We pass this from frontend
+      isInternational, 
       normalizedPhone,
       recaptchaToken
-    } = body;
+    } = body as CheckoutRequest;
 
     console.log(`[CHECKOUT START] Phone: ${normalizedPhone || shippingInfo?.phone} | Items: ${cart?.length}`);
 
@@ -482,8 +504,8 @@ export async function POST(req: Request) {
     console.error("CRITICAL: Secure Checkout Failure Details:", {
       error: error instanceof Error ? error.message : "Unknown error",
       stack: error instanceof Error ? error.stack : null,
-      phone: body?.shippingInfo?.phone || "N/A",
-      cartSize: body?.cart?.length || 0
+      phone: (body as CheckoutRequest)?.shippingInfo?.phone || "N/A",
+      cartSize: (body as CheckoutRequest)?.cart?.length || 0
     });
     
     // Return friendly error message if it's our thrown custom validation errors

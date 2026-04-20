@@ -120,6 +120,14 @@ export default async function AdminLayout({ children }) {
             </Link>
 
             <Link
+              href="/admin/affiliate"
+              className="flex items-center gap-3 px-4 py-3 text-[#c3a2ab] hover:bg-[#c3a2ab]/5 rounded-xl transition-colors font-medium border border-transparent hover:border-[#c3a2ab]/20"
+            >
+              <span className="material-symbols-outlined notranslate">video_library</span>
+              <span className="font-medium">Affiliate Clips</span>
+            </Link>
+
+            <Link
               href="/admin/automations"
               className="flex items-center gap-3 px-4 py-3 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-colors font-bold"
             >

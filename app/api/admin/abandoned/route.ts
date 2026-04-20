@@ -25,9 +25,6 @@ export async function GET() {
       return NextResponse.json({ abandoned: [] });
     }
 
-    // 2. Identify unique phones from logs and normalize them
-    const logPhones = [...new Set(trackingLogs.map(log => log.phone.replace(/[^\d]/g, '')))];
-
     // 3. Find if any of these normalized phones HAVE placed a successful order recently (within last 3 days)
     const threeDaysAgo = new Date();
     threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
