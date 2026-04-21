@@ -432,8 +432,23 @@ model AffiliateClip {
   affiliate_url String
   status        String   @default("pending") // pending, approved, rejected
   created_at    DateTime @default(now())
+  campaign_id   String?
+  campaign      AffiliateCampaign? @relation(fields: [campaign_id], references: [id])
 
   @@map("clips")
+}
+
+model AffiliateCampaign {
+  id           String   @id @default(cuid())
+  name         String   @unique
+  product_name String?
+  description  String?
+  is_active    Boolean  @default(true)
+  created_at   DateTime @default(now())
+
+  clips        AffiliateClip[]
+
+  @@map("affiliate_campaigns")
 }
 
 model AffiliateChannel {

@@ -2,12 +2,23 @@ import { prisma } from "@/lib/prisma";
 import AffiliateDashboardClient from "./AffiliateDashboardClient";
 
 export default async function AffiliateAdminPage() {
-  const [clips, channels] = await Promise.all([
+  const [clips, channels, campaigns] = await Promise.all([
     prisma.affiliateClip.findMany({
       orderBy: { created_at: 'desc' },
+      include: {
+        campaign: true
+      }
     }),
     prisma.affiliateChannel.findMany({
       orderBy: { created_at: 'desc' },
+    }),
+    prisma.affiliateCampaign.findMany({
+      orderBy: { created_at: 'desc' },
+      include: {
+        _count: {
+          select: { clips: true }
+        }
+      }
     })
   ]);
 
@@ -50,7 +61,11 @@ export default async function AffiliateAdminPage() {
 
       {/* Main Container */}
       <div className="bg-white rounded-[24px] md:rounded-[32px] border border-gray-100 shadow-sm overflow-hidden">
-        <AffiliateDashboardClient initialClips={clips} initialChannels={channels} />
+        <AffiliateDashboardClient 
+          initialClips={clips} 
+          initialChannels={channels} 
+          initialCampaigns={campaigns}
+        />
       </div>
     </div>
   );

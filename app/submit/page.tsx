@@ -1,9 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { submitClip, registerChannel } from '../actions/affiliate';
+import { submitClip, registerChannel, getCampaigns } from '../actions/affiliate';
+import { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+
+interface Campaign {
+  id: string;
+  name: string;
+  product_name?: string | null;
+  description?: string | null;
+  is_active: boolean;
+  created_at: Date;
+}
 
 export default function SubmitClipPage() {
   const [loading, setLoading] = useState(false);
@@ -12,6 +22,12 @@ export default function SubmitClipPage() {
   const [clips, setClips] = useState([
     { clip_url: '', affiliate_url: '' }
   ]);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [selectedCampaignId, setSelectedCampaignId] = useState('');
+
+  useEffect(() => {
+    getCampaigns().then(setCampaigns);
+  }, []);
 
   const addClip = () => {
     setClips([...clips, { clip_url: '', affiliate_url: '' }]);
@@ -53,9 +69,12 @@ export default function SubmitClipPage() {
     e.preventDefault();
     setLoading(true);
 
+    // Selection is now optional as per user request ("ไม่ต้องเลือกหากต้องการเข้าแคมเปญสะสมคลิปปกติ")
+
     try {
       const result = await submitClip({
         channel_name: channelName,
+        campaign_id: selectedCampaignId,
         clips: clips
       });
 
@@ -139,6 +158,38 @@ export default function SubmitClipPage() {
               <p className="text-[10px] md:text-[11px] text-gray-400 font-medium italic pl-1">
                 * หากเป็นผู้ใช้ใหม่ กรุณากดปุ่ม Register เพื่อลงทะเบียนช่องก่อนส่งงานครับ
               </p>
+            </div>
+
+            {/* Campaign Selection Section */}
+            <div className="space-y-4 pb-6 md:pb-8 border-b border-gray-100">
+              <div className="flex items-center justify-between pl-1">
+                <label className="block text-[11px] md:text-[13px] font-bold text-[#161314] uppercase tracking-widest leading-none">
+                  Select Campaign / เลือกแคมเปญ
+                </label>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <select
+                  required
+                  className="px-5 md:px-6 py-3.5 md:py-4 bg-gray-50 border-none rounded-xl md:rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all duration-300 outline-none text-[#161314] font-semibold appearance-none bg-[url('https://api.iconify.design/heroicons:chevron-down.svg')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
+                  value={selectedCampaignId}
+                  onChange={(e) => setSelectedCampaignId(e.target.value)}
+                >
+                  <option value="">(ส่งคลิปในหมวดหมู่ปกติ)</option>
+                  {campaigns.filter(c => c.is_active).map(campaign => (
+                    <option key={campaign.id} value={campaign.id}>
+                      {campaign.name} {campaign.product_name ? `(${campaign.product_name})` : ''}
+                    </option>
+                  ))}
+                </select>
+                <div className="bg-[#c3a2ab]/5 p-4 rounded-2xl border border-[#c3a2ab]/10 flex flex-col justify-center">
+                   <p className="text-[10px] md:text-[11px] text-[#c3a2ab] font-bold uppercase tracking-wider mb-1">Campaign Info</p>
+                   <p className="text-[12px] md:text-sm text-gray-600 font-medium">
+                      {selectedCampaignId 
+                        ? campaigns.find(c => c.id === selectedCampaignId)?.description || 'ร่วมสะสมคลิปและรับรางวัลพิเศษ'
+                        : 'เลือกแคมเปญเพื่อรับรางวัลพิเศษ (หากข้ามขั้นตอนนี้ จะถือว่าเป็นการสะสมคลิปปกติ)'}
+                   </p>
+                </div>
+              </div>
             </div>
 
             {/* Clips Section */}

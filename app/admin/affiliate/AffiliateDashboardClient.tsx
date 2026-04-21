@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { updateClipStatus, deleteClip, updateChannelStatus, deleteChannel } from '../../actions/affiliate';
+import { updateClipStatus, deleteClip, updateChannelStatus, deleteChannel, createCampaign, updateCampaign, deleteCampaign, getCampaignDetailedStats, getGlobalAffiliateStats } from '../../actions/affiliate';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 
@@ -12,6 +12,8 @@ interface Clip {
   affiliate_url: string;
   status: string;
   created_at: Date;
+  campaign_id?: string | null;
+  campaign?: { name: string } | null;
 }
 
 interface Channel {
@@ -21,16 +23,89 @@ interface Channel {
   created_at: Date;
 }
 
+interface Campaign {
+  id: string;
+  name: string;
+  product_name?: string | null;
+  description?: string | null;
+  is_active: boolean;
+  created_at: Date;
+  _count?: {
+    clips: number;
+  };
+}
+
+interface CampaignStats {
+  campaign: Campaign;
+  contributors: {
+    name: string;
+    total: number;
+    approved: number;
+    pending: number;
+    rejected: number;
+    latest: Date;
+  }[];
+  summary: {
+    total: number;
+    approved: number;
+    pending: number;
+    rejected: number;
+    uniqueCreators: number;
+  };
+}
+
 export default function AffiliateDashboardClient({ 
   initialClips,
-  initialChannels
+  initialChannels,
+  initialCampaigns
 }: { 
   initialClips: Clip[],
-  initialChannels: Channel[]
+  initialChannels: Channel[],
+  initialCampaigns: Campaign[]
 }) {
-  const [activeTab, setActiveTab] = useState<'clips' | 'channels'>('clips');
+  const [activeTab, setActiveTab] = useState<'clips' | 'channels' | 'campaigns' | 'overview'>('clips');
   const [clips, setClips] = useState(initialClips);
   const [channels, setChannels] = useState(initialChannels);
+  const [campaigns, setCampaigns] = useState(initialCampaigns);
+  
+  const [campaignFilter, setCampaignFilter] = useState('all');
+  
+  // Campaign Form State
+  const [isCampaignModalOpen, setIsCampaignModalOpen] = useState(false);
+  const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
+  const [campaignFormData, setCampaignFormData] = useState({
+    name: '',
+    product_name: '',
+    description: ''
+  });
+  
+  // Detailed Insight State
+  const [viewingCampaignStats, setViewingCampaignStats] = useState<CampaignStats | null>(null);
+
+  interface GlobalLeaderboardItem {
+    name: string;
+    total: number;
+    approved: number;
+    pending: number;
+    rejected: number;
+    campaignsJoined: string[];
+    campaignsCount: number;
+    latest: Date | null;
+  }
+
+  interface GlobalOverviewData {
+    leaderboard: GlobalLeaderboardItem[];
+    summary: {
+      totalClips: number;
+      totalApproved: number;
+      totalCreators: number;
+      activeCreators: number;
+    };
+  }
+
+  // Global Overview State
+  const [globalOverviewStats, setGlobalOverviewStats] = useState<GlobalOverviewData | null>(null);
+  const [loadingGlobal, setLoadingGlobal] = useState(false);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState('');
@@ -42,7 +117,8 @@ export default function AffiliateDashboardClient({
     const matchesSearch = clip.channel_name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || clip.status === statusFilter;
     const matchesDate = !dateFilter || format(new Date(clip.created_at), 'yyyy-MM-dd') === dateFilter;
-    return matchesSearch && matchesStatus && matchesDate;
+    const matchesCampaign = campaignFilter === 'all' || clip.campaign_id === campaignFilter;
+    return matchesSearch && matchesStatus && matchesDate && matchesCampaign;
   });
 
   // Filter Logic for Channels
@@ -127,6 +203,89 @@ export default function AffiliateDashboardClient({
     }
   };
 
+  // Campaign Handlers
+  const handleCampaignSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editingCampaign) {
+        const result = await updateCampaign(editingCampaign.id, campaignFormData);
+        if (result.success) {
+          setCampaigns(prev => prev.map(c => c.id === editingCampaign.id ? { ...c, ...campaignFormData } : c));
+          toast.success('อัปเดตแคมเปญสำเร็จ');
+          setIsCampaignModalOpen(false);
+          setEditingCampaign(null);
+        }
+      } else {
+        const result = await createCampaign(campaignFormData);
+        if (result.success && 'campaign' in result) {
+          setCampaigns(prev => [result.campaign as Campaign, ...prev]);
+          toast.success('สร้างแคมเปญสำเร็จ');
+          setIsCampaignModalOpen(false);
+        }
+      }
+      setCampaignFormData({ name: '', product_name: '', description: '' });
+    } catch {
+      toast.error('เกิดข้อผิดพลาด');
+    }
+  };
+
+  const handleCampaignDelete = async (id: string) => {
+    if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบแคมเปญนี้? ข้อมูลคลิปที่อยู่ในแคมเปญนี้จะกลายเป็นไม่มีแคมเปญ')) return;
+    try {
+      const result = await deleteCampaign(id);
+      if (result.success) {
+        setCampaigns(prev => prev.filter(c => c.id !== id));
+        toast.success('ลบแคมเปญสำเร็จ');
+      }
+    } catch {
+      toast.error('เกิดข้อผิดพลาด');
+    }
+  };
+
+  const handleCampaignToggleActive = async (id: string, currentStatus: boolean) => {
+    try {
+      const result = await updateCampaign(id, { is_active: !currentStatus });
+      if (result.success) {
+        setCampaigns(prev => prev.map(c => c.id === id ? { ...c, is_active: !currentStatus } : c));
+        toast.success(`เปลี่ยนสถานะแคมเปญแล้ว`);
+      }
+    } catch {
+      toast.error('เกิดข้อผิดพลาด');
+    }
+  };
+
+  const handleFetchInsights = async (campaignId: string) => {
+    try {
+      const result = await getCampaignDetailedStats(campaignId);
+      if (result.success && 'contributors' in result) {
+        setViewingCampaignStats(result as CampaignStats);
+      } else {
+        toast.error((result as { error?: string }).error || 'Failed to fetch insights');
+      }
+    } catch {
+      toast.error('Error fetching campaign data');
+    }
+  };
+
+  const handleFetchGlobalStats = async () => {
+    setLoadingGlobal(true);
+    try {
+      const result = await getGlobalAffiliateStats();
+      if (result.success) {
+        setGlobalOverviewStats({
+          leaderboard: result.leaderboard || [],
+          summary: result.summary
+        });
+      } else {
+        toast.error(result.error || 'Failed to fetch global stats');
+      }
+    } catch {
+      toast.error('Error fetching system overview');
+    } finally {
+      setLoadingGlobal(false);
+    }
+  };
+
   const channelCounts = clips.reduce((acc: Record<string, number>, clip) => {
     acc[clip.channel_name] = (acc[clip.channel_name] || 0) + 1;
     return acc;
@@ -155,6 +314,29 @@ export default function AffiliateDashboardClient({
           }`}
         >
           WHITELIST CHANNELS
+        </button>
+        <button
+          onClick={() => setActiveTab('campaigns')}
+          className={`flex-1 py-4 px-3 md:px-6 text-[11px] md:text-sm font-bold transition-all ${
+            activeTab === 'campaigns' 
+            ? 'text-[#c3a2ab] border-b-2 border-[#c3a2ab] bg-white' 
+            : 'text-gray-400 hover:text-gray-600'
+          }`}
+        >
+          CAMPAIGNS
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab('overview');
+            handleFetchGlobalStats();
+          }}
+          className={`flex-1 py-4 px-3 md:px-6 text-[11px] md:text-sm font-bold transition-all ${
+            activeTab === 'overview' 
+            ? 'text-[#c3a2ab] border-b-2 border-[#c3a2ab] bg-white' 
+            : 'text-gray-400 hover:text-gray-600'
+          }`}
+        >
+          OVERVIEW
         </button>
       </div>
 
@@ -191,6 +373,19 @@ export default function AffiliateDashboardClient({
           </select>
 
           {activeTab === 'clips' && (
+            <select
+              className="w-full lg:w-auto px-4 py-3 bg-gray-50 border-none rounded-xl md:rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all outline-none text-gray-600 appearance-none bg-[url('https://api.iconify.design/heroicons:chevron-down.svg')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
+              value={campaignFilter}
+              onChange={(e) => setCampaignFilter(e.target.value)}
+            >
+              <option value="all">All Campaigns</option>
+              {campaigns.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          )}
+
+          {activeTab === 'clips' && (
             <button
               disabled={exporting}
               onClick={handleExport}
@@ -202,6 +397,20 @@ export default function AffiliateDashboardClient({
                 <span className="material-symbols-outlined text-[20px]">download</span>
               )}
               <span className="text-xs md:text-sm">EXPORT EXCEL</span>
+            </button>
+          )}
+
+          {activeTab === 'campaigns' && (
+            <button
+              onClick={() => {
+                setEditingCampaign(null);
+                setCampaignFormData({ name: '', product_name: '', description: '' });
+                setIsCampaignModalOpen(true);
+              }}
+              className="w-full lg:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#c3a2ab] text-white rounded-xl md:rounded-2xl font-bold hover:bg-[#b08b96] transition-all active:scale-95 shadow-sm"
+            >
+              <span className="material-symbols-outlined text-[20px]">add</span>
+              <span className="text-xs md:text-sm">NEW CAMPAIGN</span>
             </button>
           )}
         </div>
@@ -216,9 +425,16 @@ export default function AffiliateDashboardClient({
                 <div className="flex justify-between items-start">
                   <div className="space-y-1">
                     <p className="font-bold text-[#161314] text-lg">{clip.channel_name}</p>
-                    <p className="text-[10px] font-bold text-[#c3a2ab] uppercase tracking-widest bg-gray-50 inline-block px-2 py-0.5 rounded">
-                      {channelCounts[clip.channel_name] || 0} CLIPS TOTAL
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-[10px] font-bold text-[#c3a2ab] uppercase tracking-widest bg-gray-50 inline-block px-2 py-0.5 rounded">
+                        {channelCounts[clip.channel_name] || 0} CLIPS TOTAL
+                      </p>
+                      {clip.campaign && (
+                        <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest bg-blue-50 inline-block px-2 py-0.5 rounded">
+                          {clip.campaign.name}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                     clip.status === 'approved' ? 'bg-emerald-100 text-emerald-700' :
@@ -279,7 +495,7 @@ export default function AffiliateDashboardClient({
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-50/50">
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-widest">Channel</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-widest">Channel / Campaign</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-widest">Clip Link</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-widest">โค้ดเจน</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-widest">Date</th>
@@ -293,9 +509,16 @@ export default function AffiliateDashboardClient({
                     <td className="px-6 py-5">
                       <div className="flex flex-col">
                         <span className="font-semibold text-[#161314]">{clip.channel_name}</span>
-                        <span className="text-[10px] font-bold text-[#c3a2ab] uppercase tracking-wider mt-0.5">
-                          {channelCounts[clip.channel_name] || 0} CLIPS TOTAL
-                        </span>
+                        <div className="flex gap-2 mt-0.5">
+                          <span className="text-[10px] font-bold text-[#c3a2ab] uppercase tracking-wider">
+                            {channelCounts[clip.channel_name] || 0} CLIPS
+                          </span>
+                          {clip.campaign && (
+                            <span className="text-[10px] font-bold text-blue-500 uppercase tracking-wider bg-blue-50 px-1 rounded">
+                              {clip.campaign.name}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-5">
@@ -358,7 +581,118 @@ export default function AffiliateDashboardClient({
             </table>
           </div>
         </div>
-      ) : (
+      ) : activeTab === 'overview' ? (
+        <div className="flex flex-col animate-in fade-in duration-700">
+           {loadingGlobal ? (
+             <div className="flex flex-col items-center justify-center py-32 space-y-4">
+                <div className="w-10 h-10 border-4 border-[#c3a2ab]/30 border-t-[#c3a2ab] rounded-full animate-spin" />
+                <p className="text-gray-400 font-bold text-sm tracking-widest uppercase">Fetching System Overview...</p>
+             </div>
+           ) : globalOverviewStats ? (
+             <div className="space-y-10 p-6">
+                {/* Global KPI Cards */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                   {[
+                     { label: 'Total System Clips', value: globalOverviewStats.summary.totalClips, color: 'text-[#161314]', icon: 'equalizer' },
+                     { label: 'Approved Clips', value: globalOverviewStats.summary.totalApproved, color: 'text-emerald-500', icon: 'fact_check' },
+                     { label: 'Registered Creators', value: globalOverviewStats.summary.totalCreators, color: 'text-blue-500', icon: 'groups_3' },
+                     { label: 'Active This Period', value: globalOverviewStats.summary.activeCreators, color: 'text-[#c3a2ab]', icon: 'bolt' }
+                   ].map((stat, i) => (
+                     <div key={i} className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                        <div className="flex items-center gap-3 mb-3">
+                           <span className={`material-symbols-outlined ${stat.color} text-[20px]`}>{stat.icon}</span>
+                           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">{stat.label}</p>
+                        </div>
+                        <h2 className={`text-3xl font-bold ${stat.color}`}>{stat.value}</h2>
+                     </div>
+                   ))}
+                </div>
+
+                {/* Global Leaderboard Table */}
+                <div className="bg-white rounded-[40px] border border-gray-100 shadow-xl overflow-hidden">
+                   <div className="px-8 py-8 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                         <h3 className="font-bold text-2xl text-[#161314]">Creator Leaderboard</h3>
+                         <p className="text-gray-400 text-sm font-medium">Ranked by total approved clips across all campaigns</p>
+                      </div>
+                      <button 
+                         onClick={handleFetchGlobalStats}
+                         className="flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-500 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all"
+                      >
+                         <span className="material-symbols-outlined text-[16px]">refresh</span>
+                         Sync Data
+                      </button>
+                   </div>
+
+                   <div className="overflow-x-auto">
+                      <table className="w-full text-left">
+                         <thead>
+                            <tr className="bg-gray-50/50">
+                               <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-center">Rank</th>
+                               <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest">Creator Name</th>
+                               <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-center">Approved</th>
+                               <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-center">Campaigns</th>
+                               <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-center">Total Lifetime</th>
+                               <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-right">Latest Sub.</th>
+                            </tr>
+                         </thead>
+                         <tbody className="divide-y divide-gray-50">
+                            {globalOverviewStats.leaderboard.map((item, index) => (
+                              <tr key={index} className="hover:bg-gray-50/30 transition-colors group">
+                                 <td className="px-8 py-6 text-center">
+                                    {index < 3 ? (
+                                       <span className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-black mx-auto ${
+                                          index === 0 ? 'bg-yellow-100 text-yellow-700 ring-2 ring-yellow-400/20' :
+                                          index === 1 ? 'bg-gray-100 text-gray-700 ring-2 ring-gray-400/20' :
+                                          'bg-orange-100 text-orange-700 ring-2 ring-orange-400/20'
+                                       }`}>
+                                          {index === 0 ? '🏆' : index + 1}
+                                       </span>
+                                    ) : (
+                                       <span className="text-gray-400 font-bold text-sm">#{index + 1}</span>
+                                    )}
+                                 </td>
+                                 <td className="px-8 py-6">
+                                    <div className="flex flex-col">
+                                       <span className="font-bold text-[#161314] text-lg group-hover:text-[#c3a2ab] transition-colors">{item.name}</span>
+                                       <div className="flex items-center gap-2 mt-0.5">
+                                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Lifetime Active</span>
+                                       </div>
+                                    </div>
+                                 </td>
+                                 <td className="px-8 py-6 text-center">
+                                    <span className="text-xl font-black text-[#161314]">{item.approved}</span>
+                                 </td>
+                                 <td className="px-8 py-6 text-center">
+                                    <span className="px-3 py-1 bg-[#c3a2ab]/10 text-[#c3a2ab] rounded-full font-bold text-[11px] uppercase tracking-wider">
+                                       {item.campaignsCount} Campaigns
+                                    </span>
+                                 </td>
+                                 <td className="px-8 py-6 text-center">
+                                    <span className="font-bold text-gray-400">{item.total} Clips</span>
+                                 </td>
+                                 <td className="px-8 py-6 text-right">
+                                    <span className="text-xs text-gray-400 font-medium">
+                                       {item.latest ? format(new Date(item.latest), 'dd MMM yyyy') : 'No submissions'}
+                                    </span>
+                                 </td>
+                              </tr>
+                            ))}
+                         </tbody>
+                      </table>
+                   </div>
+                </div>
+             </div>
+           ) : (
+             <div className="py-20 text-center">
+                <button onClick={handleFetchGlobalStats} className="px-8 py-3 bg-[#161314] text-white rounded-2xl font-bold hover:bg-[#252122] transition-all">
+                   LOAD SYSTEM OVERVIEW
+                </button>
+             </div>
+           )}
+        </div>
+      ) : activeTab === 'channels' ? (
         <div className="flex flex-col">
           {/* Mobile Card View (Channels) */}
           <div className="md:hidden divide-y divide-gray-100">
@@ -471,9 +805,245 @@ export default function AffiliateDashboardClient({
             </table>
           </div>
         </div>
+      ) : (
+        <div className="flex flex-col">
+          {/* Campaigns Tab Content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6 bg-gray-50/30">
+            {campaigns.map((campaign) => (
+              <div key={campaign.id} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4">
+                   <button 
+                     onClick={() => handleCampaignToggleActive(campaign.id, campaign.is_active)}
+                     className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${
+                       campaign.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-400'
+                     }`}
+                   >
+                     {campaign.is_active ? 'Active' : 'Paused'}
+                   </button>
+                </div>
+                
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-bold text-[#161314] text-xl group-hover:text-[#c3a2ab] transition-colors">{campaign.name}</h3>
+                    <p className="text-gray-400 text-xs font-semibold uppercase tracking-widest mt-1">
+                      {campaign.product_name || 'No Product Assigned'}
+                    </p>
+                  </div>
+
+                  <p className="text-gray-500 text-sm line-clamp-2 min-h-[40px]">
+                    {campaign.description || 'ไม่มีรายละเอียด'}
+                  </p>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+                    <div className="flex flex-col">
+                      <span className="text-2xl font-bold text-[#161314]">{campaign._count?.clips || 0}</span>
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Clips</span>
+                    </div>
+                    <div className="flex gap-2">
+                       <button
+                         onClick={() => handleFetchInsights(campaign.id)}
+                         className="p-2 text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all"
+                         title="View Detailed Insights"
+                       >
+                         <span className="material-symbols-outlined text-[20px]">analytics</span>
+                       </button>
+                       <button
+                         onClick={() => {
+                           setEditingCampaign(campaign);
+                           setCampaignFormData({
+                             name: campaign.name,
+                             product_name: campaign.product_name || '',
+                             description: campaign.description || ''
+                           });
+                           setIsCampaignModalOpen(true);
+                         }}
+                         className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
+                       >
+                         <span className="material-symbols-outlined text-[20px]">edit</span>
+                       </button>
+                       <button
+                         onClick={() => handleCampaignDelete(campaign.id)}
+                         className="p-2 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                       >
+                         <span className="material-symbols-outlined text-[20px]">delete</span>
+                       </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
-      {(activeTab === 'clips' ? filteredClips : filteredChannels).length === 0 && (
+      {/* Campaign Detailed Insight Overlay */}
+      {viewingCampaignStats && (
+        <div className="fixed inset-0 z-[60] bg-white overflow-y-auto animate-in slide-in-from-bottom-4 duration-500">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
+             {/* Header */}
+             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 pb-8 border-b border-gray-100">
+                <div className="space-y-2">
+                   <button 
+                     onClick={() => setViewingCampaignStats(null)}
+                     className="flex items-center gap-2 text-gray-400 hover:text-[#c3a2ab] font-bold text-xs uppercase tracking-widest transition-all mb-4"
+                   >
+                     <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+                     Back to Campaigns
+                   </button>
+                   <h1 className="text-3xl md:text-4xl font-bold text-[#161314]">{viewingCampaignStats.campaign.name}</h1>
+                   <p className="text-gray-400 flex items-center gap-2">
+                     <span className="material-symbols-outlined text-sm">inventory_2</span>
+                     Product: <span className="font-bold text-[#c3a2ab]">{viewingCampaignStats.campaign.product_name || 'N/A'}</span>
+                   </p>
+                </div>
+                <div className="flex gap-3">
+                   <div className="bg-gray-50 px-6 py-3 rounded-2xl border border-gray-100">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Created At</p>
+                      <p className="font-bold text-[#161314]">{format(new Date(viewingCampaignStats.campaign.created_at), 'dd MMM yyyy')}</p>
+                   </div>
+                </div>
+             </div>
+
+             {/* Detailed KPI Stats */}
+             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
+                {[
+                  { label: 'Total Clips', value: viewingCampaignStats.summary.total, color: 'text-gray-800', icon: 'movie' },
+                  { label: 'Approved', value: viewingCampaignStats.summary.approved, color: 'text-emerald-500', icon: 'verified_user' },
+                  { label: 'Pending', value: viewingCampaignStats.summary.pending, color: 'text-orange-400', icon: 'pending' },
+                  { label: 'Rejected', value: viewingCampaignStats.summary.rejected, color: 'text-rose-400', icon: 'cancel' },
+                  { label: 'Creators', value: viewingCampaignStats.summary.uniqueCreators, color: 'text-blue-500', icon: 'group' }
+                ].map((stat, i) => (
+                  <div key={i} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                    <span className={`material-symbols-outlined ${stat.color} mb-3`}>{stat.icon}</span>
+                    <h2 className={`text-2xl font-bold ${stat.color}`}>{stat.value}</h2>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">{stat.label}</p>
+                  </div>
+                ))}
+             </div>
+
+             {/* Contributors Table */}
+             <div className="bg-white rounded-[32px] border border-gray-100 shadow-xl overflow-hidden">
+                <div className="p-8 border-b border-gray-50 flex items-center justify-between">
+                   <h3 className="font-bold text-xl text-[#161314]">Campaign Contributors</h3>
+                   <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{viewingCampaignStats.contributors.length} ACTIVE CHANNELS</span>
+                </div>
+                
+                <div className="overflow-x-auto">
+                   <table className="w-full text-left">
+                      <thead>
+                         <tr className="bg-gray-50/50">
+                            <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest">Creator Channel</th>
+                            <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-center">Approved</th>
+                            <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-center">Pending</th>
+                            <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-center">Total Clips</th>
+                            <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-right">Latest Sub.</th>
+                         </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                         {viewingCampaignStats.contributors.map((contrib, i) => (
+                           <tr key={i} className="hover:bg-gray-50/30 transition-colors">
+                              <td className="px-8 py-6">
+                                 <span className="font-bold text-[#161314] text-lg">{contrib.name}</span>
+                              </td>
+                              <td className="px-8 py-6 text-center">
+                                 <span className="px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full font-bold text-sm">
+                                    {contrib.approved}
+                                 </span>
+                              </td>
+                              <td className="px-8 py-6 text-center">
+                                 <span className="px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full font-bold text-sm">
+                                    {contrib.pending}
+                                 </span>
+                              </td>
+                              <td className="px-8 py-6 text-center">
+                                 <span className="font-bold text-gray-700">{contrib.total}</span>
+                              </td>
+                              <td className="px-8 py-6 text-right">
+                                 <span className="text-xs text-gray-400 font-medium">{format(new Date(contrib.latest), 'dd MMM HH:mm')}</span>
+                              </td>
+                           </tr>
+                         ))}
+                      </tbody>
+                   </table>
+                </div>
+             </div>
+             
+             <div className="mt-12 p-8 bg-gray-50 rounded-[40px] border border-dashed border-gray-200 text-center">
+                <p className="text-gray-400 text-sm font-medium italic mb-2">Detailed clip listings for this campaign are available via the main Clips filter.</p>
+                <button 
+                  onClick={() => {
+                    setCampaignFilter(viewingCampaignStats.campaign.id);
+                    setActiveTab('clips');
+                    setViewingCampaignStats(null);
+                  }}
+                  className="px-6 py-2 bg-[#c3a2ab] text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#b08b96] transition-all"
+                >
+                  View All Clips for this Campaign
+                </button>
+             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Campaign Modal */}
+      {isCampaignModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-[32px] w-full max-w-lg p-8 shadow-2xl animate-in fade-in zoom-in duration-300">
+            <h2 className="text-2xl font-bold text-[#161314] mb-6">
+              {editingCampaign ? 'แก้ไขแคมเปญ' : 'สร้างแคมเปญใหม่'}
+            </h2>
+            <form onSubmit={handleCampaignSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest pl-1">Campaign Name / ชื่อแคมเปญ</label>
+                <input
+                  required
+                  type="text"
+                  className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all outline-none"
+                  value={campaignFormData.name}
+                  onChange={(e) => setCampaignFormData({ ...campaignFormData, name: e.target.value })}
+                  placeholder="เช่น แคมเปญสะสมคลิปเดือนเมษายน"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest pl-1">Product Name / ชื่อสินค้า</label>
+                <input
+                  type="text"
+                  className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all outline-none"
+                  value={campaignFormData.product_name}
+                  onChange={(e) => setCampaignFormData({ ...campaignFormData, product_name: e.target.value })}
+                  placeholder="เช่น Richse Serum"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest pl-1">Description / รายละเอียด</label>
+                <textarea
+                  className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all outline-none min-h-[120px]"
+                  value={campaignFormData.description}
+                  onChange={(e) => setCampaignFormData({ ...campaignFormData, description: e.target.value })}
+                  placeholder="รายละเอียดเงื่อนไขแคมเปญ..."
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsCampaignModalOpen(false)}
+                  className="flex-1 py-4 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-all"
+                >
+                  CANCEL
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-4 bg-[#161314] text-white rounded-2xl font-bold hover:bg-[#252122] transition-all"
+                >
+                  {editingCampaign ? 'SAVE CHANGES' : 'CREATE CAMPAIGN'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {(activeTab === 'clips' ? filteredClips : activeTab === 'channels' ? filteredChannels : campaigns).length === 0 && (
         <div className="px-6 py-20 text-center text-gray-400">
           <span className="material-symbols-outlined text-4xl mb-2">inventory_2</span>
           <p>No records found matching your criteria</p>
