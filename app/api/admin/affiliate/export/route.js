@@ -37,9 +37,18 @@ const hairBorder = (argb = C.border) => ({
 });
 
 // ─── Route Handler ────────────────────────────────────────────────────────────
-export async function GET() {
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const channel = searchParams.get('channel');
+
   try {
+    const where = {};
+    if (channel) {
+      where.channel_name = channel;
+    }
+
     const clips = await prisma.affiliateClip.findMany({
+      where,
       orderBy: { created_at: "desc" },
       include: { campaign: true }
     });
@@ -329,7 +338,9 @@ export async function GET() {
     const buffer = await wb.xlsx.writeBuffer();
     const now = new Date();
     const stamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
-    const filename = `Richse_Affiliate_${stamp}.xlsx`;
+    const filename = channel 
+      ? `Richse_Affiliate_${sanitize(channel).replace(/\s+/g, '_')}_${stamp}.xlsx`
+      : `Richse_Affiliate_${stamp}.xlsx`;
 
     return new NextResponse(buffer, {
       status: 200,

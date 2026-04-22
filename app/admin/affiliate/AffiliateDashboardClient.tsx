@@ -128,22 +128,28 @@ export default function AffiliateDashboardClient({
     return matchesSearch && matchesStatus;
   });
 
-  const handleExport = async () => {
+  const handleExport = async (channel?: string | unknown) => {
     setExporting(true);
     try {
-      const response = await fetch('/api/admin/affiliate/export');
+      const channelName = typeof channel === 'string' ? channel : undefined;
+      const url = channelName 
+        ? `/api/admin/affiliate/export?channel=${encodeURIComponent(channelName)}`
+        : '/api/admin/affiliate/export';
+      const response = await fetch(url);
       if (!response.ok) throw new Error('Export failed');
       const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      const urlObj = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
+      a.href = urlObj;
       const date = new Date().toISOString().split('T')[0];
-      a.download = `richse-affiliate-${date}.xlsx`;
+      a.download = channel 
+        ? `richse-affiliate-${channel}-${date}.xlsx`
+        : `richse-affiliate-${date}.xlsx`;
       document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(urlObj);
       document.body.removeChild(a);
-      toast.success('ดาวน์โหลด Excel เรียบร้อยแล้ว');
+      toast.success(channel ? `ดาวน์โหลด Excel ของ ${channel} เรียบร้อยแล้ว` : 'ดาวน์โหลด Excel เรียบร้อยแล้ว');
     } catch {
       toast.error('เกิดข้อผิดพลาดในการดาวน์โหลด');
     } finally {
@@ -388,7 +394,7 @@ export default function AffiliateDashboardClient({
           {activeTab === 'clips' && (
             <button
               disabled={exporting}
-              onClick={handleExport}
+              onClick={() => handleExport()}
               className="w-full lg:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#161314] text-white rounded-xl md:rounded-2xl font-bold hover:bg-[#252122] transition-all active:scale-95 shadow-sm disabled:opacity-50"
             >
               {exporting ? (
@@ -634,6 +640,7 @@ export default function AffiliateDashboardClient({
                                <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-center">Campaigns</th>
                                <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-center">Total Lifetime</th>
                                <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-right">Latest Sub.</th>
+                               <th className="px-8 py-5 text-[12px] font-bold text-gray-500 uppercase tracking-widest text-right">Export</th>
                             </tr>
                          </thead>
                          <tbody className="divide-y divide-gray-50">
@@ -677,6 +684,15 @@ export default function AffiliateDashboardClient({
                                        {item.latest ? format(new Date(item.latest), 'dd MMM yyyy') : 'No submissions'}
                                     </span>
                                  </td>
+                                  <td className="px-8 py-6 text-right">
+                                     <button
+                                        onClick={() => handleExport(item.name)}
+                                        className="p-2 text-gray-400 hover:text-[#c3a2ab] hover:bg-[#c3a2ab]/5 rounded-xl transition-all"
+                                        title="Export Individual Excel"
+                                     >
+                                        <span className="material-symbols-outlined text-[20px]">download</span>
+                                     </button>
+                                  </td>
                               </tr>
                             ))}
                          </tbody>
@@ -733,6 +749,13 @@ export default function AffiliateDashboardClient({
                     </button>
                   )}
                   <button
+                           onClick={() => handleExport(channel.name)}
+                           className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                           title="Export Excel"
+                         >
+                           <span className="material-symbols-outlined text-[18px]">download</span>
+                         </button>
+                         <button
                     onClick={() => handleChannelDelete(channel.id)}
                     className="p-3 text-rose-300 hover:text-rose-500 bg-rose-50 rounded-xl transition-all"
                   >
@@ -791,6 +814,13 @@ export default function AffiliateDashboardClient({
                           </button>
                         )}
                         <button
+                           onClick={() => handleExport(channel.name)}
+                           className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                           title="Export Excel"
+                         >
+                           <span className="material-symbols-outlined text-[18px]">download</span>
+                         </button>
+                         <button
                           onClick={() => handleChannelDelete(channel.id)}
                           className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                           title="Delete"
