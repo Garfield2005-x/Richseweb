@@ -5,16 +5,20 @@ const prisma = new PrismaClient();
 
 async function main() {
   const email = "admin@richse.com";
-  const password = "Richse88";
+  const password = "Richse888!"; // <-- เปลี่ยนรหัสผ่านใหม่ที่นี่
   const name = "Admin";
+
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
-    console.log("✅ Admin user already exists:", existing.email);
+    await prisma.user.update({
+      where: { email },
+      data: { password: hashedPassword },
+    });
+    console.log("✅ Admin user password updated:", existing.email);
     return;
   }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
 
   const admin = await prisma.user.create({
     data: {

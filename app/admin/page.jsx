@@ -99,7 +99,7 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#c3a2ab]">
             <Activity size={12} /> Live Operations Center
           </div>
-          <h1 className="text-[48px] font-display font-black text-gray-900 tracking-tight">Intelligence Hub</h1>
+          <h1 className="text-[48px] font-display font-black text-gray-900 tracking-tight">RICHSE Intelligence Hub</h1>
           <p className="text-gray-500 font-medium">Real-time conversion insights and performance analytics.</p>
         </div>
 

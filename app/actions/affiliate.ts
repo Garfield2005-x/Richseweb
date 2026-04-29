@@ -266,11 +266,14 @@ export async function getGlobalAffiliateStats() {
       }
     });
 
-    const leaderboard = Object.values(channelStatsMap).map((c) => ({
-      ...c,
-      campaignsJoined: Array.from(c.campaignsJoined),
-      campaignsCount: c.campaignsJoined.size
-    })).sort((a, b) => b.approved - a.approved || b.total - a.total);
+    const leaderboard = Object.values(channelStatsMap)
+      .filter((c) => c.total > 0)
+      .map((c) => ({
+        ...c,
+        campaignsJoined: Array.from(c.campaignsJoined),
+        campaignsCount: c.campaignsJoined.size
+      }))
+      .sort((a, b) => b.approved - a.approved || b.total - a.total);
 
     return {
       success: true,

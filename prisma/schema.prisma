@@ -36,6 +36,10 @@ model User {
   wishlist      Wishlist[]
   rewardRedemptions RewardRedemption[]
   reviews       ProductReview[]
+  liveSessions  LiveSession[]
+  leaveRequests LeaveRequest[]
+  liveSchedules LiveSchedule[]
+  supportTickets SupportTicket[]
   points        Int      @default(0)
   cookiePreferences UserCookiePreference?
 
@@ -458,4 +462,64 @@ model AffiliateChannel {
   created_at DateTime @default(now())
 
   @@map("affiliate_channels")
+}
+
+model LiveSession {
+  id            String    @id @default(cuid())
+  userId        String    
+  platform      String    
+  startTime     DateTime  @default(now())
+  endTime       DateTime? 
+  status        String    @default("ONGOING") 
+  durationMin   Int?      
+  salesAmount   Float?    
+  salesImageUrl String?   // URL of sales screenshot in Supabase Storage
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("live_sessions")
+}
+
+model LeaveRequest {
+  id          String    @id @default(cuid())
+  userId      String    
+  leaveType   String    // SICK, PERSONAL, VACATION
+  startDate   DateTime
+  endDate     DateTime
+  reason      String?   @db.Text
+  status      String    @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("leave_requests")
+}
+
+model LiveSchedule {
+  id          String    @id @default(cuid())
+  userId      String    
+  platform    String    
+  startTime   DateTime
+  endTime     DateTime
+  status      String    @default("SCHEDULED") // SCHEDULED, CANCELLED, COMPLETED
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("live_schedules")
+}
+
+model SupportTicket {
+  id          String    @id @default(cuid())
+  userId      String    
+  issueType   String    // EQUIPMENT, NETWORK, BANNED, OTHER
+  description String    @db.Text
+  status      String    @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("support_tickets")
 }

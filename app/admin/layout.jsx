@@ -128,6 +128,14 @@ export default async function AdminLayout({ children }) {
             </Link>
 
             <Link
+              href="/admin/live-tracking"
+              className="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors font-bold"
+            >
+              <span className="material-symbols-outlined notranslate">sensors</span>
+              <span className="font-bold">Live Tracking</span>
+            </Link>
+
+            <Link
               href="/admin/automations"
               className="flex items-center gap-3 px-4 py-3 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-colors font-bold"
             >
@@ -150,7 +158,7 @@ export default async function AdminLayout({ children }) {
               className="flex items-center justify-center gap-2 w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <span className="material-symbols-outlined text-[22px]">storefront</span>
-              <span className="text-[22px] font-medium">Back to Store</span>
+              <span className="text-[22px] font-medium">Back to RICHSE Store</span>
             </Link>
           </div>
         </div>
