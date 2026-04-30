@@ -17,6 +17,11 @@ export default async function LiveTrackerPage() {
     redirect("/login?callbackUrl=/live-tracker");
   }
 
+  const role = (session.user as { role?: string })?.role;
+  if (role !== "STAFF" && role !== "ADMIN") {
+    redirect("/");
+  }
+
   // Fetch all required data for the V2 Hub
   const [
     currentSessionRes, 

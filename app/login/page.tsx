@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
@@ -29,7 +29,13 @@ export default function LoginPage() {
       if (res?.error) {
         setError("Invalid email or password");
       } else {
-        router.push("/account");
+        const session = await getSession();
+        const role = (session?.user as { role?: string })?.role;
+        if (role === "STAFF") {
+          router.push("/live-tracker");
+        } else {
+          router.push("/account");
+        }
       }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {

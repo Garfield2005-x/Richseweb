@@ -7,13 +7,13 @@ import { renderTemplate, sendTestEmail, logMarketingAction, injectTracking } fro
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   const user = session?.user as { email: string; role: string } | null;
-  
+
   if (user?.role !== "ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { id } = await params;
-  
+
   try {
     const { testEmail } = await req.json();
     if (!testEmail) {
@@ -36,7 +36,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     testHtml = injectTracking(testHtml, "TEST_TOKEN", process.env.NEXTAUTH_URL || "http://localhost:3000");
 
     await sendTestEmail(testEmail, campaign.subject, testHtml);
-    
+
     await logMarketingAction(user.email, "TEST_CAMPAIGN", id, null, { testEmail });
 
     return NextResponse.json({ success: true });
