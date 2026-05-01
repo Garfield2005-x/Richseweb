@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
+import { put } from "@vercel/blob";
 
 const MAX_SIZE_MB = 10;
-const UPLOAD_DIR = join(process.cwd(), "public", "uploads", "live-sales");
 
 export async function POST(req: NextRequest) {
   try {
@@ -25,13 +23,13 @@ export async function POST(req: NextRequest) {
     // Validate MIME type — รองรับ HEIC/HEIF (iPhone), AVIF (Android), image/jpg (บาง browser)
     const mimeToExt: Record<string, string> = {
       "image/jpeg": "jpg",
-      "image/jpg": "jpg",
-      "image/png": "png",
+      "image/jpg":  "jpg",
+      "image/png":  "png",
       "image/webp": "webp",
-      "image/gif": "gif",
-      "image/heic": "jpg",   // iPhone screenshot — แปลงเป็น jpg เพื่อให้ browser เปิดได้
-      "image/heif": "jpg",   // HEIF variant
-      "image/avif": "jpg",   // Android modern screenshot
+      "image/gif":  "gif",
+      "image/heic": "jpg",  // iPhone screenshot
+      "image/heif": "jpg",  // HEIF variant
+      "image/avif": "jpg",  // Android modern
     };
     if (!(file.type in mimeToExt)) {
       return NextResponse.json(
@@ -49,19 +47,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Build a safe filename — ใช้ extension จาก MIME type ไม่ใช่จากชื่อไฟล์ (มือถืออาจไม่มี extension)
+    // Build a safe filename — ใช้ extension จาก MIME type
     const safeExt = mimeToExt[file.type] ?? "jpg";
-    const filename = `${userId}_${Date.now()}.${safeExt}`;
+    const filename = `live-sales/${userId}_${Date.now()}.${safeExt}`;
 
-    // Ensure the upload directory exists
-    await mkdir(UPLOAD_DIR, { recursive: true });
+    // Upload to Vercel Blob (persistent cloud storage — works on serverless)
+    const blob = await put(filename, file, {
+      access: "public",
+      contentType: file.type,
+    });
 
-    // Write file to disk
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(join(UPLOAD_DIR, filename), buffer);
-
-    // Return a public URL (served by Next.js static file handling)
-    return NextResponse.json({ url: `/uploads/live-sales/${filename}` });
+    return NextResponse.json({ url: blob.url });
   } catch (err) {
     console.error("Upload route error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
