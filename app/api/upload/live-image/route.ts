@@ -57,9 +57,9 @@ export async function POST(req: NextRequest) {
 
     try {
       const blob = await put(filename, file, {
-        access: "public",
+        access: "private", // เปลี่ยนเป็น private ตามค่าเริ่มต้นของ Store คุณ
         contentType: file.type,
-        token: process.env.BLOB_READ_WRITE_TOKEN, // Ensure we use the token
+        token: process.env.BLOB_READ_WRITE_TOKEN,
       });
 
       return NextResponse.json({ url: blob.url });
