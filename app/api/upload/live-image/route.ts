@@ -22,11 +22,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Validate MIME type
-    const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-    if (!allowed.includes(file.type)) {
+    // Validate MIME type — รองรับ HEIC/HEIF (iPhone), AVIF (Android), image/jpg (บาง browser)
+    const mimeToExt: Record<string, string> = {
+      "image/jpeg": "jpg",
+      "image/jpg": "jpg",
+      "image/png": "png",
+      "image/webp": "webp",
+      "image/gif": "gif",
+      "image/heic": "jpg",   // iPhone screenshot — แปลงเป็น jpg เพื่อให้ browser เปิดได้
+      "image/heif": "jpg",   // HEIF variant
+      "image/avif": "jpg",   // Android modern screenshot
+    };
+    if (!(file.type in mimeToExt)) {
       return NextResponse.json(
-        { error: "Only JPG, PNG, WEBP, and GIF are allowed" },
+        { error: "ไฟล์รูปไม่รองรับ กรุณาส่งเป็น JPG, PNG, WEBP หรือ GIF" },
         { status: 400 }
       );
     }
@@ -40,9 +49,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Build a safe filename
-    const rawExt = file.name.split(".").pop()?.toLowerCase() || "jpg";
-    const safeExt = ["jpg", "jpeg", "png", "webp", "gif"].includes(rawExt) ? rawExt : "jpg";
+    // Build a safe filename — ใช้ extension จาก MIME type ไม่ใช่จากชื่อไฟล์ (มือถืออาจไม่มี extension)
+    const safeExt = mimeToExt[file.type] ?? "jpg";
     const filename = `${userId}_${Date.now()}.${safeExt}`;
 
     // Ensure the upload directory exists
