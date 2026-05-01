@@ -3,63 +3,75 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { put } from "@vercel/blob";
 
-const MAX_SIZE_MB = 10;
+// Vercel Serverless Function Limit is 4.5MB
+// We set it to 4MB to be safe.
+const MAX_SIZE_MB = 4;
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as { id?: string })?.id;
+    
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      console.error("Upload error: Unauthorized - No session found");
+      return NextResponse.json({ error: "กรุณาเข้าสู่ระบบใหม่อีกครั้ง (Session Expired)" }, { status: 401 });
     }
 
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
 
     if (!file) {
-      return NextResponse.json({ error: "No file provided" }, { status: 400 });
+      return NextResponse.json({ error: "ไม่พบไฟล์ที่ส่งมา" }, { status: 400 });
     }
 
-    // Validate MIME type — รองรับ HEIC/HEIF (iPhone), AVIF (Android), image/jpg (บาง browser)
+    // Validate file size early (Vercel limit is 4.5MB)
+    const sizeMB = file.size / (1024 * 1024);
+    if (sizeMB > MAX_SIZE_MB) {
+      return NextResponse.json(
+        { error: `รูปมีขนาดใหญ่เกินไป (${sizeMB.toFixed(2)}MB) Vercel จำกัดไว้ไม่เกิน 4MB` },
+        { status: 413 }
+      );
+    }
+
+    // Validate MIME type
     const mimeToExt: Record<string, string> = {
       "image/jpeg": "jpg",
       "image/jpg":  "jpg",
       "image/png":  "png",
       "image/webp": "webp",
       "image/gif":  "gif",
-      "image/heic": "jpg",  // iPhone screenshot
-      "image/heif": "jpg",  // HEIF variant
-      "image/avif": "jpg",  // Android modern
+      "image/heic": "jpg",
+      "image/heif": "jpg",
+      "image/avif": "jpg",
     };
+    
     if (!(file.type in mimeToExt)) {
       return NextResponse.json(
-        { error: "ไฟล์รูปไม่รองรับ กรุณาส่งเป็น JPG, PNG, WEBP หรือ GIF" },
+        { error: `ไม่รองรับไฟล์ประเภท ${file.type} กรุณาใช้ไฟล์รูปปกติ` },
         { status: 400 }
       );
     }
 
-    // Validate file size
-    const sizeMB = file.size / (1024 * 1024);
-    if (sizeMB > MAX_SIZE_MB) {
-      return NextResponse.json(
-        { error: `File must be under ${MAX_SIZE_MB}MB` },
-        { status: 400 }
-      );
-    }
-
-    // Build a safe filename — ใช้ extension จาก MIME type
     const safeExt = mimeToExt[file.type] ?? "jpg";
     const filename = `live-sales/${userId}_${Date.now()}.${safeExt}`;
 
-    // Upload to Vercel Blob (persistent cloud storage — works on serverless)
-    const blob = await put(filename, file, {
-      access: "public",
-      contentType: file.type,
-    });
+    try {
+      const blob = await put(filename, file, {
+        access: "public",
+        contentType: file.type,
+        token: process.env.BLOB_READ_WRITE_TOKEN, // Ensure we use the token
+      });
 
-    return NextResponse.json({ url: blob.url });
-  } catch (err) {
-    console.error("Upload route error:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+      return NextResponse.json({ url: blob.url });
+    } catch (blobError: any) {
+      console.error("Vercel Blob Storage Error:", blobError);
+      return NextResponse.json({ 
+        error: "ระบบ Storage มีปัญหา: " + (blobError.message || "Unknown Blob Error") 
+      }, { status: 500 });
+    }
+
+  } catch (err: any) {
+    console.error("Upload API Error:", err);
+    return NextResponse.json({ error: "เกิดข้อผิดพลาดภายในระบบ: " + err.message }, { status: 500 });
   }
 }

@@ -130,17 +130,37 @@ export default function LiveTrackerClient({
     // Upload image first if one was selected
     if (salesImage) {
       setIsUploading(true);
-      const fd = new FormData();
-      fd.append('file', salesImage);
-      const uploadRes = await fetch('/api/upload/live-image', { method: 'POST', body: fd });
-      const uploadData = await uploadRes.json();
-      if (!uploadRes.ok || !uploadData.url) {
-        toast.error(uploadData.error || 'อัปโหลดรูปไม่สำเร็จ ลองใหม่อีกครั้ง');
+      try {
+        const fd = new FormData();
+        fd.append('file', salesImage);
+        
+        const uploadRes = await fetch('/api/upload/live-image', { 
+          method: 'POST', 
+          body: fd,
+        });
+
+        // Try to get response data even if it fails
+        let uploadData;
+        try {
+          uploadData = await uploadRes.json();
+        } catch (e) {
+          uploadData = { error: `Server Error (${uploadRes.status}): ไม่สามารถอ่านข้อมูลจากเซิร์ฟเวอร์ได้` };
+        }
+
+        if (!uploadRes.ok || !uploadData.url) {
+          toast.error(uploadData.error || 'อัปโหลดรูปไม่สำเร็จ (ไม่ทราบสาเหตุ)');
+          setIsLoading(false);
+          setIsUploading(false);
+          return;
+        }
+        imageUrl = uploadData.url;
+      } catch (networkError: any) {
+        console.error("Network upload error:", networkError);
+        toast.error(`ปัญหาการเชื่อมต่อ: ${networkError.message || 'เน็ตหลุดหรือไฟล์ใหญ่เกินไป'}`);
         setIsLoading(false);
         setIsUploading(false);
         return;
       }
-      imageUrl = uploadData.url;
       setIsUploading(false);
     }
 
