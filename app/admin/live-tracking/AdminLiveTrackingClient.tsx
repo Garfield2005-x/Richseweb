@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { updateLeaveStatus, updateTicketStatus } from '@/app/actions/portal';
+import { deleteLiveSession } from '@/app/actions/live';
 import { toast } from 'react-hot-toast';
 
 interface AdminLiveTrackingProps {
@@ -62,7 +63,14 @@ export default function AdminLiveTrackingClient({
     return `${hours}h ${mins}m`;
   };
 
-  const userTimesheets = (completed as unknown as ExtendedSession[]).reduce((acc: Record<string, { name: string; email: string; totalMins: number; totalSales: number; sessionsCount: number }>, curr) => {
+  const userTimesheets = (completed as unknown as ExtendedSession[]).reduce((acc: Record<string, { 
+    name: string; 
+    email: string; 
+    totalMins: number; 
+    totalSales: number; 
+    sessionsCount: number;
+    platforms: Record<string, { mins: number; sales: number; count: number }>
+  }>, curr) => {
     const email = curr.user.email || 'unknown';
     if (!acc[email]) {
       acc[email] = {
@@ -70,16 +78,39 @@ export default function AdminLiveTrackingClient({
         email: email,
         totalMins: 0,
         totalSales: 0,
-        sessionsCount: 0
+        sessionsCount: 0,
+        platforms: {}
       };
     }
+    
+    const plat = curr.platform;
+    if (!acc[email].platforms[plat]) {
+      acc[email].platforms[plat] = { mins: 0, sales: 0, count: 0 };
+    }
+
     acc[email].totalMins += (curr.durationMin || 0);
     acc[email].totalSales += (curr.salesAmount || 0);
     acc[email].sessionsCount += 1;
+    
+    acc[email].platforms[plat].mins += (curr.durationMin || 0);
+    acc[email].platforms[plat].sales += (curr.salesAmount || 0);
+    acc[email].platforms[plat].count += 1;
+    
     return acc;
   }, {});
 
   const timesheetArray = Object.values(userTimesheets).sort((a, b) => b.totalSales - a.totalSales);
+  const handleDeleteSession = async (id: string) => {
+    if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบประวัติการไลฟ์นี้? การลบจะไม่สามารถย้อนกลับได้')) return;
+    
+    const res = await deleteLiveSession(id);
+    if (res.success) {
+      toast.success('ลบประวัติการไลฟ์เรียบร้อยแล้ว');
+      router.refresh();
+    } else {
+      toast.error(res.error || 'เกิดข้อผิดพลาดในการลบ');
+    }
+  };
 
   const handleUpdateLeave = async (id: string, status: string) => {
     const res = await updateLeaveStatus(id, status);
@@ -233,25 +264,48 @@ export default function AdminLiveTrackingClient({
                     {timesheetArray.map((sheet, index: number) => {
                       const hours = Math.floor(sheet.totalMins / 60);
                       const mins = sheet.totalMins % 60;
-                      const commission = sheet.totalSales * 0.05;
+                      const totalComm = Object.entries(sheet.platforms).reduce((acc, [pName, pStat]) => {
+                        const rate = pName.toLowerCase() === 'shopee' ? 0.03 : 0.05;
+                        return acc + (pStat.sales * rate);
+                      }, 0);
 
                       return (
-                        <tr key={index} className="hover:bg-gray-50/30 transition-colors">
+                        <tr key={index} className="hover:bg-gray-50/30 transition-colors border-b border-gray-50">
                           <td className="px-6 py-5">
                             <div className="font-bold text-[#161314]">{sheet.name || sheet.email}</div>
                             <div className="text-xs text-gray-500">{sheet.email}</div>
+                            
+                            {/* Platform Breakdown */}
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {Object.entries(sheet.platforms).map(([pName, pStat]) => (
+                                <div key={pName} className="flex flex-col bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 min-w-[100px]">
+                                  <div className="flex justify-between items-center mb-0.5">
+                                    <span className="text-[9px] font-black text-[#c3a2ab] uppercase tracking-tighter">{pName}</span>
+                                    <span className="text-[8px] font-bold text-gray-400">({pName.toLowerCase() === 'shopee' ? '3%' : '5%'})</span>
+                                  </div>
+                                  <div className="flex justify-between items-center gap-4">
+                                    <span className="text-[10px] font-bold text-gray-500">{Math.floor(pStat.mins / 60)}h {pStat.mins % 60}m</span>
+                                    <span className="text-[10px] font-black text-gray-700">฿{pStat.sales.toLocaleString()}</span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           </td>
-                          <td className="px-6 py-5 text-center font-bold text-gray-600">{sheet.sessionsCount}</td>
-                          <td className="px-6 py-5 text-center">
-                            <span className="bg-[#c3a2ab]/10 text-[#c3a2ab] px-3 py-1 rounded-full font-bold text-sm">
-                              {hours}h {mins}m
-                            </span>
+                          <td className="px-6 py-5 text-center font-bold text-gray-600 align-top">
+                            <div className="mt-1">{sheet.sessionsCount}</div>
                           </td>
-                          <td className="px-6 py-5 text-right font-black text-lg text-[#161314]">
-                            ฿{sheet.totalSales.toLocaleString()}
+                          <td className="px-6 py-5 text-center align-top">
+                            <div className="mt-1">
+                              <span className="bg-[#c3a2ab]/10 text-[#c3a2ab] px-3 py-1 rounded-full font-bold text-sm">
+                                {hours}h {mins}m
+                              </span>
+                            </div>
                           </td>
-                          <td className="px-6 py-5 text-right font-bold text-emerald-600">
-                            ฿{commission.toLocaleString()}
+                          <td className="px-6 py-5 text-right font-black text-lg text-[#161314] align-top">
+                            <div className="mt-1 font-mono">฿{sheet.totalSales.toLocaleString()}</div>
+                          </td>
+                          <td className="px-6 py-5 text-right font-bold text-emerald-600 align-top">
+                            <div className="mt-1 font-mono">฿{totalComm.toLocaleString()}</div>
                           </td>
                         </tr>
                       );
@@ -278,7 +332,8 @@ export default function AdminLiveTrackingClient({
                       <th className="px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Platform</th>
                       <th className="px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">Duration</th>
                       <th className="px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-right">Sales</th>
-                      <th className="px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center rounded-r-xl">Receipt</th>
+                      <th className="px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">Receipt</th>
+                      <th className="px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center rounded-r-xl">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
@@ -309,13 +364,22 @@ export default function AdminLiveTrackingClient({
                               <img
                                 src={s.salesImageUrl}
                                 alt="Sales receipt"
-                                className="w-12 h-12 object-cover rounded-xl border border-gray-200 group-hover:scale-110 group-hover:shadow-lg transition-all duration-200 cursor-zoom-in"
+                                className="w-10 h-10 object-cover rounded-xl border border-gray-200 group-hover:scale-110 group-hover:shadow-lg transition-all duration-200 cursor-zoom-in"
                               />
                               <span className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-xl transition-all" />
                             </button>
                           ) : (
                             <span className="text-gray-300 text-xs">—</span>
                           )}
+                        </td>
+                        <td className="px-4 py-4 text-center">
+                          <button 
+                            onClick={() => handleDeleteSession(s.id)}
+                            className="text-gray-300 hover:text-red-500 transition-colors p-2"
+                            title="ลบเซสชัน"
+                          >
+                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                          </button>
                         </td>
                       </tr>
                     )) : (

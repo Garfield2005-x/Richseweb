@@ -173,3 +173,27 @@ export async function getAdminLiveSessions() {
     return { error: "Failed to get live sessions" };
   }
 }
+export async function deleteLiveSession(id: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    if ((session?.user as { role?: string })?.role !== "ADMIN") {
+      return { error: "Unauthorized" };
+    }
+
+    // Use deleteMany to avoid error if already deleted
+    const result = await prisma.liveSession.deleteMany({
+      where: { id },
+    });
+
+    if (result.count === 0) {
+      return { error: "ไม่พบข้อมูลเซสชัน หรือถูกลบไปแล้ว" };
+    }
+
+    revalidatePath("/admin/live-tracking");
+    revalidatePath("/live-tracker");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting live session:", error);
+    return { error: "Failed to delete live session" };
+  }
+}

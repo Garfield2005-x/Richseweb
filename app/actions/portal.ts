@@ -271,10 +271,11 @@ export async function getPersonalAnalytics() {
     const totalSales = sessions.reduce((acc, curr) => acc + (curr.salesAmount || 0), 0);
     const totalMinutes = sessions.reduce((acc, curr) => acc + (curr.durationMin || 0), 0);
 
-    const platformStats = sessions.reduce((acc: Record<string, { sales: number; count: number }>, curr) => {
-      if (!acc[curr.platform]) acc[curr.platform] = { sales: 0, count: 0 };
+    const platformStats = sessions.reduce((acc: Record<string, { sales: number; count: number; minutes: number }>, curr) => {
+      if (!acc[curr.platform]) acc[curr.platform] = { sales: 0, count: 0, minutes: 0 };
       acc[curr.platform].sales += (curr.salesAmount || 0);
       acc[curr.platform].count += 1;
+      acc[curr.platform].minutes += (curr.durationMin || 0);
       return acc;
     }, {});
 

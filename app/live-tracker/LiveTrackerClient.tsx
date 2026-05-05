@@ -14,7 +14,7 @@ interface LiveTrackerProps {
     totalSales: number;
     totalHours: number;
     sessionCount: number;
-    platformStats: Record<string, unknown>;
+    platformStats: Record<string, { sales: number; count: number; minutes: number }>;
   } | null;
   schedules: unknown[];
   leaves: unknown[];
@@ -143,7 +143,7 @@ export default function LiveTrackerClient({
         let uploadData;
         try {
           uploadData = await uploadRes.json();
-        } catch (e) {
+        } catch {
           uploadData = { error: `Server Error (${uploadRes.status}): ไม่สามารถอ่านข้อมูลจากเซิร์ฟเวอร์ได้` };
         }
 
@@ -154,9 +154,10 @@ export default function LiveTrackerClient({
           return;
         }
         imageUrl = uploadData.url;
-      } catch (networkError: any) {
-        console.error("Network upload error:", networkError);
-        toast.error(`ปัญหาการเชื่อมต่อ: ${networkError.message || 'เน็ตหลุดหรือไฟล์ใหญ่เกินไป'}`);
+      } catch (err: unknown) {
+        console.error("End session error:", err);
+        const errorMessage = err instanceof Error ? err.message : "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
+        toast.error(errorMessage);
         setIsLoading(false);
         setIsUploading(false);
         return;
@@ -395,14 +396,27 @@ export default function LiveTrackerClient({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {Object.keys(analytics.platformStats).length > 0 ? (
                   Object.entries(analytics.platformStats).map(([plat, stat]) => {
-                    const s = stat as { sales: number; count: number };
+                    const s = stat;
+                    const hours = Math.floor(s.minutes / 60);
+                    const mins = s.minutes % 60;
                     return (
-                      <div key={plat} className="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center">
-                        <div>
-                          <p className="font-bold text-gray-800">{plat}</p>
-                          <p className="text-xs text-gray-500">{s.count} sessions</p>
+                      <div key={plat} className="bg-white p-5 rounded-2xl border border-gray-100 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="flex justify-between items-center">
+                          <p className="font-black text-[#161314] text-lg">{plat}</p>
+                          <span className="bg-[#f9f5f6] text-[#c3a2ab] text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-widest">{s.count} sessions</span>
                         </div>
-                        <p className="font-black text-[#c3a2ab]">฿{s.sales.toLocaleString()}</p>
+                        <div className="flex justify-between items-end border-t border-gray-50 pt-2">
+                          <div className="space-y-1">
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Time Spend</p>
+                            <p className="font-bold text-gray-700">
+                              {hours > 0 && `${hours}h `}{mins}m
+                            </p>
+                          </div>
+                          <div className="text-right space-y-1">
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Revenue</p>
+                            <p className="font-black text-[#c3a2ab] text-xl">฿{s.sales.toLocaleString()}</p>
+                          </div>
+                        </div>
                       </div>
                     );
                   })

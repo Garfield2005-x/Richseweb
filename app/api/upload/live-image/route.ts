@@ -57,21 +57,23 @@ export async function POST(req: NextRequest) {
 
     try {
       const blob = await put(filename, file, {
-        access: "private", // เปลี่ยนเป็น private ตามค่าเริ่มต้นของ Store คุณ
+        access: "public", 
         contentType: file.type,
         token: process.env.BLOB_READ_WRITE_TOKEN,
       });
 
       return NextResponse.json({ url: blob.url });
-    } catch (blobError: any) {
+    } catch (blobError: unknown) {
       console.error("Vercel Blob Storage Error:", blobError);
+      const errorMessage = blobError instanceof Error ? blobError.message : "Unknown Blob Error";
       return NextResponse.json({ 
-        error: "ระบบ Storage มีปัญหา: " + (blobError.message || "Unknown Blob Error") 
+        error: "ระบบ Storage มีปัญหา: " + errorMessage
       }, { status: 500 });
     }
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Upload API Error:", err);
-    return NextResponse.json({ error: "เกิดข้อผิดพลาดภายในระบบ: " + err.message }, { status: 500 });
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: "เกิดข้อผิดพลาดภายในระบบ: " + errorMessage }, { status: 500 });
   }
 }
