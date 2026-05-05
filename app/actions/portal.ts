@@ -4,6 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { revalidatePath } from "next/cache";
+import { sendLineMessage } from "@/lib/line";
+import { format } from "date-fns";
+import { th } from "date-fns/locale";
 
 // ==============================================
 // 1. LEAVE MANAGEMENT ACTIONS
@@ -26,6 +29,22 @@ export async function submitLeaveRequest(data: { leaveType: string; startDate: D
     });
 
     revalidatePath("/live-tracker");
+
+    // Send LINE Notification
+    const userName = session?.user?.name || "พนักงาน";
+    const startDateStr = format(new Date(data.startDate), "dd/MM/yyyy");
+    const endDateStr = format(new Date(data.endDate), "dd/MM/yyyy");
+    
+    const lineMessage = `
+📝 มีรายการขอลาใหม่
+👤 โดย: ${userName}
+📌 ประเภท: ${data.leaveType}
+📅 วันที่: ${startDateStr} - ${endDateStr}
+💬 เหตุผล: ${data.reason || "-"}
+`.trim();
+
+    await sendLineMessage(lineMessage);
+
     return { success: true, request };
   } catch (error) {
     console.error("Error submitting leave request:", error);
@@ -188,6 +207,18 @@ export async function createTicket(data: { issueType: string; description: strin
     });
 
     revalidatePath("/live-tracker");
+
+    // Send LINE Notification
+    const userName = session?.user?.name || "พนักงาน";
+    const lineMessage = `
+⚠️ แจ้งปัญหาใหม่ (SOS)
+👤 โดย: ${userName}
+🚨 ประเภท: ${data.issueType}
+📄 รายละเอียด: ${data.description}
+`.trim();
+
+    await sendLineMessage(lineMessage);
+
     return { success: true, ticket };
   } catch {
     return { error: "Failed to create support ticket" };
