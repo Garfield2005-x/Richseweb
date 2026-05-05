@@ -36,7 +36,10 @@ export async function GET() {
     }
 
     const completed = await prisma.liveSession.findMany({
-      where: { status: "COMPLETED" },
+      where: { 
+        status: "COMPLETED",
+        startTime: { gte: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) }
+      },
       include: {
         user: {
           select: { name: true, email: true }

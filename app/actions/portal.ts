@@ -256,9 +256,14 @@ export async function getPersonalAnalytics() {
     const userId = (session?.user as { id?: string })?.id;
     if (!userId) return { error: "Unauthorized" };
 
-    const currentMonthStart = new Date();
-    currentMonthStart.setDate(1);
-    currentMonthStart.setHours(0, 0, 0, 0);
+    // Calculate start of month in Asia/Bangkok time (UTC+7)
+    const now = new Date();
+    // Offset by 7 hours to get Bangkok time, then reset to start of month
+    const thTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+    thTime.setUTCDate(1);
+    thTime.setUTCHours(0, 0, 0, 0);
+    // Convert back to UTC for the database query
+    const currentMonthStart = new Date(thTime.getTime() - (7 * 60 * 60 * 1000));
 
     const sessions = await prisma.liveSession.findMany({
       where: {

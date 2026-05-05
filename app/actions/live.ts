@@ -157,14 +157,18 @@ export async function getAdminLiveSessions() {
     });
 
     const completed = await prisma.liveSession.findMany({
-      where: { status: "COMPLETED" },
+      where: { 
+        status: "COMPLETED",
+        // Ensure we get all recent data for accurate monthly summaries
+        startTime: { gte: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) }
+      },
       include: {
         user: {
           select: { name: true, email: true }
         }
       },
       orderBy: { endTime: 'desc' },
-      take: 100, // Limit for recent history
+      take: 2000, 
     });
 
     return { success: true, ongoing, completed };
