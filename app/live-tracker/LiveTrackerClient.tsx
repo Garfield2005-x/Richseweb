@@ -39,18 +39,18 @@ interface ExtendedSession {
 }
 
 
-export default function LiveTrackerClient({ 
-  initialSession, 
-  history, 
-  analytics, 
-  schedules, 
-  leaves, 
+export default function LiveTrackerClient({
+  initialSession,
+  history,
+  analytics,
+  schedules,
+  leaves,
   tickets,
-  currentUserId 
+  currentUserId
 }: LiveTrackerProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'tracker' | 'analytics' | 'schedule' | 'support'>('tracker');
-  
+
   // Tracker State
   const [session, setSession] = useState<ExtendedSession | null>(initialSession);
   const [platform, setPlatform] = useState('TikTok');
@@ -133,9 +133,9 @@ export default function LiveTrackerClient({
       try {
         const fd = new FormData();
         fd.append('file', salesImage);
-        
-        const uploadRes = await fetch('/api/upload/live-image', { 
-          method: 'POST', 
+
+        const uploadRes = await fetch('/api/upload/live-image', {
+          method: 'POST',
           body: fd,
         });
 
@@ -144,7 +144,7 @@ export default function LiveTrackerClient({
         try {
           uploadData = await uploadRes.json();
         } catch {
-          uploadData = { error: `Server Error (${uploadRes.status}): ไม่สามารถอ่านข้อมูลจากเซิร์ฟเวอร์ได้` };
+          uploadData = { error: `Server Error (${uploadRes.status}): ไม่สามารถอ่านข้อมูลจากเซิร์ฟเวอร์ได้แจ้งแอดมิน` };
         }
 
         if (!uploadRes.ok || !uploadData.url) {
@@ -185,7 +185,7 @@ export default function LiveTrackerClient({
     setIsLoading(true);
     const start = new Date(`${shiftDate}T${shiftStartTime}`);
     const end = new Date(`${shiftDate}T${shiftEndTime}`);
-    
+
     if (start >= end) {
       toast.error('เวลาสิ้นสุดต้องมากกว่าเวลาเริ่มต้น');
       setIsLoading(false);
@@ -241,7 +241,7 @@ export default function LiveTrackerClient({
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      
+
       {/* Tab Navigation */}
       <div className="flex overflow-x-auto border-b border-gray-200 hide-scrollbar bg-white rounded-t-[32px] px-4 pt-4">
         {[
@@ -253,11 +253,10 @@ export default function LiveTrackerClient({
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as 'tracker' | 'analytics' | 'schedule' | 'support')}
-            className={`flex items-center gap-2 px-6 py-4 font-bold text-sm tracking-widest uppercase transition-all whitespace-nowrap ${
-              activeTab === tab.id 
-              ? 'border-b-2 border-[#c3a2ab] text-[#c3a2ab]' 
-              : 'text-gray-400 hover:text-gray-600'
-            }`}
+            className={`flex items-center gap-2 px-6 py-4 font-bold text-sm tracking-widest uppercase transition-all whitespace-nowrap ${activeTab === tab.id
+                ? 'border-b-2 border-[#c3a2ab] text-[#c3a2ab]'
+                : 'text-gray-400 hover:text-gray-600'
+              }`}
           >
             <span className="material-symbols-outlined text-[18px]">{tab.icon}</span>
             {tab.label}
@@ -266,7 +265,7 @@ export default function LiveTrackerClient({
       </div>
 
       <div className="bg-white rounded-b-[32px] rounded-tl-none rounded-tr-none md:rounded-tr-[32px] p-6 md:p-8 shadow-sm border border-t-0 border-gray-100">
-        
+
         {/* 1. TRACKER TAB */}
         {activeTab === 'tracker' && (
           <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
@@ -282,7 +281,7 @@ export default function LiveTrackerClient({
                     <span className="w-2 h-2 rounded-full bg-red-500"></span>
                     LIVE ON {session.platform}
                   </div>
-                  
+
                   <div>
                     <p className="text-gray-400 font-medium text-sm mb-2 uppercase tracking-widest">Time Elapsed</p>
                     <h2 className="text-6xl md:text-7xl font-black text-[#161314] font-mono tracking-tighter">
@@ -375,7 +374,7 @@ export default function LiveTrackerClient({
         {activeTab === 'analytics' && analytics && (
           <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
             <h3 className="text-xl font-bold text-[#161314] mb-6">ภาพรวมผลงานเดือนนี้ (This Month)</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-[#161314] text-white p-6 rounded-[24px] shadow-lg">
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Total Sales</p>
@@ -434,13 +433,13 @@ export default function LiveTrackerClient({
             <div className="flex flex-col sm:flex-row justify-between gap-4">
               <h3 className="text-xl font-bold text-[#161314]">ตารางกะงานและวันหยุด</h3>
               <div className="flex gap-2">
-                <button 
+                <button
                   onClick={() => setShowShiftModal(true)}
                   className="px-4 py-2 bg-[#161314] text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-[#252122] transition-all"
                 >
                   Book Shift
                 </button>
-                <button 
+                <button
                   onClick={() => setShowLeaveModal(true)}
                   className="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-all"
                 >
@@ -474,7 +473,7 @@ export default function LiveTrackerClient({
                             {shift.user.name}
                           </span>
                           {shift.userId === currentUserId && (
-                            <button 
+                            <button
                               onClick={() => cancelShift(shift.id)}
                               className="text-red-500 hover:text-red-700 p-2"
                             >
@@ -516,11 +515,10 @@ export default function LiveTrackerClient({
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 max-w-[200px] truncate">{l.reason || '-'}</td>
                             <td className="px-4 py-4 text-right">
-                              <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                                l.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
-                                l.status === 'REJECTED' ? 'bg-rose-100 text-rose-700' :
-                                'bg-orange-100 text-orange-700'
-                              }`}>
+                              <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${l.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
+                                  l.status === 'REJECTED' ? 'bg-rose-100 text-rose-700' :
+                                    'bg-orange-100 text-orange-700'
+                                }`}>
                                 {l.status}
                               </span>
                             </td>
@@ -542,7 +540,7 @@ export default function LiveTrackerClient({
           <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
             <div className="flex justify-between items-center">
               <h3 className="text-xl font-bold text-[#161314]">Support Tickets</h3>
-              <button 
+              <button
                 onClick={() => setShowSOSModal(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-red-600 transition-all shadow-lg shadow-red-500/30"
               >
@@ -559,21 +557,19 @@ export default function LiveTrackerClient({
                     <div key={t.id} className="p-5 rounded-2xl border border-gray-100 bg-gray-50/50">
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex items-center gap-2">
-                          <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
-                            t.issueType === 'EQUIPMENT' ? 'bg-purple-100 text-purple-700' :
-                            t.issueType === 'NETWORK' ? 'bg-blue-100 text-blue-700' :
-                            t.issueType === 'BANNED' ? 'bg-red-100 text-red-700' :
-                            'bg-gray-200 text-gray-700'
-                          }`}>
+                          <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${t.issueType === 'EQUIPMENT' ? 'bg-purple-100 text-purple-700' :
+                              t.issueType === 'NETWORK' ? 'bg-blue-100 text-blue-700' :
+                                t.issueType === 'BANNED' ? 'bg-red-100 text-red-700' :
+                                  'bg-gray-200 text-gray-700'
+                            }`}>
                             {t.issueType}
                           </span>
                           <span className="text-xs text-gray-400">{format(new Date(t.createdAt), 'dd MMM HH:mm')}</span>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                          t.status === 'RESOLVED' ? 'bg-emerald-100 text-emerald-700' :
-                          t.status === 'IN_PROGRESS' ? 'bg-orange-100 text-orange-700' :
-                          'bg-red-100 text-red-700'
-                        }`}>
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${t.status === 'RESOLVED' ? 'bg-emerald-100 text-emerald-700' :
+                            t.status === 'IN_PROGRESS' ? 'bg-orange-100 text-orange-700' :
+                              'bg-red-100 text-red-700'
+                          }`}>
                           {t.status}
                         </span>
                       </div>
@@ -602,7 +598,7 @@ export default function LiveTrackerClient({
                 <span className="material-symbols-outlined text-3xl">task_alt</span>
               </div>
               <h2 className="text-2xl font-bold text-[#161314]">ทำได้เยี่ยมมาก!</h2>
-              <p className="text-gray-500 mt-2 text-sm">กรุณากรอกยอดขายที่ทำได้จากไลฟ์นี้<br/>เพื่อนำไปคำนวณค่าคอมมิชชั่น</p>
+              <p className="text-gray-500 mt-2 text-sm">กรุณากรอกยอดขายที่ทำได้จากไลฟ์นี้<br />เพื่อนำไปคำนวณค่าคอมมิชชั่น</p>
             </div>
 
             <form onSubmit={handleEndLiveSubmit} className="space-y-5">
@@ -679,8 +675,8 @@ export default function LiveTrackerClient({
                   {isLoading ? (
                     <>
                       <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                       </svg>
                       {isUploading ? 'อัปโหลดรูป...' : 'กำลังบันทึก...'}
                     </>
@@ -797,7 +793,7 @@ export default function LiveTrackerClient({
 
       {/* Floating SOS Button during Live */}
       {session?.status === 'ONGOING' && (
-        <button 
+        <button
           onClick={() => setShowSOSModal(true)}
           className="fixed bottom-6 right-6 w-16 h-16 bg-red-500 text-white rounded-full shadow-2xl flex items-center justify-center hover:bg-red-600 transition-all hover:scale-105 animate-pulse z-40"
         >
