@@ -74,7 +74,7 @@ ${
       Authorization: `Bearer ${process.env.LINE_CHANNEL_ACCESS_TOKEN}`
     },
     body: JSON.stringify({
-      to: "C0b778d20a6877e76023a328f9485b564",
+      to: process.env.LINE_ORDER_GROUP_ID || "C0b778d20a6877e76023a328f9485b564",
       messages: [
         {
           type: "text",

@@ -1,7 +1,8 @@
 export async function sendLineMessage(message: string, to?: string) {
   try {
     const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-    const target = to || process.env.LINE_GROUP_ID || "C0b778d20a6877e76023a328f9485b564"; // Default target
+    const target = to || process.env.LINE_STAFF_GROUP_ID || "C87ada7e86d05906061a3f0402c11ac11"; // Default to Staff Group
+    console.log("Sending LINE message to:", target);
 
     if (!token) {
       console.warn("LINE_CHANNEL_ACCESS_TOKEN is not defined");
