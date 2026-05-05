@@ -256,6 +256,7 @@ export async function getPersonalAnalytics() {
     const userId = (session?.user as { id?: string })?.id;
     if (!userId) return { error: "Unauthorized" };
 
+    // Triggering fresh Vercel deployment with correct monthly calculation
     // Calculate start of month in Asia/Bangkok time (UTC+7)
     const now = new Date();
     // Offset by 7 hours to get Bangkok time, then reset to start of month
