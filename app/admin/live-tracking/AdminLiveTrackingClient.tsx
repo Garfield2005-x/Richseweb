@@ -63,6 +63,15 @@ export default function AdminLiveTrackingClient({
     return `${hours}h ${mins}m`;
   };
 
+  const getProxyUrl = (url: string | null | undefined) => {
+    if (!url) return "";
+    // If it's already a blob URL, wrap it in our proxy
+    if (url.includes('vercel-storage.com')) {
+      return `/api/images/live-receipt?url=${encodeURIComponent(url)}`;
+    }
+    return url;
+  };
+
   const userTimesheets = (completed as unknown as ExtendedSession[]).reduce((acc: Record<string, { 
     name: string; 
     email: string; 
@@ -360,9 +369,9 @@ export default function AdminLiveTrackingClient({
                               onClick={() => setLightboxImg(s.salesImageUrl || null)}
                               className="group relative inline-block"
                             >
-                               {/* eslint-disable-next-line @next/next/no-img-element */}
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img
-                                src={s.salesImageUrl}
+                                src={getProxyUrl(s.salesImageUrl)}
                                 alt="Sales receipt"
                                 className="w-10 h-10 object-cover rounded-xl border border-gray-200 group-hover:scale-110 group-hover:shadow-lg transition-all duration-200 cursor-zoom-in"
                               />
@@ -538,12 +547,12 @@ export default function AdminLiveTrackingClient({
             </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={lightboxImg}
+              src={getProxyUrl(lightboxImg)}
               alt="Sales receipt full view"
               className="w-full rounded-[24px] shadow-2xl object-contain max-h-[80vh]"
             />
             <a
-              href={lightboxImg}
+              href={getProxyUrl(lightboxImg)}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 flex items-center justify-center gap-2 w-full py-3 bg-white/10 text-white rounded-2xl font-bold text-sm hover:bg-white/20 transition-all"
