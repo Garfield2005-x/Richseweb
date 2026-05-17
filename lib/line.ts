@@ -1,4 +1,4 @@
-export async function sendLineMessage(message: string, to?: string) {
+export async function sendLineMessage(message: string, to?: string, imageUrl?: string) {
   try {
     const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
     const target = to || process.env.LINE_STAFF_GROUP_ID || "C87ada7e86d05906061a3f0402c11ac11"; // Default to Staff Group
@@ -9,6 +9,22 @@ export async function sendLineMessage(message: string, to?: string) {
       return { success: false, error: "Token missing" };
     }
 
+    type LineMessage = { type: string; text?: string; originalContentUrl?: string; previewImageUrl?: string };
+    const messages: LineMessage[] = [
+      {
+        type: "text",
+        text: message
+      }
+    ];
+
+    if (imageUrl) {
+      messages.push({
+        type: "image",
+        originalContentUrl: imageUrl,
+        previewImageUrl: imageUrl
+      });
+    }
+
     const res = await fetch("https://api.line.me/v2/bot/message/push", {
       method: "POST",
       headers: {
@@ -17,12 +33,7 @@ export async function sendLineMessage(message: string, to?: string) {
       },
       body: JSON.stringify({
         to: target,
-        messages: [
-          {
-            type: "text",
-            text: message
-          }
-        ]
+        messages: messages
       })
     });
 

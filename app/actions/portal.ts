@@ -4,9 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { revalidatePath } from "next/cache";
-import { sendLineMessage } from "@/lib/line";
 import { format } from "date-fns";
-import { th } from "date-fns/locale";
+import { sendLineMessage } from "@/lib/line";
 
 // ==============================================
 // 1. LEAVE MANAGEMENT ACTIONS

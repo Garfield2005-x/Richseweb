@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { revalidatePath } from "next/cache";
+import { sendLineMessage } from "@/lib/line";
+import { format } from "date-fns";
 
 // --- Employee Actions ---
 
@@ -92,6 +94,18 @@ export async function startLiveSession(platform: string) {
       }
     });
 
+    const userName = liveSession.user?.name || liveSession.user?.email || "พนักงาน";
+    const startTimeStr = format(new Date(), "HH:mm");
+    await sendLineMessage(`
+[🎥] LIVE STREAM STARTED
+━━━━━━━━━━━━━━━━━━
+👤 Streamer: ${userName}
+📱 Platform: ${platform}
+⏰ Start Time: ${startTimeStr}
+━━━━━━━━━━━━━━━━━━
+Let's make it a great session! 🎉
+`.trim(), process.env.LINE_LIVE_GROUP_ID);
+
     revalidatePath("/live-tracker");
     return { success: true, liveSession };
   } catch (error) {
@@ -127,7 +141,30 @@ export async function endLiveSession(sessionId: string, salesAmount: number, sal
         salesAmount,
         ...(salesImageUrl ? { salesImageUrl } : {}),
       },
+      include: {
+        user: { select: { name: true, email: true } }
+      }
     });
+
+    const userName = updated.user?.name || updated.user?.email || "พนักงาน";
+    const endTimeStr = format(endTime, "HH:mm");
+    
+    let messageText = `
+[🏁] LIVE STREAM ENDED
+━━━━━━━━━━━━━━━━━━
+👤 Streamer: ${userName}
+📱 Platform: ${updated.platform}
+⏱️ Duration: ${durationMin} Minutes
+💰 Total Sales: ฿${salesAmount.toLocaleString()}
+⏰ End Time: ${endTimeStr}
+━━━━━━━━━━━━━━━━━━
+`.trim();
+
+    if (salesImageUrl) {
+      messageText += `\n📎 Proof of Sales: รูปภาพแนบในระบบแล้ว กรุณาตรวจสอบใน Admin Panel ครับ`;
+    }
+
+    await sendLineMessage(messageText, process.env.LINE_LIVE_GROUP_ID);
 
     revalidatePath("/live-tracker");
     revalidatePath("/admin/live-tracking");

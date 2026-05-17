@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { startLiveSession, endLiveSession } from '@/app/actions/live';
-import { submitLeaveRequest, bookShift, createTicket, cancelShift } from '@/app/actions/portal';
+import { submitLeaveRequest, createTicket } from '@/app/actions/portal';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -16,10 +16,8 @@ interface LiveTrackerProps {
     sessionCount: number;
     platformStats: Record<string, { sales: number; count: number; minutes: number }>;
   } | null;
-  schedules: unknown[];
   leaves: unknown[];
   tickets: unknown[];
-  currentUserId: string;
 }
 
 interface ExtendedSession {
@@ -43,10 +41,8 @@ export default function LiveTrackerClient({
   initialSession,
   history,
   analytics,
-  schedules,
   leaves,
-  tickets,
-  currentUserId
+  tickets
 }: LiveTrackerProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'tracker' | 'analytics' | 'schedule' | 'support'>('tracker');
@@ -67,12 +63,7 @@ export default function LiveTrackerClient({
   const [issueType, setIssueType] = useState('EQUIPMENT');
   const [issueDesc, setIssueDesc] = useState('');
 
-  // Schedule & Leave State
-  const [showShiftModal, setShowShiftModal] = useState(false);
-  const [shiftPlatform, setShiftPlatform] = useState('TikTok');
-  const [shiftDate, setShiftDate] = useState('');
-  const [shiftStartTime, setShiftStartTime] = useState('');
-  const [shiftEndTime, setShiftEndTime] = useState('');
+  // Leave State
 
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [leaveType, setLeaveType] = useState('SICK');
@@ -180,28 +171,6 @@ export default function LiveTrackerClient({
     setIsLoading(false);
   };
 
-  const handleBookShift = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    const start = new Date(`${shiftDate}T${shiftStartTime}`);
-    const end = new Date(`${shiftDate}T${shiftEndTime}`);
-
-    if (start >= end) {
-      toast.error('เวลาสิ้นสุดต้องมากกว่าเวลาเริ่มต้น');
-      setIsLoading(false);
-      return;
-    }
-
-    const res = await bookShift({ platform: shiftPlatform, startTime: start, endTime: end });
-    if (res.success) {
-      setShowShiftModal(false);
-      toast.success('จองกะเวลาไลฟ์สำเร็จ');
-      router.refresh();
-    } else {
-      toast.error(res.error || 'จองกะไม่สำเร็จ');
-    }
-    setIsLoading(false);
-  };
 
   const handleLeaveRequest = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -431,63 +400,13 @@ export default function LiveTrackerClient({
         {activeTab === 'schedule' && (
           <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
             <div className="flex flex-col sm:flex-row justify-between gap-4">
-              <h3 className="text-xl font-bold text-[#161314]">ตารางกะงานและวันหยุด</h3>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowShiftModal(true)}
-                  className="px-4 py-2 bg-[#161314] text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-[#252122] transition-all"
-                >
-                  Book Shift
-                </button>
-                <button
-                  onClick={() => setShowLeaveModal(true)}
-                  className="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-all"
-                >
-                  Request Leave
-                </button>
-              </div>
-            </div>
-
-            {/* Schedules Section */}
-            <div>
-              <h4 className="font-bold text-gray-400 uppercase tracking-widest text-xs mb-4">Upcoming Shifts (All Creators)</h4>
-              <div className="grid gap-3">
-                {schedules.length > 0 ? (
-                  (schedules as unknown[]).map((s) => {
-                    const shift = s as { id: string; platform: string; startTime: string; endTime: string; userId: string; user: { name: string } };
-                    return (
-                      <div key={shift.id} className={`p-4 rounded-2xl border flex flex-col sm:flex-row justify-between sm:items-center gap-4 ${shift.userId === currentUserId ? 'bg-blue-50/50 border-blue-100' : 'bg-gray-50 border-gray-100'}`}>
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center font-bold text-gray-400">
-                            {shift.platform[0]}
-                          </div>
-                          <div>
-                            <p className="font-bold text-[#161314]">{shift.platform}</p>
-                            <p className="text-sm text-gray-500">
-                              {format(new Date(shift.startTime), 'dd MMM yyyy • HH:mm')} - {format(new Date(shift.endTime), 'HH:mm')}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-xs font-bold text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-100">
-                            {shift.user.name}
-                          </span>
-                          {shift.userId === currentUserId && (
-                            <button
-                              onClick={() => cancelShift(shift.id)}
-                              className="text-red-500 hover:text-red-700 p-2"
-                            >
-                              <span className="material-symbols-outlined text-[18px]">cancel</span>
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p className="text-gray-400 text-sm">ยังไม่มีคิวงานที่จองไว้</p>
-                )}
-              </div>
+              <h3 className="text-xl font-bold text-[#161314]">วันหยุด / ลา</h3>
+              <button
+                onClick={() => setShowLeaveModal(true)}
+                className="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-all"
+              >
+                Request Leave
+              </button>
             </div>
 
             {/* Leaves Section */}
@@ -688,40 +607,6 @@ export default function LiveTrackerClient({
         </div>
       )}
 
-      {/* Book Shift Modal */}
-      {showShiftModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in">
-          <div className="bg-white rounded-[32px] p-8 max-w-md w-full shadow-2xl animate-in zoom-in-95">
-            <h2 className="text-2xl font-bold text-[#161314] mb-6">Book a Shift</h2>
-            <form onSubmit={handleBookShift} className="space-y-4">
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Platform</label>
-                <select value={shiftPlatform} onChange={(e) => setShiftPlatform(e.target.value)} className="w-full mt-1 px-4 py-3 bg-gray-50 rounded-xl outline-none font-bold">
-                  {platforms.map(p => <option key={p} value={p}>{p}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Date</label>
-                <input type="date" required value={shiftDate} onChange={(e) => setShiftDate(e.target.value)} className="w-full mt-1 px-4 py-3 bg-gray-50 rounded-xl outline-none font-bold text-gray-700" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Start Time</label>
-                  <input type="time" required value={shiftStartTime} onChange={(e) => setShiftStartTime(e.target.value)} className="w-full mt-1 px-4 py-3 bg-gray-50 rounded-xl outline-none font-bold text-gray-700" />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">End Time</label>
-                  <input type="time" required value={shiftEndTime} onChange={(e) => setShiftEndTime(e.target.value)} className="w-full mt-1 px-4 py-3 bg-gray-50 rounded-xl outline-none font-bold text-gray-700" />
-                </div>
-              </div>
-              <div className="flex gap-3 mt-6">
-                <button type="button" onClick={() => setShowShiftModal(false)} className="flex-1 py-4 bg-gray-100 rounded-xl font-bold text-gray-500">Cancel</button>
-                <button type="submit" disabled={isLoading} className="flex-1 py-4 bg-[#c3a2ab] text-white rounded-xl font-bold">Confirm</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Leave Request Modal */}
       {showLeaveModal && (
