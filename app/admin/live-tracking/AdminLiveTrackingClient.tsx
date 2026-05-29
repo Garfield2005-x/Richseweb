@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { updateLeaveStatus, updateTicketStatus } from '@/app/actions/portal';
+import { updateLeaveStatus, updateTicketStatus, deleteLeaveRequest, updateBaseSalary } from '@/app/actions/portal';
 import { deleteLiveSession } from '@/app/actions/live';
 import { toast } from 'react-hot-toast';
 
@@ -28,6 +28,7 @@ interface ExtendedSession {
     name?: string | null;
     email: string | null;
     image?: string | null;
+    baseSalary?: number | null;
   };
 }
 
@@ -78,6 +79,7 @@ export default function AdminLiveTrackingClient({
     totalMins: number; 
     totalSales: number; 
     sessionsCount: number;
+    baseSalary: number;
     platforms: Record<string, { mins: number; sales: number; count: number }>
   }>, curr) => {
     const email = curr.user.email || 'unknown';
@@ -88,6 +90,7 @@ export default function AdminLiveTrackingClient({
         totalMins: 0,
         totalSales: 0,
         sessionsCount: 0,
+        baseSalary: curr.user.baseSalary || 0,
         platforms: {}
       };
     }
@@ -128,6 +131,33 @@ export default function AdminLiveTrackingClient({
       router.refresh();
     } else {
       toast.error('เกิดข้อผิดพลาด');
+    }
+  };
+
+  const handleDeleteLeave = async (id: string) => {
+    if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบคำขอลานี้? การลบจะไม่สามารถย้อนกลับได้')) return;
+    
+    const loadingToast = toast.loading('กำลังลบข้อมูล...');
+    const res = await deleteLeaveRequest(id);
+    if (res.success) {
+      toast.success('ลบคำขอลาสำเร็จ', { id: loadingToast });
+      router.refresh();
+    } else {
+      toast.error(res.error || 'เกิดข้อผิดพลาดในการลบคำขอลา', { id: loadingToast });
+    }
+  };
+
+  const handleUpdateSalary = async (email: string, amount: string) => {
+    const num = Number(amount);
+    if (isNaN(num)) return;
+    
+    const loadingToast = toast.loading('กำลังบันทึกเงินเดือน...');
+    const res = await updateBaseSalary(email, num);
+    if (res.success) {
+      toast.success('บันทึกเงินเดือนสำเร็จ', { id: loadingToast });
+      router.refresh();
+    } else {
+      toast.error('เกิดข้อผิดพลาด', { id: loadingToast });
     }
   };
 
@@ -265,6 +295,7 @@ export default function AdminLiveTrackingClient({
                       <th className="px-6 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest rounded-l-xl">Employee</th>
                       <th className="px-6 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest text-center">Sessions</th>
                       <th className="px-6 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest text-center">Total Hours</th>
+                      <th className="px-6 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest text-right">Base Salary (THB)</th>
                       <th className="px-6 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest text-right">Total Sales (THB)</th>
                       <th className="px-6 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest text-right rounded-r-xl">Est. Comm (5%)</th>
                     </tr>
@@ -308,6 +339,21 @@ export default function AdminLiveTrackingClient({
                               <span className="bg-[#c3a2ab]/10 text-[#c3a2ab] px-3 py-1 rounded-full font-bold text-sm">
                                 {hours}h {mins}m
                               </span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-5 text-right align-top">
+                            <div className="mt-1 flex justify-end">
+                              <input 
+                                type="number" 
+                                defaultValue={sheet.baseSalary}
+                                onBlur={(e) => {
+                                  if (Number(e.target.value) !== sheet.baseSalary) {
+                                    handleUpdateSalary(sheet.email, e.target.value);
+                                  }
+                                }}
+                                className="w-24 text-right px-2 py-1 bg-white border border-gray-200 rounded-lg outline-none focus:border-[#c3a2ab] text-sm font-bold text-gray-700 shadow-sm"
+                                placeholder="0"
+                              />
                             </div>
                           </td>
                           <td className="px-6 py-5 text-right font-black text-lg text-[#161314] align-top">
@@ -434,14 +480,22 @@ export default function AdminLiveTrackingClient({
                             <td className="px-4 py-4 text-sm text-gray-500 max-w-[200px] truncate">{leave.reason || '-'}</td>
                             <td className="px-4 py-4 text-right">
                               {leave.status === 'PENDING' ? (
-                                <div className="flex justify-end gap-2">
+                                <div className="flex justify-end items-center gap-2">
                                   <button onClick={() => handleUpdateLeave(leave.id, 'APPROVED')} className="px-3 py-1 bg-emerald-500 text-white rounded font-bold text-xs hover:bg-emerald-600">Approve</button>
                                   <button onClick={() => handleUpdateLeave(leave.id, 'REJECTED')} className="px-3 py-1 bg-gray-200 text-gray-700 rounded font-bold text-xs hover:bg-gray-300">Reject</button>
+                                  <button onClick={() => handleDeleteLeave(leave.id)} className="px-2 py-1 text-red-500 hover:bg-red-50 rounded" title="ลบข้อมูล">
+                                    <span className="material-symbols-outlined text-[16px]">delete</span>
+                                  </button>
                                 </div>
                               ) : (
-                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${leave.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
-                                  {leave.status}
-                                </span>
+                                <div className="flex justify-end items-center gap-2">
+                                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${leave.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                                    {leave.status}
+                                  </span>
+                                  <button onClick={() => handleDeleteLeave(leave.id)} className="px-2 py-1 text-red-500 hover:bg-red-50 rounded" title="ลบข้อมูล">
+                                    <span className="material-symbols-outlined text-[16px]">delete</span>
+                                  </button>
+                                </div>
                               )}
                             </td>
                           </tr>

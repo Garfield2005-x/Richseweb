@@ -42,6 +42,7 @@ model User {
   liveSchedules LiveSchedule[]
   supportTickets SupportTicket[]
   points        Int      @default(0)
+  baseSalary    Float    @default(0)
   cookiePreferences UserCookiePreference?
 
   // Attribution

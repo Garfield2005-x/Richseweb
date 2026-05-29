@@ -177,7 +177,7 @@ export async function endLiveSession(sessionId: string, salesAmount: number, sal
 
 // --- Admin Actions ---
 
-export async function getAdminLiveSessions() {
+  export async function getAdminLiveSessions() {
   try {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as { id?: string })?.id;
@@ -187,7 +187,7 @@ export async function getAdminLiveSessions() {
       where: { status: "ONGOING" },
       include: {
         user: {
-          select: { name: true, email: true, image: true }
+          select: { name: true, email: true, image: true, baseSalary: true }
         }
       },
       orderBy: { startTime: 'desc' },
@@ -201,7 +201,7 @@ export async function getAdminLiveSessions() {
       },
       include: {
         user: {
-          select: { name: true, email: true }
+          select: { name: true, email: true, baseSalary: true }
         }
       },
       orderBy: { endTime: 'desc' },

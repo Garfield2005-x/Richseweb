@@ -104,6 +104,39 @@ export async function updateLeaveStatus(id: string, status: string) {
   }
 }
 
+export async function updateBaseSalary(email: string, amount: number) {
+  try {
+    const session = await getServerSession(authOptions);
+    if ((session?.user as { role?: string })?.role !== "ADMIN") return { error: "Unauthorized" };
+
+    await prisma.user.update({
+      where: { email },
+      data: { baseSalary: amount },
+    });
+
+    revalidatePath("/admin/live-tracking");
+    return { success: true };
+  } catch {
+    return { error: "Failed to update base salary" };
+  }
+}
+
+export async function deleteLeaveRequest(id: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    if ((session?.user as { role?: string })?.role !== "ADMIN") return { error: "Unauthorized" };
+
+    await prisma.leaveRequest.delete({
+      where: { id },
+    });
+
+    revalidatePath("/admin/live-tracking");
+    return { success: true };
+  } catch {
+    return { error: "Failed to delete leave request" };
+  }
+}
+
 // ==============================================
 // 2. SHIFT & SCHEDULE ACTIONS
 // ==============================================
