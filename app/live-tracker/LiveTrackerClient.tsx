@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { startLiveSession, endLiveSession } from '@/app/actions/live';
+import { startLiveSession, endLiveSession, getLiveSessionsHistory, updateLiveSessionSales } from '@/app/actions/live';
 import { submitLeaveRequest, createTicket, getPersonalAnalytics } from '@/app/actions/portal';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
@@ -48,34 +48,44 @@ export default function LiveTrackerClient({
   const [activeTab, setActiveTab] = useState<'tracker' | 'analytics' | 'schedule' | 'support'>('tracker');
 
   // Tracker State
-  const [session, setSession] = useState<ExtendedSession | null>(initialSession);
-  const [platform, setPlatform] = useState('TikTok');
-  const [isLoading, setIsLoading] = useState(false);
-  const [elapsed, setElapsed] = useState('00:00:00');
+  const [historyData, setHistoryData] = useState<ExtendedSession[]>(history);
+  const [filterMonth, setFilterMonth] = useState('');
+  const [filterYear, setFilterYear] = useState('');
 
   // Analytics Calendar Filter State
   const [analyticsData, setAnalyticsData] = useState(analytics);
   const [analyticsStartDate, setAnalyticsStartDate] = useState('');
   const [analyticsEndDate, setAnalyticsEndDate] = useState('');
 
-  const handleFetchAnalytics = async (start: string, end: string) => {
-    const loadingToast = toast.loading('กำลังโหลดสถิติ...');
-    const res = await getPersonalAnalytics(start, end);
-    if (res.success && res.analytics) {
-      setAnalyticsData(res.analytics);
-      toast.success('อัปเดตสถิติเรียบร้อย', { id: loadingToast });
+  const fetchHistory = async (month?: string, year?: string) => {
+    const monthNum = month ? Number(month) : undefined;
+    const yearNum = year ? Number(year) : undefined;
+    const res = await getLiveSessionsHistory(monthNum, yearNum);
+    if (res.success && res.history) {
+      setHistoryData(res.history);
     } else {
-      toast.error(res.error || 'ดึงสถิติไม่สำเร็จ', { id: loadingToast });
+      toast.error(res.error || 'ไม่สามารถดึงประวัติได้');
     }
   };
 
   const handleAnalyticsDateChange = (start: string, end: string) => {
-    setAnalyticsStartDate(start);
-    setAnalyticsEndDate(end);
-    if (start && end) {
-      handleFetchAnalytics(start, end);
-    }
-  };
+  setAnalyticsStartDate(start);
+  setAnalyticsEndDate(end);
+  if (start && end) {
+    handleFetchAnalytics(start, end);
+  }
+};
+
+const handleFetchAnalytics = async (start: string, end: string) => {
+  setIsLoading(true);
+  const res = await getPersonalAnalytics(start, end);
+  if (res.success && res.analytics) {
+    setAnalyticsData(res.analytics);
+  } else {
+    toast.error(res.error || 'ไม่สามารถดึงข้อมูลวิเคราะห์ได้');
+  }
+  setIsLoading(false);
+};
 
   const applyAnalyticsPreset = (preset: 'today' | '7days' | 'thisMonth' | 'clear') => {
     const today = new Date();
@@ -108,11 +118,19 @@ export default function LiveTrackerClient({
   const [salesImage, setSalesImage] = useState<File | null>(null);
   const [salesImagePreview, setSalesImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-
-  // SOS State
+  // New edit modal state
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showSOSModal, setShowSOSModal] = useState(false);
+  const [platform, setPlatform] = useState<string>('TikTok');
+  const [editSessionId, setEditSessionId] = useState<string>('');
+  const [editSalesAmount, setEditSalesAmount] = useState('');
+  const [editSalesImage, setEditSalesImage] = useState<File | null>(null);
+  const [editSalesImagePreview, setEditSalesImagePreview] = useState<string | null>(null);
   const [issueType, setIssueType] = useState('EQUIPMENT');
   const [issueDesc, setIssueDesc] = useState('');
+  const [session, setSession] = useState<ExtendedSession | null>(initialSession);
+  const [elapsed, setElapsed] = useState('00:00:00');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Leave State
 
@@ -222,6 +240,55 @@ export default function LiveTrackerClient({
     setIsLoading(false);
   };
 
+  // New handler for editing a completed session's sales data
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editSessionId || !editSalesAmount || isNaN(Number(editSalesAmount))) {
+      toast.error('กรุณากรอกยอดขายเป็นตัวเลข');
+      return;
+    }
+    setIsLoading(true);
+    let imageUrl: string | undefined;
+    if (editSalesImage) {
+      setIsUploading(true);
+      try {
+        const fd = new FormData();
+        fd.append('file', editSalesImage);
+        const uploadRes = await fetch('/api/upload/live-image', {
+          method: 'POST',
+          body: fd,
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok || !uploadData.url) {
+          toast.error(uploadData.error || 'อัปโหลดรูปภาพไม่สำเร็จ');
+          setIsLoading(false);
+          setIsUploading(false);
+          return;
+        }
+        imageUrl = uploadData.url;
+      } catch (err) {
+        toast.error('เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ');
+        setIsLoading(false);
+        setIsUploading(false);
+        return;
+      }
+      setIsUploading(false);
+    }
+    const finalImageUrl = (editSalesImage || editSalesImagePreview) ? imageUrl : undefined;
+    const res = await updateLiveSessionSales(editSessionId, Number(editSalesAmount), finalImageUrl);
+    if (res.success) {
+      toast.success('อัปเดตข้อมูลสำเร็จ');
+      setShowEditModal(false);
+      setEditSessionId('');
+      setEditSalesAmount('');
+      setEditSalesImage(null);
+      setEditSalesImagePreview(null);
+      router.refresh();
+    } else {
+      toast.error(res.error || 'อัปเดตข้อมูลไม่สำเร็จ');
+    }
+    setIsLoading(false);
+  };
 
   const handleLeaveRequest = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -345,6 +412,27 @@ export default function LiveTrackerClient({
               )}
             </div>
 
+            {/* History Filter Bar */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
+              <div className="flex-1 w-full space-y-1">
+                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">เดือน</label>
+                <select value={filterMonth} onChange={(e) => { setFilterMonth(e.target.value); fetchHistory(e.target.value, filterYear); }} className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#c3a2ab] outline-none">
+                  <option value="">ทั้งหมด</option>
+                  {[...Array(12)].map((_, i) => (
+                    <option key={i+1} value={i+1}>{i+1}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex-1 w-full space-y-1">
+                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">ปี</label>
+                <select value={filterYear} onChange={(e) => { setFilterYear(e.target.value); fetchHistory(filterMonth, e.target.value); }} className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#c3a2ab] outline-none">
+                  <option value="">ทั้งหมด</option>
+                  {Array.from({length:5}, (_,i)=>{ const yr = new Date().getFullYear()-i; return <option key={yr} value={yr}>{yr}</option>; })}
+                </select>
+              </div>
+              <button onClick={()=>{ setFilterMonth(''); setFilterYear(''); fetchHistory(); }} className="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200">รีเซ็ต</button>
+            </div>
+
             {/* History Table */}
             <div>
               <h3 className="text-xl font-bold mb-4 text-[#161314]">ประวัติการไลฟ์ของคุณ</h3>
@@ -356,11 +444,12 @@ export default function LiveTrackerClient({
                         <th className="px-4 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest rounded-l-xl">Date</th>
                         <th className="px-4 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest">Platform</th>
                         <th className="px-4 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest">Duration</th>
-                        <th className="px-4 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest text-right rounded-r-xl">Sales (THB)</th>
+                        <th className="px-4 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest text-right">Sales (THB)</th>
+                        <th className="px-4 py-4 text-[12px] font-bold text-gray-400 uppercase tracking-widest text-center rounded-r-xl">Edit</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
-                      {history.map((h) => (
+                      {historyData.map((h) => (
                         <tr key={h.id} className="hover:bg-gray-50/30 transition-colors">
                           <td className="px-4 py-4 font-medium text-gray-600">
                             {format(new Date(h.startTime), 'dd MMM yyyy HH:mm')}
@@ -375,6 +464,17 @@ export default function LiveTrackerClient({
                           </td>
                           <td className="px-4 py-4 font-black text-[#161314] text-right">
                             ฿{h.salesAmount?.toLocaleString() || 0}
+                          </td>
+                          <td className="px-4 py-4 text-center">
+                            <button type="button" onClick={() => {
+                              setEditSessionId(h.id);
+                              setEditSalesAmount(h.salesAmount?.toString() ?? '');
+                              setEditSalesImage(null);
+                              setEditSalesImagePreview(h.salesImageUrl || null);
+                              setShowEditModal(true);
+                            }} className="text-[#c3a2ab] hover:text-[#b08b96] cursor-pointer">
+                              <span className="material-symbols-outlined text-xl">create</span>
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -713,6 +813,95 @@ export default function LiveTrackerClient({
                       {isUploading ? 'อัปโหลดรูป...' : 'กำลังบันทึก...'}
                     </>
                   ) : 'บันทึกข้อมูล'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Session Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in">
+          <div className="bg-white rounded-[32px] p-8 max-w-md w-full shadow-2xl animate-in zoom-in-95">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-[#161314]">แก้ไขข้อมูลไลฟ์</h2>
+            </div>
+            <form onSubmit={handleEditSubmit} className="space-y-5">
+              {/* Sales Amount */}
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">ยอดขายรวม (บาท)</label>
+                <div className="relative mt-2">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">฿</span>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    step="0.01"
+                    value={editSalesAmount}
+                    onChange={(e) => setEditSalesAmount(e.target.value)}
+                    placeholder="0.00"
+                    className="w-full pl-10 pr-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all outline-none font-bold text-gray-700 text-xl"
+                  />
+                </div>
+              </div>
+              {/* Image Upload */}
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">แนบรูปยอดขาย (optional)</label>
+                <div className="mt-2">
+                  {editSalesImagePreview ? (
+                    <div className="relative rounded-2xl overflow-hidden border border-gray-100">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={editSalesImagePreview} alt="Sales screenshot" className="w-full h-48 object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => { setEditSalesImage(null); setEditSalesImagePreview(null); }}
+                        className="absolute top-2 right-2 w-8 h-8 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">close</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <label htmlFor="edit-sales-image-upload" className="flex flex-col items-center justify-center w-full h-32 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:bg-[#f9f5f6] hover:border-[#c3a2ab] transition-all group">
+                      <span className="material-symbols-outlined text-3xl text-gray-300 group-hover:text-[#c3a2ab] transition-colors mb-1">add_photo_alternate</span>
+                      <p className="text-xs text-gray-400 font-medium">คลิกเพื่อแนบรูปสกรีนช็อตยอดขาย</p>
+                      <p className="text-[10px] text-gray-300">JPG, PNG, WEBP • max 10MB</p>
+                      <input
+                        id="edit-sales-image-upload"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          if (file.size > 10 * 1024 * 1024) {
+                            toast.error('รูปต้องไม่เกิน 10MB');
+                            return;
+                          }
+                          setEditSalesImage(file);
+                          setEditSalesImagePreview(URL.createObjectURL(file));
+                        }}
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
+              <div className="flex gap-3 pt-1">
+                <button type="button" onClick={() => { setShowEditModal(false); setEditSalesImage(null); setEditSalesImagePreview(null); }} disabled={isLoading} className="flex-1 py-4 bg-gray-100 text-gray-500 rounded-xl font-bold hover:bg-gray-200 transition-all">
+                  ยกเลิก
+                </button>
+                <button type="submit" disabled={isLoading} className="flex-[2] py-4 bg-[#161314] text-white rounded-xl font-bold hover:bg-[#252122] transition-all flex justify-center items-center gap-2">
+                  {isLoading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                      </svg>
+                      {isUploading ? 'อัปโหลดรูป...' : 'กำลังบันทึก...'}
+                    </>
+                  ) : (
+                    'บันทึกข้อมูล'
+                  )}
                 </button>
               </div>
             </form>

@@ -368,3 +368,57 @@ export async function getPersonalAnalytics(startDate?: string, endDate?: string)
     return { error: "Failed to get analytics" };
   }
 }
+
+export async function getPersonalMonthlyTrend() {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as { id?: string })?.id;
+    if (!userId) return { error: "Unauthorized" };
+
+    const startOfPeriod = new Date();
+    startOfPeriod.setMonth(startOfPeriod.getMonth() - 5);
+    startOfPeriod.setDate(1);
+    startOfPeriod.setHours(0, 0, 0, 0);
+
+    const sessions = await prisma.liveSession.findMany({
+      where: {
+        userId: userId,
+        status: "COMPLETED",
+        startTime: { gte: startOfPeriod }
+      },
+      orderBy: { startTime: 'asc' }
+    });
+
+    const monthlyData: Record<string, { monthName: string; totalSales: number; totalComm: number }> = {};
+
+    const monthsThai = [
+      "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", 
+      "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
+    ];
+
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const label = `${monthsThai[d.getMonth()]} ${String(d.getFullYear()).slice(-2)}`;
+      monthlyData[key] = { monthName: label, totalSales: 0, totalComm: 0 };
+    }
+
+    sessions.forEach((s) => {
+      const d = new Date(s.startTime);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      if (monthlyData[key]) {
+        const sales = s.salesAmount || 0;
+        const rate = s.platform.toLowerCase() === 'shopee' ? 0.03 : 0.05;
+        const comm = sales * rate;
+        monthlyData[key].totalSales += sales;
+        monthlyData[key].totalComm += comm;
+      }
+    });
+
+    return { success: true, trend: Object.values(monthlyData) };
+  } catch (error) {
+    console.error("Error getting personal monthly trend:", error);
+    return { error: "Failed to get monthly trend" };
+  }
+}

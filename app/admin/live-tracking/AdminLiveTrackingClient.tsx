@@ -45,8 +45,12 @@ export default function AdminLiveTrackingClient({
   const [leaves] = useState(initialLeaves);
   const [schedules] = useState(initialSchedules);
   const [tickets] = useState(initialTickets);
-
-  // Date range filters
+// ---------- EDIT‑TIME STATE ----------
+const [editSessionId, setEditSessionId] = useState<string>('');
+const [editStartTime, setEditStartTime] = useState<string>('');
+const [editEndTime, setEditEndTime] = useState<string>('');
+const [showEditModal, setShowEditModal] = useState(false);
+// Date range filters
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
@@ -248,7 +252,44 @@ export default function AdminLiveTrackingClient({
     }
   };
 
-  return (
+  // ---------- EDIT‑TIME HANDLERS ----------
+const openEditTimeModal = (session: ExtendedSession) => {
+  setEditSessionId(session.id);
+  setEditStartTime(session.startTime ? format(new Date(session.startTime), "yyyy-MM-dd'T'HH:mm") : '');
+  setEditEndTime(session.endTime ? format(new Date(session.endTime), "yyyy-MM-dd'T'HH:mm") : '');
+  setShowEditModal(true);
+};
+
+const handleSaveTimeEdit = async () => {
+  if (!editSessionId) return;
+  const loading = toast.loading('กำลังบันทึกเวลา...');
+  try {
+    // Build payload with only non‑empty fields
+    const payload: Record<string, string> = {};
+    if (editStartTime) payload.startTime = editStartTime;
+    if (editEndTime) payload.endTime = editEndTime;
+    console.log('PATCH payload:', payload);
+
+    const res = await fetch(`/api/admin/live-tracking/${editSessionId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (data.success) {
+      toast.success('บันทึกเวลาเรียบร้อย', { id: loading });
+      router.refresh();
+      setShowEditModal(false);
+    } else {
+      throw new Error(data.error || 'บันทึกล้มเหลว');
+    }
+  } catch (err) {
+    console.error(err);
+    toast.error('เกิดข้อผิดพลาดในการบันทึก', { id: loading });
+  }
+};
+
+return (
     <div className="space-y-6">
       
       {/* Tabs */}
@@ -539,7 +580,10 @@ export default function AdminLiveTrackingClient({
                             <span className="text-gray-300 text-xs">—</span>
                           )}
                         </td>
-                        <td className="px-4 py-4 text-center">
+                        <td className="px-4 py-4 text-center flex gap-2 justify-center">
+                          <button onClick={() => openEditTimeModal(s)} className="text-blue-500 hover:text-blue-700 transition-colors p-2" title="แก้ไขเวลา">
+                            <span className="material-symbols-outlined text-[18px]">edit</span>
+                          </button>
                           <button 
                             onClick={() => handleDeleteSession(s.id)}
                             className="text-gray-300 hover:text-red-500 transition-colors p-2"
@@ -558,6 +602,26 @@ export default function AdminLiveTrackingClient({
                 </table>
               </div>
             </div>
+            {/* Edit Time Modal */}
+            {showEditModal && (
+              <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                  <h3 className="font-bold mb-4">แก้ไขเวลาเซสชัน</h3>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-1">Start Time</label>
+                    <input type="datetime-local" value={editStartTime} onChange={e => setEditStartTime(e.target.value)} className="w-full border rounded px-3 py-2"/>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-1">End Time</label>
+                    <input type="datetime-local" value={editEndTime} onChange={e => setEditEndTime(e.target.value)} className="w-full border rounded px-3 py-2"/>
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <button onClick={() => setShowEditModal(false)} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
+                    <button onClick={handleSaveTimeEdit} className="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

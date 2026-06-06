@@ -36,24 +36,35 @@ export async function getCurrentLiveSession() {
   }
 }
 
-export async function getLiveSessionsHistory() {
+export async function getLiveSessionsHistory(month?: number, year?: number) {
   try {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as { id?: string })?.id;
     if (!userId) return { error: "Unauthorized" };
 
+    const whereClause: Prisma.LiveSessionWhereInput = {
+      userId: userId,
+      status: "COMPLETED",
+    };
+
+    if (month !== undefined && year !== undefined && month > 0 && year > 0) {
+      const start = new Date(year, month - 1, 1);
+      const end = new Date(year, month, 0, 23, 59, 59, 999);
+      whereClause.startTime = {
+        gte: start,
+        lte: end,
+      };
+    }
+
     const history = await prisma.liveSession.findMany({
-      where: {
-        userId: userId,
-        status: "COMPLETED",
-      },
+      where: whereClause,
       include: {
         user: {
           select: { name: true, email: true, image: true }
         }
       },
       orderBy: { startTime: 'desc' },
-      take: 50,
+      take: 100, // Show more if filtering
     });
 
     return { success: true, history };
@@ -243,5 +254,40 @@ export async function deleteLiveSession(id: string) {
   } catch (error) {
     console.error("Error deleting live session:", error);
     return { error: "Failed to delete live session" };
+  }
+}
+
+export async function updateLiveSessionSales(sessionId: string, salesAmount: number, salesImageUrl?: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as { id?: string })?.id;
+    if (!userId) return { error: "Unauthorized" };
+
+    const existing = await prisma.liveSession.findUnique({
+      where: { id: sessionId },
+    });
+
+    if (!existing || existing.userId !== userId) {
+      return { error: "ไม่พบเซสชัน หรือคุณไม่มีสิทธิ์แก้ไขเซสชันนี้" };
+    }
+
+    if (existing.status !== "COMPLETED") {
+      return { error: "สามารถแก้ไขได้เฉพาะเซสชันที่เสร็จสิ้นแล้วเท่านั้น" };
+    }
+
+    const updated = await prisma.liveSession.update({
+      where: { id: sessionId },
+      data: {
+        salesAmount,
+        ...(salesImageUrl ? { salesImageUrl } : {}),
+      },
+    });
+
+    revalidatePath("/live-tracker");
+    revalidatePath("/admin/live-tracking");
+    return { success: true, liveSession: updated };
+  } catch (error) {
+    console.error("Error updating live session sales:", error);
+    return { error: "เกิดข้อผิดพลาดในการแก้ไขข้อมูลยอดขาย" };
   }
 }
