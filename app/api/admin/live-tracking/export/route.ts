@@ -28,32 +28,44 @@ const hairBorder = (argb = C.border) => ({
   right: { style: "hair" as const, color: color(argb) },
 });
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || (session.user as { role?: string }).role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const url = new URL(request.url);
+    const paramStart = url.searchParams.get("startDate");
+    const paramEnd = url.searchParams.get("endDate");
+
     let cutoffStart: Date;
     let cutoffEnd: Date;
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const date = currentDate.getDate();
 
-    if (date >= 29) {
-      // e.g. Jun 29 => we show cycle: May 29 to Jun 28
-      cutoffStart = new Date(year, month - 1, 29, 0, 0, 0);
-      cutoffEnd = new Date(year, month, 28, 23, 59, 59, 999);
-    } else if (date <= 5) {
-      // e.g. Jul 3 => still showing cycle: May 29 to Jun 28
-      cutoffStart = new Date(year, month - 2, 29, 0, 0, 0);
-      cutoffEnd = new Date(year, month - 1, 28, 23, 59, 59, 999);
+    if (paramStart && paramEnd) {
+      cutoffStart = new Date(paramStart);
+      cutoffEnd = new Date(paramEnd);
+      // Ensure the end date covers the full day up to 23:59:59.999
+      cutoffEnd.setHours(23, 59, 59, 999);
     } else {
-      // e.g. Jul 15 => ongoing cycle: Jun 29 to Jul 28
-      cutoffStart = new Date(year, month - 1, 29, 0, 0, 0);
-      cutoffEnd = new Date(year, month, 28, 23, 59, 59, 999);
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const date = currentDate.getDate();
+
+      if (date >= 29) {
+        // e.g. Jun 29 => we show cycle: May 29 to Jun 28
+        cutoffStart = new Date(year, month - 1, 29, 0, 0, 0);
+        cutoffEnd = new Date(year, month, 28, 23, 59, 59, 999);
+      } else if (date <= 5) {
+        // e.g. Jul 3 => still showing cycle: May 29 to Jun 28
+        cutoffStart = new Date(year, month - 2, 29, 0, 0, 0);
+        cutoffEnd = new Date(year, month - 1, 28, 23, 59, 59, 999);
+      } else {
+        // e.g. Jul 15 => ongoing cycle: Jun 29 to Jul 28
+        cutoffStart = new Date(year, month - 1, 29, 0, 0, 0);
+        cutoffEnd = new Date(year, month, 28, 23, 59, 59, 999);
+      }
     }
 
     const completed = await prisma.liveSession.findMany({

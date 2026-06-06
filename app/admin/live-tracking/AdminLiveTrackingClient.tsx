@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { updateLeaveStatus, updateTicketStatus, deleteLeaveRequest, updateBaseSalary } from '@/app/actions/portal';
-import { deleteLiveSession } from '@/app/actions/live';
+import { deleteLiveSession, getAdminLiveSessions } from '@/app/actions/live';
 import { toast } from 'react-hot-toast';
 
 interface AdminLiveTrackingProps {
@@ -41,10 +41,60 @@ export default function AdminLiveTrackingClient({
 }: AdminLiveTrackingProps) {
   const router = useRouter();
   const [ongoing] = useState(initialOngoing);
-  const [completed] = useState(initialCompleted);
+  const [completed, setCompleted] = useState(initialCompleted);
   const [leaves] = useState(initialLeaves);
   const [schedules] = useState(initialSchedules);
   const [tickets] = useState(initialTickets);
+
+  // Date range filters
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const handleFilter = async (start: string, end: string) => {
+    const loadingToast = toast.loading('กำลังโหลดข้อมูลช่วงเวลา...');
+    const res = await getAdminLiveSessions(start, end);
+    if (res.success && res.completed) {
+      setCompleted(res.completed as unknown as ExtendedSession[]);
+      toast.success('โหลดข้อมูลช่วงเวลาเรียบร้อยแล้ว', { id: loadingToast });
+    } else {
+      toast.error(res.error || 'ดึงข้อมูลไม่สำเร็จ', { id: loadingToast });
+    }
+  };
+
+  const handleDateChange = (start: string, end: string) => {
+    setStartDate(start);
+    setEndDate(end);
+    if (start && end) {
+      handleFilter(start, end);
+    }
+  };
+
+  const applyPreset = (preset: 'today' | '7days' | 'thisMonth' | 'clear') => {
+    const today = new Date();
+    const formatLocal = (d: Date) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    };
+
+    if (preset === 'today') {
+      const dateStr = formatLocal(today);
+      handleDateChange(dateStr, dateStr);
+    } else if (preset === '7days') {
+      const start = new Date();
+      start.setDate(today.getDate() - 6);
+      handleDateChange(formatLocal(start), formatLocal(today));
+    } else if (preset === 'thisMonth') {
+      const start = new Date(today.getFullYear(), today.getMonth(), 1);
+      const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      handleDateChange(formatLocal(start), formatLocal(end));
+    } else if (preset === 'clear') {
+      setStartDate('');
+      setEndDate('');
+      handleFilter('', '');
+    }
+  };
   
   const [activeTab, setActiveTab] = useState<'live' | 'timesheet' | 'schedule' | 'support'>('live');
   const [now, setNow] = useState(new Date());
@@ -174,7 +224,11 @@ export default function AdminLiveTrackingClient({
   const handleExport = async () => {
     const loadingToast = toast.loading('กำลังจัดเตรียมไฟล์ Export...');
     try {
-      const response = await fetch('/api/admin/live-tracking/export');
+      let query = '';
+      if (startDate && endDate) {
+        query = `?startDate=${startDate}&endDate=${endDate}`;
+      }
+      const response = await fetch(`/api/admin/live-tracking/export${query}`);
       if (!response.ok) throw new Error('Export failed');
       
       const blob = await response.blob();
@@ -277,16 +331,74 @@ export default function AdminLiveTrackingClient({
           <div className="animate-in fade-in space-y-10">
             {/* Summary Table */}
             <div>
-              <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
+              <div>
                 <h3 className="font-bold text-xl text-[#161314]">สรุปเวลาทำงานและยอดขายพนักงานไลฟ์</h3>
-                <button 
-                  onClick={handleExport}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#161314] text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#252122] transition-all"
-                >
-                  <span className="material-symbols-outlined text-[16px]">download</span>
-                  Export
-                </button>
+                <p className="text-xs text-gray-400 mt-1">
+                  {startDate && endDate ? `แสดงข้อมูลระหว่างวันที่ ${format(new Date(startDate), 'dd/MM/yyyy')} ถึง ${format(new Date(endDate), 'dd/MM/yyyy')}` : 'แสดงข้อมูลย้อนหลัง 60 วัน (ภาพรวม)'}
+                </p>
               </div>
+              <button 
+                onClick={handleExport}
+                className="flex items-center gap-2 px-4 py-2 bg-[#161314] text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#252122] transition-all self-start md:self-auto"
+              >
+                <span className="material-symbols-outlined text-[16px]">download</span>
+                Export
+              </button>
+            </div>
+
+            {/* Calendar Date Selector Bar */}
+            <div className="bg-[#f9f5f6] p-4 rounded-2xl border border-gray-100 flex flex-col gap-4 mb-8">
+              <div className="flex flex-col sm:flex-row items-end gap-4">
+                <div className="flex-1 w-full space-y-1">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">เริ่มวันที่ (Start Date)</label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => handleDateChange(e.target.value, endDate)}
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none font-bold text-gray-700 text-sm focus:ring-2 focus:ring-[#c3a2ab] focus:border-[#c3a2ab] transition-all shadow-sm"
+                  />
+                </div>
+                <div className="flex-1 w-full space-y-1">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">ถึงวันที่ (End Date)</label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => handleDateChange(startDate, e.target.value)}
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none font-bold text-gray-700 text-sm focus:ring-2 focus:ring-[#c3a2ab] focus:border-[#c3a2ab] transition-all shadow-sm"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 border-t border-gray-200/50 pt-3">
+                <span className="text-xs font-bold text-gray-400 mr-2">เลือกช่วงเวลาด่วน:</span>
+                <button
+                  onClick={() => applyPreset('today')}
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                >
+                  วันนี้
+                </button>
+                <button
+                  onClick={() => applyPreset('7days')}
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                >
+                  7 วันล่าสุด
+                </button>
+                <button
+                  onClick={() => applyPreset('thisMonth')}
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                >
+                  เดือนนี้
+                </button>
+                {(startDate || endDate) && (
+                  <button
+                    onClick={() => applyPreset('clear')}
+                    className="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200 ml-auto"
+                  >
+                    ล้างค่าการค้นหา
+                  </button>
+                )}
+              </div>
+            </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left">

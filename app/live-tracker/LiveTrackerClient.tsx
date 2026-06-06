@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { startLiveSession, endLiveSession } from '@/app/actions/live';
-import { submitLeaveRequest, createTicket } from '@/app/actions/portal';
+import { submitLeaveRequest, createTicket, getPersonalAnalytics } from '@/app/actions/portal';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -52,6 +52,57 @@ export default function LiveTrackerClient({
   const [platform, setPlatform] = useState('TikTok');
   const [isLoading, setIsLoading] = useState(false);
   const [elapsed, setElapsed] = useState('00:00:00');
+
+  // Analytics Calendar Filter State
+  const [analyticsData, setAnalyticsData] = useState(analytics);
+  const [analyticsStartDate, setAnalyticsStartDate] = useState('');
+  const [analyticsEndDate, setAnalyticsEndDate] = useState('');
+
+  const handleFetchAnalytics = async (start: string, end: string) => {
+    const loadingToast = toast.loading('กำลังโหลดสถิติ...');
+    const res = await getPersonalAnalytics(start, end);
+    if (res.success && res.analytics) {
+      setAnalyticsData(res.analytics);
+      toast.success('อัปเดตสถิติเรียบร้อย', { id: loadingToast });
+    } else {
+      toast.error(res.error || 'ดึงสถิติไม่สำเร็จ', { id: loadingToast });
+    }
+  };
+
+  const handleAnalyticsDateChange = (start: string, end: string) => {
+    setAnalyticsStartDate(start);
+    setAnalyticsEndDate(end);
+    if (start && end) {
+      handleFetchAnalytics(start, end);
+    }
+  };
+
+  const applyAnalyticsPreset = (preset: 'today' | '7days' | 'thisMonth' | 'clear') => {
+    const today = new Date();
+    const formatLocal = (d: Date) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    };
+
+    if (preset === 'today') {
+      const dateStr = formatLocal(today);
+      handleAnalyticsDateChange(dateStr, dateStr);
+    } else if (preset === '7days') {
+      const start = new Date();
+      start.setDate(today.getDate() - 6);
+      handleAnalyticsDateChange(formatLocal(start), formatLocal(today));
+    } else if (preset === 'thisMonth') {
+      const start = new Date(today.getFullYear(), today.getMonth(), 1);
+      const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      handleAnalyticsDateChange(formatLocal(start), formatLocal(end));
+    } else if (preset === 'clear') {
+      setAnalyticsStartDate('');
+      setAnalyticsEndDate('');
+      setAnalyticsData(analytics);
+    }
+  };
   const [showEndModal, setShowEndModal] = useState(false);
   const [salesAmount, setSalesAmount] = useState('');
   const [salesImage, setSalesImage] = useState<File | null>(null);
@@ -340,30 +391,92 @@ export default function LiveTrackerClient({
         )}
 
         {/* 2. ANALYTICS TAB */}
-        {activeTab === 'analytics' && analytics && (
+        {activeTab === 'analytics' && analyticsData && (
           <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
-            <h3 className="text-xl font-bold text-[#161314] mb-6">ภาพรวมผลงานเดือนนี้ (This Month)</h3>
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-2">
+              <div>
+                <h3 className="text-xl font-bold text-[#161314]">
+                  {analyticsStartDate && analyticsEndDate 
+                    ? `ผลงานช่วง ${format(new Date(analyticsStartDate), 'dd/MM/yyyy')} - ${format(new Date(analyticsEndDate), 'dd/MM/yyyy')}`
+                    : 'ภาพรวมผลงานเดือนนี้ (This Month)'
+                  }
+                </h3>
+              </div>
+            </div>
+
+            {/* Date Filters inside Analytics Tab */}
+            <div className="bg-[#f9f5f6] p-4 rounded-2xl border border-gray-100 flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row items-end gap-4">
+                <div className="flex-1 w-full space-y-1">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">เริ่มวันที่ (Start Date)</label>
+                  <input
+                    type="date"
+                    value={analyticsStartDate}
+                    onChange={(e) => handleAnalyticsDateChange(e.target.value, analyticsEndDate)}
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none font-bold text-gray-700 text-sm focus:ring-2 focus:ring-[#c3a2ab] focus:border-[#c3a2ab] transition-all shadow-sm"
+                  />
+                </div>
+                <div className="flex-1 w-full space-y-1">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">ถึงวันที่ (End Date)</label>
+                  <input
+                    type="date"
+                    value={analyticsEndDate}
+                    onChange={(e) => handleAnalyticsDateChange(analyticsStartDate, e.target.value)}
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none font-bold text-gray-700 text-sm focus:ring-2 focus:ring-[#c3a2ab] focus:border-[#c3a2ab] transition-all shadow-sm"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 border-t border-gray-200/50 pt-3">
+                <span className="text-xs font-bold text-gray-400 mr-2">เลือกช่วงเวลาด่วน:</span>
+                <button
+                  onClick={() => applyAnalyticsPreset('today')}
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                >
+                  วันนี้
+                </button>
+                <button
+                  onClick={() => applyAnalyticsPreset('7days')}
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                >
+                  7 วันล่าสุด
+                </button>
+                <button
+                  onClick={() => applyAnalyticsPreset('thisMonth')}
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                >
+                  เดือนนี้
+                </button>
+                {(analyticsStartDate || analyticsEndDate) && (
+                  <button
+                    onClick={() => applyAnalyticsPreset('clear')}
+                    className="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200 ml-auto"
+                  >
+                    ล้างค่าการค้นหา
+                  </button>
+                )}
+              </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-[#161314] text-white p-6 rounded-[24px] shadow-lg">
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Total Sales</p>
-                <h2 className="text-4xl font-black">฿{analytics.totalSales.toLocaleString()}</h2>
+                <h2 className="text-4xl font-black">฿{analyticsData.totalSales.toLocaleString()}</h2>
               </div>
               <div className="bg-[#c3a2ab] text-white p-6 rounded-[24px] shadow-lg">
                 <p className="text-[10px] font-bold text-white/70 uppercase tracking-widest mb-2">Total Hours</p>
-                <h2 className="text-4xl font-black">{analytics.totalHours} <span className="text-xl font-bold opacity-80">hrs</span></h2>
+                <h2 className="text-4xl font-black">{analyticsData.totalHours} <span className="text-xl font-bold opacity-80">hrs</span></h2>
               </div>
               <div className="bg-gray-100 text-[#161314] p-6 rounded-[24px]">
                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Sessions</p>
-                <h2 className="text-4xl font-black">{analytics.sessionCount} <span className="text-xl font-bold text-gray-400">times</span></h2>
+                <h2 className="text-4xl font-black">{analyticsData.sessionCount} <span className="text-xl font-bold text-gray-400">times</span></h2>
               </div>
             </div>
 
             <div className="bg-gray-50 p-6 rounded-[24px]">
               <h4 className="font-bold text-[#161314] mb-4 uppercase tracking-widest text-sm">Performance by Platform</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {Object.keys(analytics.platformStats).length > 0 ? (
-                  Object.entries(analytics.platformStats).map(([plat, stat]) => {
+                {Object.keys(analyticsData.platformStats).length > 0 ? (
+                  Object.entries(analyticsData.platformStats).map(([plat, stat]) => {
                     const s = stat;
                     const hours = Math.floor(s.minutes / 60);
                     const mins = s.minutes % 60;

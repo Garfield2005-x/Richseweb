@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { revalidatePath } from "next/cache";
@@ -313,28 +314,34 @@ export async function updateTicketStatus(id: string, status: string) {
 // 4. PERSONAL ANALYTICS ACTIONS
 // ==============================================
 
-export async function getPersonalAnalytics() {
+export async function getPersonalAnalytics(startDate?: string, endDate?: string) {
   try {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as { id?: string })?.id;
     if (!userId) return { error: "Unauthorized" };
 
-    // Triggering fresh Vercel deployment with correct monthly calculation
-    // Calculate start of month in Asia/Bangkok time (UTC+7)
-    const now = new Date();
-    // Offset by 7 hours to get Bangkok time, then reset to start of month
-    const thTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
-    thTime.setUTCDate(1);
-    thTime.setUTCHours(0, 0, 0, 0);
-    // Convert back to UTC for the database query
-    const currentMonthStart = new Date(thTime.getTime() - (7 * 60 * 60 * 1000));
+    let calculatedMonthStart: Date | undefined;
+    if (!startDate || !endDate) {
+      const now = new Date();
+      const thTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+      thTime.setUTCDate(1);
+      thTime.setUTCHours(0, 0, 0, 0);
+      calculatedMonthStart = new Date(thTime.getTime() - (7 * 60 * 60 * 1000));
+    }
+
+    const whereClause: Prisma.LiveSessionWhereInput = {
+      userId: userId,
+      status: "COMPLETED",
+      startTime: startDate && endDate ? {
+        gte: new Date(startDate),
+        lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+      } : {
+        gte: calculatedMonthStart
+      }
+    };
 
     const sessions = await prisma.liveSession.findMany({
-      where: {
-        userId: userId,
-        status: "COMPLETED",
-        startTime: { gte: currentMonthStart }
-      },
+      where: whereClause,
     });
 
     const totalSales = sessions.reduce((acc, curr) => acc + (curr.salesAmount || 0), 0);

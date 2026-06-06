@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { revalidatePath } from "next/cache";
@@ -177,7 +178,7 @@ export async function endLiveSession(sessionId: string, salesAmount: number, sal
 
 // --- Admin Actions ---
 
-  export async function getAdminLiveSessions() {
+export async function getAdminLiveSessions(startDate?: string, endDate?: string) {
   try {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as { id?: string })?.id;
@@ -193,12 +194,18 @@ export async function endLiveSession(sessionId: string, salesAmount: number, sal
       orderBy: { startTime: 'desc' },
     });
 
+    const whereClause: Prisma.LiveSessionWhereInput = {
+      status: "COMPLETED",
+      startTime: startDate && endDate ? {
+        gte: new Date(startDate),
+        lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+      } : {
+        gte: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000)
+      }
+    };
+
     const completed = await prisma.liveSession.findMany({
-      where: { 
-        status: "COMPLETED",
-        // Ensure we get all recent data for accurate monthly summaries
-        startTime: { gte: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) }
-      },
+      where: whereClause,
       include: {
         user: {
           select: { name: true, email: true, baseSalary: true }
