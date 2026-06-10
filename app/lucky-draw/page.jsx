@@ -14,6 +14,7 @@ import toast, { Toaster } from "react-hot-toast";
 const LS_QUEUE_KEY = "luckyDraw_lockedQueue";
 const LS_RIGGED_KEY = "luckyDraw_riggedMode";
 const LS_WINNERS_KEY = "luckyDraw_winners";
+const LS_ENABLED_KEY = "luckyDraw_enabled";
 
 // ─── Audio helpers ─────────────────────────────────────────────────────
 const playSynthTick = (freq = 800, vol = 0.08) => {
@@ -186,6 +187,18 @@ export default function LuckyDrawPage() {
     return false;
   });
 
+  const [pageEnabled, setPageEnabled] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const e = localStorage.getItem(LS_ENABLED_KEY);
+        return e ? JSON.parse(e) : true;
+      } catch {
+        return true;
+      }
+    }
+    return true;
+  });
+
   // Show/hide queue overlay
   const [showQueuePanel, setShowQueuePanel] = useState(false);
 
@@ -211,8 +224,10 @@ export default function LuckyDrawPage() {
     try {
       const q = localStorage.getItem(LS_QUEUE_KEY);
       const r = localStorage.getItem(LS_RIGGED_KEY);
+      const e = localStorage.getItem(LS_ENABLED_KEY);
       if (q) setLockedQueue(JSON.parse(q));
       if (r) setRiggedMode(JSON.parse(r));
+      if (e) setPageEnabled(JSON.parse(e));
     } catch { /* ignore */ }
   };
 
@@ -359,7 +374,7 @@ export default function LuckyDrawPage() {
       winName = activePool[winIdx];
     }
 
-    const duration = 9500;
+    const duration = 40000;
 
     const onEnd = () => {
       setIsSpinning(false);
@@ -479,6 +494,25 @@ export default function LuckyDrawPage() {
         <h2 className="text-2xl font-black">เข้าถึงข้อมูลสำหรับแอดมินเท่านั้น</h2>
         <button onClick={() => router.push("/login")} className="w-full py-4 bg-gradient-to-r from-[#c3a2ab] to-rose-400 text-gray-950 font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer">
           เข้าสู่ระบบ (Sign In)
+        </button>
+      </div>
+    </div>
+  );
+
+  // ── Page disabled check ──────────────────────────────────────────────
+  if (!pageEnabled) return (
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-6 text-white font-sans">
+      <Toaster position="top-right" />
+      <div className="bg-gradient-to-b from-gray-900 to-black p-10 rounded-[3rem] border border-white/10 shadow-2xl text-center max-w-md space-y-6">
+        <div className="w-16 h-16 bg-rose-500/10 border border-rose-500/30 rounded-full flex items-center justify-center mx-auto text-rose-500">
+          <Lock size={32} />
+        </div>
+        <h2 className="text-2xl font-black">หน้าสุ่มรางวัลถูกปิดใช้งานชั่วคราว</h2>
+        <p className="text-gray-400 text-xs leading-relaxed">
+          ระบบสุ่มจับรางวัลถูกปิดใช้งานโดยแอดมิน กรุณาเปิดใช้งานหน้าสุ่มรางวัลผ่านระบบจัดการ Campanet CRM เพื่อเข้าใช้งาน
+        </p>
+        <button onClick={() => router.push("/admin/campanet")} className="w-full py-4 bg-gradient-to-r from-[#c3a2ab] to-rose-400 text-gray-950 font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer">
+          กลับสู่ระบบ CRM
         </button>
       </div>
     </div>
@@ -614,7 +648,6 @@ export default function LuckyDrawPage() {
                         className={`flex-shrink-0 h-24 rounded-2xl border flex flex-col items-center justify-center p-2 bg-gradient-to-br shadow-lg ${styles[i % styles.length]}`}
                         style={{ width: `${cardWidth}px` }}
                       >
-                        <span className="text-[8px] text-gray-500 font-black tracking-widest uppercase">#{i + 1}</span>
                         <span className="font-bold text-xs truncate max-w-full text-white px-1 mt-0.5 text-center">{name}</span>
                       </div>
                     );

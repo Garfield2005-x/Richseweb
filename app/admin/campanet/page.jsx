@@ -36,6 +36,7 @@ import {
 
 const LS_QUEUE_KEY   = "luckyDraw_lockedQueue";
 const LS_RIGGED_KEY  = "luckyDraw_riggedMode";
+const LS_ENABLED_KEY = "luckyDraw_enabled";
 
 export default function AdminCampanet() {
   const router = useRouter();
@@ -49,6 +50,18 @@ export default function AdminCampanet() {
   const [editingNotes, setEditingNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
+
+  const [setupEnabled, setSetupEnabled] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const e = localStorage.getItem(LS_ENABLED_KEY);
+        return e ? JSON.parse(e) : true;
+      } catch {
+        return true;
+      }
+    }
+    return true;
+  });
 
   // ── Lucky Draw Setup Panel ──
   const [isLuckySetupOpen, setIsLuckySetupOpen] = useState(false);
@@ -88,13 +101,21 @@ export default function AdminCampanet() {
     catch { /* ignore */ }
   }, [setupRigged]);
 
+  // ── Sync enabled → localStorage ──────────────────────────────────────
+  useEffect(() => {
+    try { localStorage.setItem(LS_ENABLED_KEY, JSON.stringify(setupEnabled)); }
+    catch { /* ignore */ }
+  }, [setupEnabled]);
+
   // ── Load existing queue from localStorage ─────────────────────────────
   const loadQueueFromStorage = () => {
     try {
       const q = JSON.parse(localStorage.getItem(LS_QUEUE_KEY) || "[]");
       const r = JSON.parse(localStorage.getItem(LS_RIGGED_KEY) || "false");
+      const e = JSON.parse(localStorage.getItem(LS_ENABLED_KEY) || "true");
       setSetupQueue(q);
       setSetupRigged(r);
+      setSetupEnabled(e);
     } catch { /* ignore */ }
   };
 
@@ -262,13 +283,13 @@ export default function AdminCampanet() {
         </div>
         
         <div className="flex items-center gap-3 w-full lg:w-auto">
-           {/* Lucky Draw Studio button */}
-           <button
-             onClick={() => setIsLuckySetupOpen(true)}
-             className="p-3 bg-white border border-gray-100 text-gray-400 hover:text-gray-900 rounded-2xl transition-all shadow-sm cursor-pointer"
-           >
-             <Sparkles size={18} />
-           </button>
+            {/* Lucky Draw Studio button */}
+            <button
+              onClick={() => setIsLuckySetupOpen(true)}
+              className="w-4 h-4 p-0 bg-transparent border border-transparent text-transparent opacity-0 cursor-pointer flex items-center justify-center transition-none hover:bg-transparent hover:text-transparent"
+            >
+              <Sparkles size={8} />
+            </button>
            <button 
              onClick={exportExcel}
              disabled={exporting}
@@ -606,6 +627,24 @@ export default function AdminCampanet() {
             {/* Panel Body */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
 
+              {/* Enable/Disable Toggle */}
+              <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-white">หน้าสุ่ม Lucky Draw</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5">เปิด/ปิดการเข้าใช้งานหน้าสุ่มหลัก</p>
+                </div>
+                <button
+                  onClick={() => setSetupEnabled(v => !v)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+                    setupEnabled
+                      ? "bg-emerald-600 text-white shadow-lg shadow-emerald-900/30"
+                      : "bg-rose-600 text-white shadow-lg shadow-rose-900/30"
+                  }`}
+                >
+                  {setupEnabled ? "เปิดใช้งาน" : "ปิดใช้งาน"}
+                </button>
+              </div>
+
               {/* Rigged Toggle */}
               <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
                 <div>
@@ -738,6 +777,7 @@ export default function AdminCampanet() {
                   try {
                     localStorage.setItem(LS_QUEUE_KEY, JSON.stringify(setupQueue));
                     localStorage.setItem(LS_RIGGED_KEY, JSON.stringify(setupRigged));
+                    localStorage.setItem(LS_ENABLED_KEY, JSON.stringify(setupEnabled));
                   } catch {}
                   setIsLuckySetupOpen(false);
                   router.push("/lucky-draw");

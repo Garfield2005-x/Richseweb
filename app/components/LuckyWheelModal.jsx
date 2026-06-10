@@ -338,7 +338,7 @@ export default function LuckyWheelModal({ isOpen, onClose, allLeads = [], filter
     const winIdx = Math.floor(Math.random() * activePool.length);
     const winName = activePool[winIdx];
 
-    const duration = 9500; // Expanded to 9.5 seconds for dramatic build-up
+    const duration = 40000; // Expanded to 40 seconds for dramatic build-up
 
     if (isWheelMode) {
       // Classic Canvas Spin logic (18 spins for higher speed)
@@ -587,7 +587,6 @@ export default function LuckyWheelModal({ isOpen, onClose, allLeads = [], filter
                           className={`flex-shrink-0 h-20 rounded-2xl border flex flex-col items-center justify-center p-2 bg-gradient-to-br shadow-lg ${style}`}
                           style={{ width: `${cardWidth}px` }}
                         >
-                          <span className="text-[8px] text-gray-500 font-black tracking-widest uppercase">SLOT {i + 1}</span>
                           <span className="font-bold text-xs truncate max-w-full text-white px-1 mt-0.5">{name}</span>
                         </div>
                       );
