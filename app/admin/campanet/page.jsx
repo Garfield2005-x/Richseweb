@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import LoadingRichse from "@/app/components/LoadingRichse";
+import LuckyWheelModal from "@/app/components/LuckyWheelModal";
 import { 
   Search, 
   Trash2, 
@@ -23,22 +25,91 @@ import {
   PieChart,
   Users,
   TrendingUp,
-  Zap
+  Zap,
+  ArrowRight,
+  Lock,
+  Unlock,
+  Plus,
+  ListOrdered,
+  Sparkles
 } from "lucide-react";
 
+const LS_QUEUE_KEY   = "luckyDraw_lockedQueue";
+const LS_RIGGED_KEY  = "luckyDraw_riggedMode";
+
 export default function AdminCampanet() {
+  const router = useRouter();
   const [forms, setForms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [selectedLead, setSelectedLead] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isWheelOpen, setIsWheelOpen] = useState(false);
   const [editingNotes, setEditingNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
 
+  // ── Lucky Draw Setup Panel ──
+  const [isLuckySetupOpen, setIsLuckySetupOpen] = useState(false);
+  const [setupQueue, setSetupQueue] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const q = localStorage.getItem(LS_QUEUE_KEY);
+        return q ? JSON.parse(q) : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
+  const [setupRigged, setSetupRigged] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const r = localStorage.getItem(LS_RIGGED_KEY);
+        return r ? JSON.parse(r) : false;
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  });
+  const [setupSearch, setSetupSearch] = useState("");       // search for adding names
+
+  // ── Sync queue → localStorage ─────────────────────────────────────────
+  useEffect(() => {
+    try { localStorage.setItem(LS_QUEUE_KEY, JSON.stringify(setupQueue)); }
+    catch { /* ignore */ }
+  }, [setupQueue]);
+
+  // ── Sync riggedMode → localStorage ───────────────────────────────────
+  useEffect(() => {
+    try { localStorage.setItem(LS_RIGGED_KEY, JSON.stringify(setupRigged)); }
+    catch { /* ignore */ }
+  }, [setupRigged]);
+
+  // ── Load existing queue from localStorage ─────────────────────────────
+  const loadQueueFromStorage = () => {
+    try {
+      const q = JSON.parse(localStorage.getItem(LS_QUEUE_KEY) || "[]");
+      const r = JSON.parse(localStorage.getItem(LS_RIGGED_KEY) || "false");
+      setSetupQueue(q);
+      setSetupRigged(r);
+    } catch { /* ignore */ }
+  };
+
   useEffect(() => {
     fetchForms();
+    loadQueueFromStorage();
+
+    // Re-load queue whenever this tab regains focus (user returns from lucky-draw)
+    const onFocus = () => { loadQueueFromStorage(); };
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("storage", onFocus);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("storage", onFocus);
+    };
   }, []);
 
   async function fetchForms() {
@@ -191,6 +262,13 @@ export default function AdminCampanet() {
         </div>
         
         <div className="flex items-center gap-3 w-full lg:w-auto">
+           {/* Lucky Draw Studio button */}
+           <button
+             onClick={() => setIsLuckySetupOpen(true)}
+             className="p-3 bg-white border border-gray-100 text-gray-400 hover:text-gray-900 rounded-2xl transition-all shadow-sm cursor-pointer"
+           >
+             <Sparkles size={18} />
+           </button>
            <button 
              onClick={exportExcel}
              disabled={exporting}
@@ -492,6 +570,191 @@ export default function AdminCampanet() {
                  </button>
               </div>
            </div>
+        </div>
+      )}
+
+      {/* Lucky Wheel Modal (legacy) */}
+      <LuckyWheelModal 
+        isOpen={isWheelOpen}
+        onClose={() => setIsWheelOpen(false)}
+        allLeads={forms}
+        filteredLeads={filteredForms}
+      />
+
+      {/* ── Lucky Draw Studio Setup Panel ── */}
+      {isLuckySetupOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/60 backdrop-blur-md">
+          {/* Click outside to close */}
+          <div className="absolute inset-0" onClick={() => setIsLuckySetupOpen(false)} />
+
+          <div className="relative bg-gradient-to-b from-gray-950 to-[#120f10] w-full max-w-md h-full flex flex-col border-l border-white/10 shadow-2xl animate-in slide-in-from-right duration-300">
+
+            {/* Panel Header */}
+            <div className="p-6 border-b border-white/10 flex items-center justify-between bg-black/40">
+              <div>
+                <h2 className="text-lg font-black text-white flex items-center gap-2">
+                  <Sparkles size={18} className="text-rose-400" />
+                  Lucky Draw Studio
+                </h2>
+                <p className="text-[10px] text-gray-500 mt-0.5">ตั้งค่าล็อคชื่อก่อนเปิดหน้าสุ่ม</p>
+              </div>
+              <button onClick={() => setIsLuckySetupOpen(false)} className="p-2 hover:bg-white/10 rounded-xl text-gray-400 hover:text-white transition-all cursor-pointer">
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Panel Body */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+
+              {/* Rigged Toggle */}
+              <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-white">โหมดล็อคผลการสุ่ม</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5">เปิดเพื่อให้สุ่มออกตามลำดับชื่อในคิว</p>
+                </div>
+                <button
+                  onClick={() => setSetupRigged(v => !v)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+                    setupRigged
+                      ? "bg-rose-600 text-white shadow-lg shadow-rose-900/30"
+                      : "bg-white/5 border border-white/10 text-gray-400 hover:text-white"
+                  }`}
+                >
+                  {setupRigged ? <Lock size={12} /> : <Unlock size={12} />}
+                  {setupRigged ? "ล็อคแล้ว" : "ปิด"}
+                </button>
+              </div>
+
+              {/* Current Queue */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <ListOrdered size={12} /> คิวล็อคปัจจุบัน ({setupQueue.length} ชื่อ)
+                  </h3>
+                  {setupQueue.length > 0 && (
+                    <button
+                      onClick={() => setSetupQueue([])}
+                      className="text-[10px] text-rose-400 hover:text-rose-300 font-bold cursor-pointer"
+                    >
+                      ล้างทั้งหมด
+                    </button>
+                  )}
+                </div>
+
+                {setupQueue.length > 0 ? (
+                  <div className="space-y-1.5 bg-rose-950/10 border border-rose-500/15 rounded-2xl p-3">
+                    {setupQueue.map((name, idx) => (
+                      <div key={idx} className="flex items-center gap-3 group">
+                        <span className={`text-xs font-black w-5 flex-shrink-0 ${idx === 0 ? "text-rose-400" : "text-gray-600"}`}>
+                          {idx + 1}
+                        </span>
+                        <span className={`flex-1 text-sm truncate font-medium ${idx === 0 ? "text-rose-200" : "text-gray-400"}`}>
+                          {idx === 0 && <span className="text-rose-500 mr-1 text-xs">▶</span>}
+                          {name}
+                        </span>
+                        <button
+                          onClick={() => setSetupQueue(prev => prev.filter((_, i) => i !== idx))}
+                          className="opacity-0 group-hover:opacity-100 text-rose-500 hover:text-rose-300 transition-all cursor-pointer"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-white/3 border border-dashed border-white/10 rounded-2xl p-6 text-center">
+                    <ListOrdered size={24} className="text-gray-600 mx-auto mb-2" />
+                    <p className="text-xs text-gray-500">ยังไม่มีชื่อในคิว</p>
+                    <p className="text-[10px] text-gray-600 mt-1">ค้นหาชื่อด้านล่างเพื่อเพิ่ม</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Search to Add */}
+              <div>
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <Plus size={12} /> เพิ่มชื่อในคิว
+                </h3>
+                <div className="relative mb-2">
+                  <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                  <input
+                    type="text"
+                    value={setupSearch}
+                    onChange={(e) => setSetupSearch(e.target.value)}
+                    placeholder="ค้นหาชื่อจากรายชื่อแคมเปญ..."
+                    className="w-full pl-9 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm outline-none focus:border-rose-500/40 transition-all text-white placeholder-gray-600"
+                  />
+                </div>
+                <div className="max-h-[240px] overflow-y-auto bg-black/30 border border-white/5 rounded-xl divide-y divide-white/5">
+                  {(() => {
+                    const term = setupSearch.trim().toLowerCase();
+                    const list = forms
+                      .map(f => f.name)
+                      .filter(n => n && (term ? n.toLowerCase().includes(term) : true))
+                      .filter((n, i, arr) => arr.indexOf(n) === i) // unique
+                      .slice(0, 80);
+                    if (list.length === 0) return (
+                      <div className="p-4 text-center text-xs text-gray-500">
+                        {setupSearch ? "ไม่พบชื่อที่ค้นหา" : "พิมพ์ชื่อเพื่อค้นหา"}
+                      </div>
+                    );
+                    return list.map((name, idx) => (
+                      <div key={idx} className="flex items-center justify-between px-4 py-2.5 hover:bg-white/5 transition-all">
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <div className="w-6 h-6 bg-[#c3a2ab]/10 rounded-lg flex items-center justify-center text-[#c3a2ab] text-xs font-bold flex-shrink-0">
+                            {name?.charAt(0)}
+                          </div>
+                          <span className="text-sm text-gray-300 truncate">{name}</span>
+                        </div>
+                        <button
+                          onClick={() => {
+                            if (setupQueue.includes(name)) { toast.error(`"${name}" อยู่ในคิวแล้ว`); return; }
+                            setSetupQueue(prev => [...prev, name]);
+                            toast.success(`เพิ่ม "${name}" เข้าคิวล็อค 🔒`);
+                          }}
+                          disabled={setupQueue.includes(name)}
+                          className={`flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-lg transition-all cursor-pointer ml-3 flex-shrink-0 ${
+                            setupQueue.includes(name)
+                              ? "text-gray-600 cursor-not-allowed"
+                              : "text-rose-400 hover:bg-rose-500/10 hover:text-rose-300"
+                          }`}
+                        >
+                          {setupQueue.includes(name) ? "✓ ล็อคแล้ว" : <><Plus size={11} /> ล็อค</>}
+                        </button>
+                      </div>
+                    ));
+                  })()}
+                </div>
+              </div>
+
+
+            </div>
+
+            {/* Panel Footer — Navigate Button */}
+            <div className="p-6 border-t border-white/10 bg-black/40 space-y-3">
+              <button
+                onClick={() => {
+                  // Save queue + rigged state to localStorage
+                  try {
+                    localStorage.setItem(LS_QUEUE_KEY, JSON.stringify(setupQueue));
+                    localStorage.setItem(LS_RIGGED_KEY, JSON.stringify(setupRigged));
+                  } catch {}
+                  setIsLuckySetupOpen(false);
+                  router.push("/lucky-draw");
+                }}
+                className="w-full py-4 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl shadow-rose-900/30 transition-all hover:scale-105 active:scale-98 flex items-center justify-center gap-3 cursor-pointer"
+              >
+                <Sparkles size={16} />
+                เปิด Lucky Draw Studio
+                <ArrowRight size={16} />
+              </button>
+              {setupQueue.length > 0 && setupRigged && (
+                <p className="text-center text-[10px] text-rose-400/70 italic">
+                  จะล็อค {setupQueue.length} ชื่อ — สุ่มออกตามลำดับ
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -169,7 +169,6 @@ export default function SubmitClipPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <select
-                  required
                   className="px-5 md:px-6 py-3.5 md:py-4 bg-gray-50 border-none rounded-xl md:rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all duration-300 outline-none text-[#161314] font-semibold appearance-none bg-[url('https://api.iconify.design/heroicons:chevron-down.svg')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
                   value={selectedCampaignId}
                   onChange={(e) => setSelectedCampaignId(e.target.value)}

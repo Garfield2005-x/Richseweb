@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import SalaryReportModal from '@/app/components/SalaryReportModal';
 import { startLiveSession, endLiveSession, getLiveSessionsHistory, updateLiveSessionSales } from '@/app/actions/live';
 import { submitLeaveRequest, createTicket, getPersonalAnalytics } from '@/app/actions/portal';
 import { toast } from 'react-hot-toast';
@@ -135,6 +136,7 @@ const handleFetchAnalytics = async (start: string, end: string) => {
   // Leave State
 
   const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [leaveType, setLeaveType] = useState('SICK');
   const [leaveStartDate, setLeaveStartDate] = useState('');
   const [leaveEndDate, setLeaveEndDate] = useState('');
@@ -266,7 +268,7 @@ const handleFetchAnalytics = async (start: string, end: string) => {
           return;
         }
         imageUrl = uploadData.url;
-      } catch (err) {
+      } catch {
         toast.error('เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ');
         setIsLoading(false);
         setIsUploading(false);
@@ -554,6 +556,22 @@ const handleFetchAnalytics = async (start: string, end: string) => {
                     ล้างค่าการค้นหา
                   </button>
                 )}
+                
+                {/* ปุ่มคำนวณเงินเดือน */}
+                <button
+                  onClick={() => setShowSalaryModal(true)}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm ${
+                    !analyticsStartDate || !analyticsEndDate 
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed ml-auto' 
+                      : 'bg-[#161314] text-white hover:bg-[#2a2526] ml-auto'
+                  }`}
+                  disabled={!analyticsStartDate || !analyticsEndDate}
+                >
+                  <span className="flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">calculate</span>
+                    คำนวณเงินเดือน
+                  </span>
+                </button>
               </div>
             </div>
 
@@ -619,6 +637,12 @@ const handleFetchAnalytics = async (start: string, end: string) => {
                 className="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-all"
               >
                 Request Leave
+                <button
+                  onClick={() => setShowSalaryModal(true)}
+                  className="ml-2 px-4 py-2 bg-[#c3a2ab] text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-[#b08b96] transition-all"
+                >
+                  คำนวนเงินเดือน
+                </button>
               </button>
             </div>
 
@@ -987,6 +1011,14 @@ const handleFetchAnalytics = async (start: string, end: string) => {
           <span className="material-symbols-outlined text-3xl">sos</span>
         </button>
       )}
+
+      {/* Salary Report Modal */}
+      <SalaryReportModal
+        show={showSalaryModal}
+        onClose={() => setShowSalaryModal(false)}
+        startDate={analyticsStartDate}
+        endDate={analyticsEndDate}
+      />
 
     </div>
   );

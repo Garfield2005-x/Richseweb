@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { updateLeaveStatus, updateTicketStatus, deleteLeaveRequest, updateBaseSalary } from '@/app/actions/portal';
 import { deleteLiveSession, getAdminLiveSessions } from '@/app/actions/live';
 import { toast } from 'react-hot-toast';
+import SalaryReportModal from '@/app/components/SalaryReportModal';
 
 interface AdminLiveTrackingProps {
   initialOngoing: ExtendedSession[];
@@ -53,6 +54,7 @@ const [showEditModal, setShowEditModal] = useState(false);
 // Date range filters
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [showSalaryModal, setShowSalaryModal] = useState(false);
 
   const handleFilter = async (start: string, end: string) => {
     const loadingToast = toast.loading('กำลังโหลดข้อมูลช่วงเวลา...');
@@ -438,6 +440,22 @@ return (
                     ล้างค่าการค้นหา
                   </button>
                 )}
+                
+                {/* ปุ่มคำนวณเงินเดือน */}
+                <button
+                  onClick={() => setShowSalaryModal(true)}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm ${
+                    !startDate || !endDate 
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed ml-auto' 
+                      : 'bg-[#161314] text-white hover:bg-[#2a2526] ml-auto'
+                  }`}
+                  disabled={!startDate || !endDate}
+                >
+                  <span className="flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">calculate</span>
+                    คำนวณเงินเดือน
+                  </span>
+                </button>
               </div>
             </div>
 
@@ -793,6 +811,14 @@ return (
           </div>
         </div>
       )}
+
+      {/* Salary Report Modal */}
+      <SalaryReportModal
+        show={showSalaryModal}
+        onClose={() => setShowSalaryModal(false)}
+        startDate={startDate}
+        endDate={endDate}
+      />
 
     </div>
   );
