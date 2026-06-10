@@ -123,6 +123,18 @@ export default function AdminCampanet() {
     fetchForms();
     loadQueueFromStorage();
 
+    // Fetch global enabled state from DB
+    fetch("/api/settings/luckyDraw_enabled")
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.value !== null) {
+          const val = data.value === true || data.value === "true";
+          setSetupEnabled(val);
+          localStorage.setItem(LS_ENABLED_KEY, JSON.stringify(val));
+        }
+      })
+      .catch(err => console.error("Error fetching global enabled state:", err));
+
     // Re-load queue whenever this tab regains focus (user returns from lucky-draw)
     const onFocus = () => { loadQueueFromStorage(); };
     window.addEventListener("focus", onFocus);
@@ -634,7 +646,24 @@ export default function AdminCampanet() {
                   <p className="text-[10px] text-gray-500 mt-0.5">เปิด/ปิดการเข้าใช้งานหน้าสุ่มหลัก</p>
                 </div>
                 <button
-                  onClick={() => setSetupEnabled(v => !v)}
+                  onClick={async () => {
+                    const nextVal = !setupEnabled;
+                    setSetupEnabled(nextVal);
+                    try {
+                      const res = await fetch("/api/admin/settings", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ key: LS_ENABLED_KEY, value: nextVal ? "true" : "false" })
+                      });
+                      if (res.ok) {
+                        toast.success(nextVal ? "เปิดใช้งานหน้าสุ่มสำหรับทุกเครื่องแล้ว" : "ปิดใช้งานหน้าสุ่มสำหรับทุกเครื่องแล้ว");
+                      } else {
+                        toast.error("ไม่สามารถบันทึกสถานะไปยังเซิร์ฟเวอร์ได้");
+                      }
+                    } catch {
+                      toast.error("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+                    }
+                  }}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer ${
                     setupEnabled
                       ? "bg-emerald-600 text-white shadow-lg shadow-emerald-900/30"

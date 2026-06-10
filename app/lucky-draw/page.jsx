@@ -244,6 +244,32 @@ export default function LuckyDrawPage() {
     };
   }, []);
 
+  // ── Poll global enabled state from DB ──────────────────────────────────
+  useEffect(() => {
+    let active = true;
+    async function checkGlobalStatus() {
+      try {
+        const res = await fetch("/api/settings/luckyDraw_enabled");
+        if (res.ok) {
+          const data = await res.json();
+          const val = data.value === null ? true : (data.value === true || data.value === "true");
+          if (active) {
+            setPageEnabled(val);
+          }
+        }
+      } catch (e) {
+        console.error("Error checking global status:", e);
+      }
+    }
+
+    checkGlobalStatus();
+    const interval = setInterval(checkGlobalStatus, 4000);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, []);
+
   // ── Sync queue → localStorage ─────────────────────────────────────────
   useEffect(() => {
     try { localStorage.setItem(LS_QUEUE_KEY, JSON.stringify(lockedQueue)); }
