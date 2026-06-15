@@ -43,29 +43,51 @@ export async function GET(request: Request) {
     let cutoffEnd: Date;
 
     if (paramStart && paramEnd) {
-      cutoffStart = new Date(paramStart);
-      cutoffEnd = new Date(paramEnd);
-      // Ensure the end date covers the full day up to 23:59:59.999
-      cutoffEnd.setHours(23, 59, 59, 999);
+      cutoffStart = new Date(`${paramStart}T00:00:00+07:00`);
+      cutoffEnd = new Date(`${paramEnd}T23:59:59.999+07:00`);
     } else {
-      const currentDate = new Date();
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
-      const date = currentDate.getDate();
+      const now = new Date();
+      const thDate = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+      const year = thDate.getUTCFullYear();
+      const month = thDate.getUTCMonth(); // 0-11
+      const date = thDate.getUTCDate();
+
+      const startYear = year;
+      let startMonth = month;
+      const endYear = year;
+      let endMonth = month + 1;
 
       if (date >= 29) {
-        // e.g. Jun 29 => we show cycle: May 29 to Jun 28
-        cutoffStart = new Date(year, month - 1, 29, 0, 0, 0);
-        cutoffEnd = new Date(year, month, 28, 23, 59, 59, 999);
+        startMonth = month;
+        endMonth = month + 1;
       } else if (date <= 5) {
-        // e.g. Jul 3 => still showing cycle: May 29 to Jun 28
-        cutoffStart = new Date(year, month - 2, 29, 0, 0, 0);
-        cutoffEnd = new Date(year, month - 1, 28, 23, 59, 59, 999);
+        startMonth = month - 1;
+        endMonth = month;
       } else {
-        // e.g. Jul 15 => ongoing cycle: Jun 29 to Jul 28
-        cutoffStart = new Date(year, month - 1, 29, 0, 0, 0);
-        cutoffEnd = new Date(year, month, 28, 23, 59, 59, 999);
+        startMonth = month;
+        endMonth = month + 1;
       }
+
+      const adjustYearMonth = (y: number, m: number) => {
+        let adjY = y;
+        let adjM = m;
+        while (adjM < 1) {
+          adjM += 12;
+          adjY -= 1;
+        }
+        while (adjM > 12) {
+          adjM -= 12;
+          adjY += 1;
+        }
+        return { year: adjY, month: adjM };
+      };
+
+      const startAdjusted = adjustYearMonth(startYear, startMonth);
+      const endAdjusted = adjustYearMonth(endYear, endMonth);
+
+      const pad = (n: number) => String(n).padStart(2, '0');
+      cutoffStart = new Date(`${startAdjusted.year}-${pad(startAdjusted.month)}-29T00:00:00+07:00`);
+      cutoffEnd = new Date(`${endAdjusted.year}-${pad(endAdjusted.month)}-28T23:59:59.999+07:00`);
     }
 
     const completed = await prisma.liveSession.findMany({
@@ -75,7 +97,7 @@ export async function GET(request: Request) {
       },
       include: {
         user: {
-          select: { name: true, email: true, baseSalary: true }
+          select: { name: true, email: true, baseSalary: true, commissionRate: true, baseSalaryShopee: true, commissionRateShopee: true }
         }
       },
       orderBy: { endTime: "desc" },
@@ -96,8 +118,8 @@ export async function GET(request: Request) {
     wb.created = new Date();
 
     // --- DATA PROCESSING ---
-    const userStats = completed.reduce((acc: Record<string, { name: string; email: string; totalMins: number; totalSales: number; shopeeSales: number; otherSales: number; sessionsCount: number; leaveDeductions: number; baseSalary: number }>, curr) => {
-      const c = curr as unknown as { user: { email: string; name: string | null; baseSalary: number | null }; durationMin: number | null; salesAmount: number | null; platform: string };
+    const userStats = completed.reduce((acc: Record<string, { name: string; email: string; totalMins: number; totalSales: number; shopeeSales: number; otherSales: number; sessionsCount: number; leaveDeductions: number; baseSalary: number; baseSalaryShopee: number; commissionRate: number; commissionRateShopee: number }>, curr) => {
+      const c = curr as unknown as { user: { email: string; name: string | null; baseSalary: number | null; commissionRate: number | null; baseSalaryShopee: number | null; commissionRateShopee: number | null }; durationMin: number | null; salesAmount: number | null; platform: string };
       const email = c.user.email;
       if (!acc[email]) {
         acc[email] = {
@@ -109,7 +131,10 @@ export async function GET(request: Request) {
           otherSales: 0,
           sessionsCount: 0,
           leaveDeductions: 0,
-          baseSalary: c.user.baseSalary || 0
+          baseSalary: c.user.baseSalary || 0,
+          baseSalaryShopee: c.user.baseSalaryShopee || 0,
+          commissionRate: c.user.commissionRate ?? 0.05,
+          commissionRateShopee: c.user.commissionRateShopee ?? 0.03
         };
       }
       acc[email].totalMins += (c.durationMin || 0);
@@ -125,21 +150,45 @@ export async function GET(request: Request) {
       return acc;
     }, {});
 
+    const getDaysArray = (startStr: string, endStr: string): string[] => {
+      const dates: string[] = [];
+      const curr = new Date(`${startStr}T00:00:00+07:00`);
+      const end = new Date(`${endStr}T00:00:00+07:00`);
+      while (curr <= end) {
+        const y = curr.getFullYear();
+        const m = String(curr.getMonth() + 1).padStart(2, '0');
+        const d = String(curr.getDate()).padStart(2, '0');
+        dates.push(`${y}-${m}-${d}`);
+        curr.setDate(curr.getDate() + 1);
+      }
+      return dates;
+    };
+
+    const toTHDateString = (date: Date): string => {
+      const thTime = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+      return thTime.toISOString().split('T')[0];
+    };
+
     // Calculate Leave Deductions
     // VACATION deducts 250 per day, PERSONAL deducts 500 per day
     approvedLeaves.forEach((leave) => {
       const email = leave.user.email;
       if (email && userStats[email]) {
-        // approximate days
-        const start = new Date(leave.startDate);
-        const end = new Date(leave.endDate);
-        const diffTime = Math.abs(end.getTime() - start.getTime());
-        const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // inclusive
+        const leaveStartStr = toTHDateString(leave.startDate);
+        const leaveEndStr = toTHDateString(leave.endDate);
+        const leaveDays = getDaysArray(leaveStartStr, leaveEndStr);
         
-        if (leave.leaveType === "VACATION") {
-          userStats[email].leaveDeductions += (days * 250);
-        } else if (leave.leaveType === "PERSONAL") {
-          userStats[email].leaveDeductions += (days * 500);
+        const cycleStartStr = toTHDateString(cutoffStart);
+        const cycleEndStr = toTHDateString(cutoffEnd);
+        const overlapping = leaveDays.filter(day => day >= cycleStartStr && day <= cycleEndStr);
+        const days = overlapping.length;
+        
+        if (days > 0) {
+          if (leave.leaveType === "VACATION") {
+            userStats[email].leaveDeductions += (days * 250);
+          } else if (leave.leaveType === "PERSONAL") {
+            userStats[email].leaveDeductions += (days * 500);
+          }
         }
       }
     });
@@ -180,12 +229,16 @@ export async function GET(request: Request) {
     });
 
     statsArray.forEach((stat, idx: number) => {
-      const s = stat as { totalMins: number; totalSales: number; shopeeSales: number; otherSales: number; name: string; email: string; sessionsCount: number; leaveDeductions: number; baseSalary: number };
+      const s = stat as { totalMins: number; totalSales: number; shopeeSales: number; otherSales: number; name: string; email: string; sessionsCount: number; leaveDeductions: number; baseSalary: number; baseSalaryShopee: number; commissionRate: number; commissionRateShopee: number };
       const hours = Math.floor(s.totalMins / 60);
       const mins = s.totalMins % 60;
       const r = idx + 6;
-      const commissionValue = (s.shopeeSales * 0.03) + (s.otherSales * 0.05);
-      const grossEarnings = s.baseSalary + commissionValue;
+      
+      const userRate = s.commissionRate;
+      const userRateShopee = s.commissionRateShopee;
+      const commissionValue = (s.shopeeSales * userRateShopee) + (s.otherSales * userRate);
+      const totalBaseSalary = s.baseSalary + s.baseSalaryShopee;
+      const grossEarnings = totalBaseSalary + commissionValue;
       const netSalaryValue = grossEarnings - s.leaveDeductions;
 
       const row = wsSummary.addRow([
@@ -195,8 +248,8 @@ export async function GET(request: Request) {
         s.shopeeSales,
         s.otherSales,
         { formula: `D${r}+E${r}`, result: s.totalSales },
-        s.baseSalary,
-        { formula: `D${r}*0.03 + E${r}*0.05`, result: commissionValue },
+        totalBaseSalary,
+        { formula: `D${r}*${userRateShopee} + E${r}*${userRate}`, result: commissionValue },
         { formula: `G${r}+H${r}`, result: grossEarnings },
         s.leaveDeductions,
         { formula: `I${r}-J${r}`, result: netSalaryValue },

@@ -41,8 +41,11 @@ model User {
   leaveRequests LeaveRequest[]
   liveSchedules LiveSchedule[]
   supportTickets SupportTicket[]
-  points        Int      @default(0)
-  baseSalary    Float    @default(0)
+  points           Int      @default(0)
+  baseSalary       Float    @default(0)
+  commissionRate   Float    @default(0.05)
+  baseSalaryShopee     Float    @default(0)
+  commissionRateShopee Float    @default(0.03)
   cookiePreferences UserCookiePreference?
 
   // Attribution

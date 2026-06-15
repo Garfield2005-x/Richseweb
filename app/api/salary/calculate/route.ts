@@ -14,9 +14,8 @@ function daysInMonth(monthStr: string): number {
 
 // Helper to count leave days between two dates for a user in a date range
 async function getApprovedLeaveDays(userId: string, startDate: string, endDate: string): Promise<number> {
-  const rangeStart = new Date(startDate);
-  const rangeEnd = new Date(endDate);
-  rangeEnd.setHours(23, 59, 59, 999);
+  const rangeStart = new Date(`${startDate}T00:00:00+07:00`);
+  const rangeEnd = new Date(`${endDate}T23:59:59.999+07:00`);
 
   const leaves = await prisma.leaveRequest.findMany({
     where: {
@@ -27,12 +26,32 @@ async function getApprovedLeaveDays(userId: string, startDate: string, endDate: 
     },
   });
 
+  const getDaysArray = (startStr: string, endStr: string): string[] => {
+    const dates: string[] = [];
+    const curr = new Date(`${startStr}T00:00:00+07:00`);
+    const end = new Date(`${endStr}T00:00:00+07:00`);
+    while (curr <= end) {
+      const y = curr.getFullYear();
+      const m = String(curr.getMonth() + 1).padStart(2, '0');
+      const d = String(curr.getDate()).padStart(2, '0');
+      dates.push(`${y}-${m}-${d}`);
+      curr.setDate(curr.getDate() + 1);
+    }
+    return dates;
+  };
+
+  const toTHDateString = (date: Date): string => {
+    const thTime = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+    return thTime.toISOString().split('T')[0];
+  };
+
   let totalDays = 0;
   for (const leave of leaves) {
-    const leaveStart = new Date(Math.max(leave.startDate.getTime(), rangeStart.getTime()));
-    const leaveEnd = new Date(Math.min(leave.endDate.getTime(), rangeEnd.getTime()));
-    const diff = Math.ceil((leaveEnd.getTime() - leaveStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    totalDays += Math.max(0, diff);
+    const leaveStartStr = toTHDateString(leave.startDate);
+    const leaveEndStr = toTHDateString(leave.endDate);
+    const leaveDays = getDaysArray(leaveStartStr, leaveEndStr);
+    const overlapping = leaveDays.filter(day => day >= startDate && day <= endDate);
+    totalDays += overlapping.length;
   }
   return totalDays;
 }
@@ -63,9 +82,9 @@ export async function GET(request: Request) {
     endDate = endDateParam;
     monthLabel = `${startDate} ถึง ${endDate}`;
     // Calculate number of days in the range for leave deduction ratio
-    const d1 = new Date(startDate);
-    const d2 = new Date(endDate);
-    dim = Math.ceil((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const d1 = new Date(`${startDate}T00:00:00+07:00`);
+    const d2 = new Date(`${endDate}T00:00:00+07:00`);
+    dim = Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   } else if (month) {
     startDate = `${month}-01`;
     endDate = `${month}-${daysInMonth(month)}`;
@@ -101,6 +120,7 @@ export async function GET(request: Request) {
         email,
         userId,
         baseSalary: s.user?.baseSalary || 0,
+        baseSalaryShopee: s.user?.baseSalaryShopee || 0,
         totalSales: 0,
         commission: 0,
         leaveDays: 0,
@@ -109,8 +129,10 @@ export async function GET(request: Request) {
     const emp = employeeMap[email];
     const sales = s.salesAmount || 0;
     emp.totalSales += sales;
-    // commission rate per platform (Shopee 3%, otherwise 5%)
-    const rate = s.platform?.toLowerCase() === 'shopee' ? 0.03 : 0.05;
+    const isShopee = s.platform?.toLowerCase() === 'shopee';
+    const userRate = s.user?.commissionRate ?? 0.05;
+    const userRateShopee = s.user?.commissionRateShopee ?? 0.03;
+    const rate = isShopee ? userRateShopee : userRate;
     emp.commission += sales * rate;
   });
 
@@ -123,14 +145,15 @@ export async function GET(request: Request) {
 
   // Final calculations per employee
   const report = Object.values(employeeMap).map((emp: any) => {
-    const leaveDeduction = dim > 0 ? (emp.baseSalary / dim) * emp.leaveDays : 0;
-    const gross = emp.baseSalary + emp.commission - leaveDeduction;
+    const totalBaseSalary = emp.baseSalary + emp.baseSalaryShopee;
+    const leaveDeduction = dim > 0 ? (totalBaseSalary / dim) * emp.leaveDays : 0;
+    const gross = totalBaseSalary + emp.commission - leaveDeduction;
     const tax = gross * 0.03; // 3% tax as final step
     const netPay = gross - tax;
     return {
       name: emp.name,
       email: emp.email,
-      baseSalary: Math.round(emp.baseSalary),
+      baseSalary: Math.round(totalBaseSalary),
       totalSales: Math.round(emp.totalSales),
       commission: Math.round(emp.commission),
       leaveDays: emp.leaveDays,

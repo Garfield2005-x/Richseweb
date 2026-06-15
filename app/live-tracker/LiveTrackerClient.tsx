@@ -17,6 +17,7 @@ interface LiveTrackerProps {
     totalHours: number;
     sessionCount: number;
     platformStats: Record<string, { sales: number; count: number; minutes: number }>;
+    estimatedCommission?: number;
   } | null;
   leaves: unknown[];
   tickets: unknown[];
@@ -1001,7 +1002,11 @@ const handleFetchAnalytics = async (start: string, end: string) => {
                 </div>
                 <div className="border-t border-white/10 pt-3 mt-3 flex justify-between items-center text-xs text-gray-400">
                   <span>ประมาณการค่าคอมฯสะสม:</span>
-                  <span className="font-bold text-emerald-400">฿{Math.round(analyticsData.totalSales * 0.04).toLocaleString()}</span>
+                  <span className="font-bold text-emerald-400">
+                    ฿{analyticsData.estimatedCommission !== undefined
+                      ? Math.round(analyticsData.estimatedCommission).toLocaleString()
+                      : Math.round(analyticsData.totalSales * 0.04).toLocaleString()}
+                  </span>
                 </div>
               </div>
             </div>

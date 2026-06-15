@@ -54,6 +54,7 @@ export async function GET(request: Request) {
         name: s.user?.name || email,
         email,
         baseSalary: s.user?.baseSalary || 0,
+        baseSalaryShopee: s.user?.baseSalaryShopee || 0,
         totalSales: 0,
         commission: 0,
         leaveDays: 0 // placeholder, not calculated currently
@@ -62,22 +63,25 @@ export async function GET(request: Request) {
     const emp = employeeMap[email];
     const sales = s.salesAmount || 0;
     emp.totalSales += sales;
-    // commission rate: 3% for Shopee, otherwise 5%
-    const rate = s.platform?.toLowerCase() === 'shopee' ? 0.03 : 0.05;
+    const isShopee = s.platform?.toLowerCase() === 'shopee';
+    const userRate = s.user?.commissionRate ?? 0.05;
+    const userRateShopee = s.user?.commissionRateShopee ?? 0.03;
+    const rate = isShopee ? userRateShopee : userRate;
     emp.commission += sales * rate;
   });
 
   // Compute final figures
   const report = Object.values(employeeMap).map((emp: any) => {
     const daysInThisMonth = daysInMonth(year, month);
-    const leaveDeduction = emp.baseSalary / daysInThisMonth * (emp.leaveDays || 0);
-    const gross = emp.baseSalary + emp.totalSales + emp.commission - leaveDeduction;
+    const totalBaseSalary = emp.baseSalary + emp.baseSalaryShopee;
+    const leaveDeduction = totalBaseSalary / daysInThisMonth * (emp.leaveDays || 0);
+    const gross = totalBaseSalary + emp.commission - leaveDeduction;
     const tax = gross * 0.03; // 3% tax
     const net = gross - tax;
     return {
       name: emp.name,
       email: emp.email,
-      baseSalary: emp.baseSalary,
+      baseSalary: totalBaseSalary,
       totalSales: emp.totalSales,
       commission: emp.commission,
       leaveDeduction,

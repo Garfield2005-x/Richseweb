@@ -122,6 +122,23 @@ export async function updateBaseSalary(email: string, amount: number) {
   }
 }
 
+export async function updateBaseSalaryShopee(email: string, amount: number) {
+  try {
+    const session = await getServerSession(authOptions);
+    if ((session?.user as { role?: string })?.role !== "ADMIN") return { error: "Unauthorized" };
+
+    await prisma.user.update({
+      where: { email },
+      data: { baseSalaryShopee: amount },
+    });
+
+    revalidatePath("/admin/live-tracking");
+    return { success: true };
+  } catch {
+    return { error: "Failed to update Shopee base salary" };
+  }
+}
+
 export async function deleteLeaveRequest(id: string) {
   try {
     const session = await getServerSession(authOptions);
@@ -333,8 +350,8 @@ export async function getPersonalAnalytics(startDate?: string, endDate?: string)
       userId: userId,
       status: "COMPLETED",
       startTime: startDate && endDate ? {
-        gte: new Date(startDate),
-        lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+        gte: new Date(`${startDate}T00:00:00+07:00`),
+        lte: new Date(`${endDate}T23:59:59.999+07:00`)
       } : {
         gte: calculatedMonthStart
       }
@@ -343,6 +360,20 @@ export async function getPersonalAnalytics(startDate?: string, endDate?: string)
     const sessions = await prisma.liveSession.findMany({
       where: whereClause,
     });
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { commissionRate: true, commissionRateShopee: true }
+    });
+    const userRate = user?.commissionRate ?? 0.05;
+    const userRateShopee = user?.commissionRateShopee ?? 0.03;
+
+    const estimatedCommission = sessions.reduce((acc, curr) => {
+      const sales = curr.salesAmount || 0;
+      const isShopee = curr.platform?.toLowerCase() === 'shopee';
+      const rate = isShopee ? userRateShopee : userRate;
+      return acc + (sales * rate);
+    }, 0);
 
     const totalSales = sessions.reduce((acc, curr) => acc + (curr.salesAmount || 0), 0);
     const totalMinutes = sessions.reduce((acc, curr) => acc + (curr.durationMin || 0), 0);
@@ -361,7 +392,8 @@ export async function getPersonalAnalytics(startDate?: string, endDate?: string)
         totalSales,
         totalHours: Math.round(totalMinutes / 60),
         platformStats,
-        sessionCount: sessions.length
+        sessionCount: sessions.length,
+        estimatedCommission
       } 
     };
   } catch {
@@ -375,16 +407,28 @@ export async function getPersonalMonthlyTrend() {
     const userId = (session?.user as { id?: string })?.id;
     if (!userId) return { error: "Unauthorized" };
 
-    const startOfPeriod = new Date();
-    startOfPeriod.setMonth(startOfPeriod.getMonth() - 5);
-    startOfPeriod.setDate(1);
-    startOfPeriod.setHours(0, 0, 0, 0);
+    // Get start of 6-month period relative to GMT+7 timezone
+    const now = new Date();
+    const thDate = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+    let year = thDate.getUTCFullYear();
+    let month = thDate.getUTCMonth() - 5;
+    if (month < 0) {
+      year += Math.floor(month / 12);
+      month = (month % 12 + 12) % 12;
+    }
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const startOfPeriod = new Date(`${year}-${pad(month + 1)}-01T00:00:00+07:00`);
 
     const sessions = await prisma.liveSession.findMany({
       where: {
         userId: userId,
         status: "COMPLETED",
         startTime: { gte: startOfPeriod }
+      },
+      include: {
+        user: {
+          select: { commissionRate: true, commissionRateShopee: true }
+        }
       },
       orderBy: { startTime: 'asc' }
     });
@@ -405,11 +449,14 @@ export async function getPersonalMonthlyTrend() {
     }
 
     sessions.forEach((s) => {
-      const d = new Date(s.startTime);
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      // Shift by +7 hours to read UTC methods as GMT+7
+      const d = new Date(s.startTime.getTime() + 7 * 60 * 60 * 1000);
+      const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
       if (monthlyData[key]) {
         const sales = s.salesAmount || 0;
-        const rate = s.platform.toLowerCase() === 'shopee' ? 0.03 : 0.05;
+        const userRate = s.user?.commissionRate ?? 0.05;
+        const userRateShopee = s.user?.commissionRateShopee ?? 0.03;
+        const rate = s.platform.toLowerCase() === 'shopee' ? userRateShopee : userRate;
         const comm = sales * rate;
         monthlyData[key].totalSales += sales;
         monthlyData[key].totalComm += comm;

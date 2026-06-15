@@ -48,8 +48,10 @@ export async function getLiveSessionsHistory(month?: number, year?: number) {
     };
 
     if (month !== undefined && year !== undefined && month > 0 && year > 0) {
-      const start = new Date(year, month - 1, 1);
-      const end = new Date(year, month, 0, 23, 59, 59, 999);
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const lastDay = new Date(year, month, 0).getDate();
+      const start = new Date(`${year}-${pad(month)}-01T00:00:00+07:00`);
+      const end = new Date(`${year}-${pad(month)}-${pad(lastDay)}T23:59:59.999+07:00`);
       whereClause.startTime = {
         gte: start,
         lte: end,
@@ -199,7 +201,7 @@ export async function getAdminLiveSessions(startDate?: string, endDate?: string)
       where: { status: "ONGOING" },
       include: {
         user: {
-          select: { name: true, email: true, image: true, baseSalary: true }
+          select: { name: true, email: true, image: true, baseSalary: true, commissionRate: true, baseSalaryShopee: true, commissionRateShopee: true }
         }
       },
       orderBy: { startTime: 'desc' },
@@ -208,8 +210,8 @@ export async function getAdminLiveSessions(startDate?: string, endDate?: string)
     const whereClause: Prisma.LiveSessionWhereInput = {
       status: "COMPLETED",
       startTime: startDate && endDate ? {
-        gte: new Date(startDate),
-        lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+        gte: new Date(`${startDate}T00:00:00+07:00`),
+        lte: new Date(`${endDate}T23:59:59.999+07:00`)
       } : {
         gte: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000)
       }
@@ -219,7 +221,7 @@ export async function getAdminLiveSessions(startDate?: string, endDate?: string)
       where: whereClause,
       include: {
         user: {
-          select: { name: true, email: true, baseSalary: true }
+          select: { name: true, email: true, baseSalary: true, commissionRate: true, baseSalaryShopee: true, commissionRateShopee: true }
         }
       },
       orderBy: { endTime: 'desc' },

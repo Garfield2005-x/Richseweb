@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { updateLeaveStatus, updateTicketStatus, deleteLeaveRequest, updateBaseSalary } from '@/app/actions/portal';
+import { updateLeaveStatus, updateTicketStatus, deleteLeaveRequest, updateBaseSalary, updateBaseSalaryShopee } from '@/app/actions/portal';
 import { deleteLiveSession, getAdminLiveSessions } from '@/app/actions/live';
 import { toast } from 'react-hot-toast';
 import SalaryReportModal from '@/app/components/SalaryReportModal';
@@ -30,6 +30,9 @@ interface ExtendedSession {
     email: string | null;
     image?: string | null;
     baseSalary?: number | null;
+    baseSalaryShopee?: number | null;
+    commissionRate?: number | null;
+    commissionRateShopee?: number | null;
   };
 }
 
@@ -136,6 +139,9 @@ const [showEditModal, setShowEditModal] = useState(false);
     totalSales: number; 
     sessionsCount: number;
     baseSalary: number;
+    baseSalaryShopee: number;
+    commissionRate: number;
+    commissionRateShopee: number;
     platforms: Record<string, { mins: number; sales: number; count: number }>
   }>, curr) => {
     const email = curr.user.email || 'unknown';
@@ -147,6 +153,9 @@ const [showEditModal, setShowEditModal] = useState(false);
         totalSales: 0,
         sessionsCount: 0,
         baseSalary: curr.user.baseSalary || 0,
+        baseSalaryShopee: curr.user.baseSalaryShopee || 0,
+        commissionRate: curr.user.commissionRate ?? 0.05,
+        commissionRateShopee: curr.user.commissionRateShopee ?? 0.03,
         platforms: {}
       };
     }
@@ -207,10 +216,24 @@ const [showEditModal, setShowEditModal] = useState(false);
     const num = Number(amount);
     if (isNaN(num)) return;
     
-    const loadingToast = toast.loading('กำลังบันทึกเงินเดือน...');
+    const loadingToast = toast.loading('กำลังบันทึกเงินเดือน TikTok/อื่นๆ...');
     const res = await updateBaseSalary(email, num);
     if (res.success) {
       toast.success('บันทึกเงินเดือนสำเร็จ', { id: loadingToast });
+      router.refresh();
+    } else {
+      toast.error('เกิดข้อผิดพลาด', { id: loadingToast });
+    }
+  };
+
+  const handleUpdateSalaryShopee = async (email: string, amount: string) => {
+    const num = Number(amount);
+    if (isNaN(num)) return;
+    
+    const loadingToast = toast.loading('กำลังบันทึกเงินเดือน Shopee...');
+    const res = await updateBaseSalaryShopee(email, num);
+    if (res.success) {
+      toast.success('บันทึกเงินเดือน Shopee สำเร็จ', { id: loadingToast });
       router.refresh();
     } else {
       toast.error('เกิดข้อผิดพลาด', { id: loadingToast });
@@ -476,7 +499,9 @@ return (
                       const hours = Math.floor(sheet.totalMins / 60);
                       const mins = sheet.totalMins % 60;
                       const totalComm = Object.entries(sheet.platforms).reduce((acc, [pName, pStat]) => {
-                        const rate = pName.toLowerCase() === 'shopee' ? 0.03 : 0.05;
+                        const rate = pName.toLowerCase() === 'shopee' 
+                          ? sheet.commissionRateShopee 
+                          : sheet.commissionRate;
                         return acc + (pStat.sales * rate);
                       }, 0);
 
@@ -488,18 +513,23 @@ return (
                             
                             {/* Platform Breakdown */}
                             <div className="mt-3 flex flex-wrap gap-2">
-                              {Object.entries(sheet.platforms).map(([pName, pStat]) => (
-                                <div key={pName} className="flex flex-col bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 min-w-[100px]">
-                                  <div className="flex justify-between items-center mb-0.5">
-                                    <span className="text-[9px] font-black text-[#c3a2ab] uppercase tracking-tighter">{pName}</span>
-                                    <span className="text-[8px] font-bold text-gray-400">({pName.toLowerCase() === 'shopee' ? '3%' : '5%'})</span>
+                              {Object.entries(sheet.platforms).map(([pName, pStat]) => {
+                                const rate = pName.toLowerCase() === 'shopee' 
+                                  ? sheet.commissionRateShopee 
+                                  : sheet.commissionRate;
+                                return (
+                                  <div key={pName} className="flex flex-col bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 min-w-[100px]">
+                                    <div className="flex justify-between items-center mb-0.5">
+                                      <span className="text-[9px] font-black text-[#c3a2ab] uppercase tracking-tighter">{pName}</span>
+                                      <span className="text-[8px] font-bold text-gray-400">({(rate * 100).toFixed(0)}%)</span>
+                                    </div>
+                                    <div className="flex justify-between items-center gap-4">
+                                      <span className="text-[10px] font-bold text-gray-500">{Math.floor(pStat.mins / 60)}h {pStat.mins % 60}m</span>
+                                      <span className="text-[10px] font-black text-gray-700">฿{pStat.sales.toLocaleString()}</span>
+                                    </div>
                                   </div>
-                                  <div className="flex justify-between items-center gap-4">
-                                    <span className="text-[10px] font-bold text-gray-500">{Math.floor(pStat.mins / 60)}h {pStat.mins % 60}m</span>
-                                    <span className="text-[10px] font-black text-gray-700">฿{pStat.sales.toLocaleString()}</span>
-                                  </div>
-                                </div>
-                              ))}
+                                );
+                              })}
                             </div>
                           </td>
                           <td className="px-6 py-5 text-center font-bold text-gray-600 align-top">
@@ -513,18 +543,38 @@ return (
                             </div>
                           </td>
                           <td className="px-6 py-5 text-right align-top">
-                            <div className="mt-1 flex justify-end">
-                              <input 
-                                type="number" 
-                                defaultValue={sheet.baseSalary}
-                                onBlur={(e) => {
-                                  if (Number(e.target.value) !== sheet.baseSalary) {
-                                    handleUpdateSalary(sheet.email, e.target.value);
-                                  }
-                                }}
-                                className="w-24 text-right px-2 py-1 bg-white border border-gray-200 rounded-lg outline-none focus:border-[#c3a2ab] text-sm font-bold text-gray-700 shadow-sm"
-                                placeholder="0"
-                              />
+                            <div className="mt-1 flex flex-col gap-2 items-end">
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[10px] font-bold text-gray-400">TikTok:</span>
+                                <input 
+                                  type="number" 
+                                  defaultValue={sheet.baseSalary}
+                                  onBlur={(e) => {
+                                    if (Number(e.target.value) !== sheet.baseSalary) {
+                                      handleUpdateSalary(sheet.email, e.target.value);
+                                    }
+                                  }}
+                                  className="w-20 text-right px-2 py-1 bg-white border border-gray-200 rounded-lg outline-none focus:border-[#c3a2ab] text-xs font-bold text-gray-700 shadow-sm"
+                                  placeholder="0"
+                                />
+                              </div>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[10px] font-bold text-gray-400">Shopee:</span>
+                                <input 
+                                  type="number" 
+                                  defaultValue={sheet.baseSalaryShopee}
+                                  onBlur={(e) => {
+                                    if (Number(e.target.value) !== sheet.baseSalaryShopee) {
+                                      handleUpdateSalaryShopee(sheet.email, e.target.value);
+                                    }
+                                  }}
+                                  className="w-20 text-right px-2 py-1 bg-white border border-gray-200 rounded-lg outline-none focus:border-[#c3a2ab] text-xs font-bold text-gray-700 shadow-sm"
+                                  placeholder="0"
+                                />
+                              </div>
+                              <div className="text-[10px] font-black text-gray-500 border-t border-gray-100 pt-1 mt-1">
+                                รวม: ฿{(sheet.baseSalary + sheet.baseSalaryShopee).toLocaleString()}
+                              </div>
                             </div>
                           </td>
                           <td className="px-6 py-5 text-right font-black text-lg text-[#161314] align-top">

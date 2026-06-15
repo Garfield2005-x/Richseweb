@@ -136,6 +136,14 @@ export default async function AdminLayout({ children }) {
             </Link>
 
             <Link
+              href="/admin/staff-commission"
+              className="flex items-center gap-3 px-4 py-3 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors font-bold"
+            >
+              <span className="material-symbols-outlined notranslate">percent</span>
+              <span className="font-bold">ค่าคอมพนักงาน</span>
+            </Link>
+
+            <Link
               href="/admin/automations"
               className="flex items-center gap-3 px-4 py-3 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-colors font-bold"
             >
