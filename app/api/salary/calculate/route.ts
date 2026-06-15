@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server';
 import { sendLineMessage } from '@/lib/line';
 import { getAdminLiveSessions } from '@/app/actions/live';
 import { prisma } from '@/lib/prisma';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 
 // Helper to get days in a month from a YYYY-MM string
 function daysInMonth(monthStr: string): number {
@@ -36,6 +38,14 @@ async function getApprovedLeaveDays(userId: string, startDate: string, endDate: 
 }
 
 export async function GET(request: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const role = (session.user as { role?: string })?.role;
+  const userEmail = session.user.email;
+
   const { searchParams } = new URL(request.url);
 
   // Support both ?month=YYYY-MM and ?startDate=...&endDate=...
@@ -73,7 +83,12 @@ export async function GET(request: Request) {
   if (!sessionsRes.success || !sessionsRes.completed) {
     return NextResponse.json({ error: sessionsRes.error || 'Failed to fetch sessions' }, { status: 500 });
   }
-  const completed = sessionsRes.completed as any[];
+  let completed = sessionsRes.completed as any[];
+
+  // If user is not admin, filter to only see their own sessions
+  if (role !== 'ADMIN') {
+    completed = completed.filter((s) => s.user?.email === userEmail);
+  }
 
   // Aggregate per-employee data
   const employeeMap: Record<string, any> = {};
@@ -131,6 +146,15 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const role = (session.user as { role?: string })?.role;
+    if (role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const { period, report } = await request.json();
     if (!period || !report) {
       return NextResponse.json({ error: 'period and report required' }, { status: 400 });

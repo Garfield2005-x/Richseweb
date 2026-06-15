@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
 import { getAdminLiveSessions } from '@/app/actions/live';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 
 // Helper to get days in a month
 function daysInMonth(year: number, month: number): number {
@@ -8,6 +10,13 @@ function daysInMonth(year: number, month: number): number {
 }
 
 export async function GET(request: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  const role = (session.user as { role?: string })?.role;
+  const userEmail = session.user.email;
+
   const { searchParams } = new URL(request.url);
   const monthParam = searchParams.get('month'); // format YYYY-MM
   if (!monthParam) {
@@ -29,17 +38,22 @@ export async function GET(request: Request) {
   if (!sessionsRes.success || !sessionsRes.completed) {
     return NextResponse.json({ error: sessionsRes.error || 'Failed to fetch sessions' }, { status: 500 });
   }
-  const completed = sessionsRes.completed as any[];
+  let completed = sessionsRes.completed as any[];
+
+  // If user is not admin, filter to only see their own sessions
+  if (role !== 'ADMIN') {
+    completed = completed.filter((s) => s.user?.email === userEmail);
+  }
 
   // Aggregate per employee
   const employeeMap: Record<string, any> = {};
   completed.forEach((s) => {
-    const email = s.user.email || 'unknown';
+    const email = s.user?.email || 'unknown';
     if (!employeeMap[email]) {
       employeeMap[email] = {
-        name: s.user.name || email,
+        name: s.user?.name || email,
         email,
-        baseSalary: s.user.baseSalary || 0,
+        baseSalary: s.user?.baseSalary || 0,
         totalSales: 0,
         commission: 0,
         leaveDays: 0 // placeholder, not calculated currently
