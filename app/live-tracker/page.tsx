@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { redirect } from "next/navigation";
 import { getCurrentLiveSession, getLiveSessionsHistory } from "@/app/actions/live";
-import { getPersonalAnalytics, getMyLeaves, getMyTickets } from "@/app/actions/portal";
+import { getPersonalAnalytics, getMyLeaves, getMyTickets, getPersonalMonthlyTrend, getSchedules } from "@/app/actions/portal";
 import LiveTrackerClient from "./LiveTrackerClient";
 
 export const metadata = {
@@ -28,13 +28,17 @@ export default async function LiveTrackerPage() {
     historyRes, 
     analyticsRes,
     leavesRes,
-    ticketsRes
+    ticketsRes,
+    trendRes,
+    schedulesRes
   ] = await Promise.all([
     getCurrentLiveSession(),
     getLiveSessionsHistory(),
     getPersonalAnalytics(),
     getMyLeaves(),
-    getMyTickets()
+    getMyTickets(),
+    getPersonalMonthlyTrend(),
+    getSchedules()
   ]);
 
   return (
@@ -59,6 +63,8 @@ export default async function LiveTrackerPage() {
           analytics={analyticsRes.success ? analyticsRes.analytics : null}
           leaves={leavesRes.success ? leavesRes.leaves : []}
           tickets={ticketsRes.success ? ticketsRes.tickets : []}
+          monthlyTrend={trendRes.success ? trendRes.trend : []}
+          schedules={schedulesRes.success ? schedulesRes.schedules : []}
         />
       </div>
     </div>
