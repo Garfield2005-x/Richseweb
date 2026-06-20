@@ -240,9 +240,19 @@ export async function GET(request: Request) {
       const totalBaseSalary = s.baseSalary + s.baseSalaryShopee;
       const grossEarnings = totalBaseSalary + commissionValue;
       
-      // Calculate net base salary by deducting leave only from TikTok baseSalary
-      const netTikTokSalary = Math.max(0, s.baseSalary - s.leaveDeductions);
-      const netSalaryValue = netTikTokSalary + s.baseSalaryShopee + commissionValue;
+      // Calculate net base salary by deducting leave from TikTok baseSalary if it exists, otherwise from Shopee baseSalary
+      let netTikTokSalary = s.baseSalary;
+      let netShopeeSalary = s.baseSalaryShopee;
+      if (s.baseSalary > 0) {
+        netTikTokSalary = Math.max(0, s.baseSalary - s.leaveDeductions);
+      } else {
+        netShopeeSalary = Math.max(0, s.baseSalaryShopee - s.leaveDeductions);
+      }
+      const netSalaryValue = netTikTokSalary + netShopeeSalary + commissionValue;
+
+      const netFormula = s.baseSalary > 0
+        ? `MAX(0, ${s.baseSalary}-J${r})+${s.baseSalaryShopee}+H${r}`
+        : `${s.baseSalary}+MAX(0, ${s.baseSalaryShopee}-J${r})+H${r}`;
 
       const row = wsSummary.addRow([
         s.name,
@@ -255,7 +265,7 @@ export async function GET(request: Request) {
         { formula: `D${r}*${userRateShopee} + E${r}*${userRate}`, result: commissionValue },
         { formula: `G${r}+H${r}`, result: grossEarnings },
         s.leaveDeductions,
-        { formula: `MAX(0, ${s.baseSalary}-J${r})+${s.baseSalaryShopee}+H${r}`, result: netSalaryValue },
+        { formula: netFormula, result: netSalaryValue },
         s.email,
       ]);
 

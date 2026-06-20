@@ -149,8 +149,8 @@ export default function StaffCommissionClient() {
         <span className="material-symbols-outlined text-indigo-500 mt-0.5">info</span>
         <div className="text-sm text-indigo-800 space-y-1">
           <p className="font-semibold mb-1">วิธีคำนวณ</p>
-          <p>① หักลา = (เงินเดือน TikTok ÷ จำนวนวัน) × จำนวนวันลา</p>
-          <p>② เงินเดือนสุทธิ = (เงินเดือน TikTok − หักลา, ไม่ต่ำกว่า 0) + เงินเดือน Shopee</p>
+          <p>① หักลา = (เงินเดือนหลัก ÷ จำนวนวัน) × จำนวนวันลา (ใช้ฐาน TikTok หากมี หรือใช้ Shopee หากมีเฉพาะ Shopee)</p>
+          <p>② เงินเดือนสุทธิ = เงินเดือนที่หักวันลาแล้ว (ไม่ต่ำกว่า 0) + เงินเดือนที่เหลือ</p>
           <p>③ รวม = เงินเดือนสุทธิ + ค่าคอม Shopee + ค่าคอม TikTok/อื่นๆ</p>
           <p>④ หัก 3% ภาษี (ขั้นตอนสุดท้าย) → เงินสุทธิ = รวม − (รวม × 3%)</p>
           <p className="pt-1 text-indigo-600 font-medium">ค่าคอม Shopee = ยอดขาย Shopee × อัตรา Shopee</p>

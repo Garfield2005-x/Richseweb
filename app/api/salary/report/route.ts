@@ -73,9 +73,18 @@ export async function GET(request: Request) {
   // Compute final figures
   const report = Object.values(employeeMap).map((emp: any) => {
     const daysInThisMonth = daysInMonth(year, month);
-    const leaveDeduction = (emp.baseSalary / daysInThisMonth) * (emp.leaveDays || 0);
-    const netTikTokSalary = Math.max(0, emp.baseSalary - leaveDeduction);
-    const totalBaseSalaryPaid = netTikTokSalary + emp.baseSalaryShopee;
+    const leaveBase = emp.baseSalary > 0 ? emp.baseSalary : emp.baseSalaryShopee;
+    const leaveDeduction = (leaveBase / daysInThisMonth) * (emp.leaveDays || 0);
+    
+    let netTikTokSalary = emp.baseSalary;
+    let netShopeeSalary = emp.baseSalaryShopee;
+    if (emp.baseSalary > 0) {
+      netTikTokSalary = Math.max(0, emp.baseSalary - leaveDeduction);
+    } else {
+      netShopeeSalary = Math.max(0, emp.baseSalaryShopee - leaveDeduction);
+    }
+    
+    const totalBaseSalaryPaid = netTikTokSalary + netShopeeSalary;
     const gross = totalBaseSalaryPaid + emp.commission;
     const tax = gross * 0.03; // 3% tax
     const net = gross - tax;
