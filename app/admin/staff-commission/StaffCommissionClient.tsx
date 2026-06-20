@@ -28,10 +28,6 @@ export default function StaffCommissionClient() {
   const [successMap, setSuccessMap] = useState<Record<string, boolean>>({});
   const [errorMap, setErrorMap] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
   async function fetchUsers() {
     setLoading(true);
     try {
@@ -54,6 +50,11 @@ export default function StaffCommissionClient() {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchUsers();
+  }, []);
 
   function handleChange(userId: string, field: keyof EditState, value: string) {
     setEditMap((prev) => ({
@@ -146,11 +147,14 @@ export default function StaffCommissionClient() {
       {/* Info Banner */}
       <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 mb-8 flex items-start gap-3">
         <span className="material-symbols-outlined text-indigo-500 mt-0.5">info</span>
-        <div className="text-sm text-indigo-800">
+        <div className="text-sm text-indigo-800 space-y-1">
           <p className="font-semibold mb-1">วิธีคำนวณ</p>
-          <p>เงินสุทธิ = (เงินเดือนรวม + ค่าคอมรวม − หักลา) − หัก 3% ภาษี</p>
-          <p className="mt-1 text-indigo-600">ค่าคอม Shopee = ยอดขาย Shopee × อัตรา Shopee</p>
-          <p className="text-indigo-600">ค่าคอม TikTok/อื่นๆ = ยอดขายที่เหลือ × อัตรา TikTok/อื่นๆ</p>
+          <p>① หักลา = (เงินเดือน TikTok ÷ จำนวนวัน) × จำนวนวันลา</p>
+          <p>② เงินเดือนสุทธิ = (เงินเดือน TikTok − หักลา, ไม่ต่ำกว่า 0) + เงินเดือน Shopee</p>
+          <p>③ รวม = เงินเดือนสุทธิ + ค่าคอม Shopee + ค่าคอม TikTok/อื่นๆ</p>
+          <p>④ หัก 3% ภาษี (ขั้นตอนสุดท้าย) → เงินสุทธิ = รวม − (รวม × 3%)</p>
+          <p className="pt-1 text-indigo-600 font-medium">ค่าคอม Shopee = ยอดขาย Shopee × อัตรา Shopee</p>
+          <p className="text-indigo-600 font-medium">ค่าคอม TikTok/อื่นๆ = ยอดขาย TikTok/อื่นๆ × อัตรา TikTok/อื่นๆ</p>
         </div>
       </div>
 

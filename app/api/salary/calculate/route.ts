@@ -145,15 +145,16 @@ export async function GET(request: Request) {
 
   // Final calculations per employee
   const report = Object.values(employeeMap).map((emp: any) => {
-    const totalBaseSalary = emp.baseSalary + emp.baseSalaryShopee;
-    const leaveDeduction = dim > 0 ? (totalBaseSalary / dim) * emp.leaveDays : 0;
-    const gross = totalBaseSalary + emp.commission - leaveDeduction;
+    const leaveDeduction = dim > 0 ? (emp.baseSalary / dim) * emp.leaveDays : 0;
+    const netTikTokSalary = Math.max(0, emp.baseSalary - leaveDeduction);
+    const totalBaseSalaryPaid = netTikTokSalary + emp.baseSalaryShopee;
+    const gross = totalBaseSalaryPaid + emp.commission;
     const tax = gross * 0.03; // 3% tax as final step
     const netPay = gross - tax;
     return {
       name: emp.name,
       email: emp.email,
-      baseSalary: Math.round(totalBaseSalary),
+      baseSalary: Math.round(emp.baseSalary + emp.baseSalaryShopee),
       totalSales: Math.round(emp.totalSales),
       commission: Math.round(emp.commission),
       leaveDays: emp.leaveDays,

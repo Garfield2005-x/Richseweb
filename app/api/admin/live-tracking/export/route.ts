@@ -239,7 +239,10 @@ export async function GET(request: Request) {
       const commissionValue = (s.shopeeSales * userRateShopee) + (s.otherSales * userRate);
       const totalBaseSalary = s.baseSalary + s.baseSalaryShopee;
       const grossEarnings = totalBaseSalary + commissionValue;
-      const netSalaryValue = grossEarnings - s.leaveDeductions;
+      
+      // Calculate net base salary by deducting leave only from TikTok baseSalary
+      const netTikTokSalary = Math.max(0, s.baseSalary - s.leaveDeductions);
+      const netSalaryValue = netTikTokSalary + s.baseSalaryShopee + commissionValue;
 
       const row = wsSummary.addRow([
         s.name,
@@ -252,7 +255,7 @@ export async function GET(request: Request) {
         { formula: `D${r}*${userRateShopee} + E${r}*${userRate}`, result: commissionValue },
         { formula: `G${r}+H${r}`, result: grossEarnings },
         s.leaveDeductions,
-        { formula: `I${r}-J${r}`, result: netSalaryValue },
+        { formula: `MAX(0, ${s.baseSalary}-J${r})+${s.baseSalaryShopee}+H${r}`, result: netSalaryValue },
         s.email,
       ]);
 
