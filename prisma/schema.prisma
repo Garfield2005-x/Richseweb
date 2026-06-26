@@ -496,6 +496,7 @@ model LeaveRequest {
   endDate     DateTime
   reason      String?   @db.Text
   status      String    @default("PENDING") // PENDING, APPROVED, REJECTED
+  platform    String?   // TikTok, Shopee, etc.
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

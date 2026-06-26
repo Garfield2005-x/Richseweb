@@ -108,6 +108,8 @@ const [showEditModal, setShowEditModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'live' | 'timesheet' | 'schedule' | 'support'>('live');
   const [now, setNow] = useState(new Date());
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
+  const [selectedLeaveStaff, setSelectedLeaveStaff] = useState<string | null>(null);
+  const [selectedLeaveMonth, setSelectedLeaveMonth] = useState<string | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -189,13 +191,15 @@ const [showEditModal, setShowEditModal] = useState(false);
     }
   };
 
-  const handleUpdateLeave = async (id: string, status: string) => {
-    const res = await updateLeaveStatus(id, status);
+  const [selectedLeavePlatforms, setSelectedLeavePlatforms] = useState<Record<string, string>>({});
+
+  const handleUpdateLeave = async (id: string, status: string, platform?: string) => {
+    const res = await updateLeaveStatus(id, status, platform);
     if (res.success) {
       toast.success('อัปเดตสถานะการลาสำเร็จ');
       router.refresh();
     } else {
-      toast.error('เกิดข้อผิดพลาด');
+      toast.error(res.error || 'เกิดข้อผิดพลาด');
     }
   };
 
@@ -698,59 +702,319 @@ return (
           <div className="space-y-12 animate-in fade-in">
             {/* Leaves Review */}
             <div>
-              <h3 className="text-xl font-bold text-[#161314] mb-4">Pending Leave Requests</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="bg-gray-50">
-                      <th className="px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest rounded-l-lg">Employee</th>
-                      <th className="px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Type</th>
-                      <th className="px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Date</th>
-                      <th className="px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Reason</th>
-                      <th className="px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-right rounded-r-lg">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-50">
-                    {leaves.length > 0 ? (
-                      (leaves as unknown[]).map((l) => {
-                        const leave = l as { id: string; user: { name: string }; leaveType: string; startDate: string; endDate: string; reason: string; status: string };
-                        return (
-                          <tr key={leave.id}>
-                            <td className="px-4 py-4 font-bold text-gray-700">{leave.user.name}</td>
-                            <td className="px-4 py-4 font-bold text-gray-700">{leave.leaveType}</td>
-                            <td className="px-4 py-4 text-sm text-gray-500">
-                              {format(new Date(leave.startDate), 'dd MMM')} - {format(new Date(leave.endDate), 'dd MMM')}
-                            </td>
-                            <td className="px-4 py-4 text-sm text-gray-500 max-w-[200px] truncate">{leave.reason || '-'}</td>
-                            <td className="px-4 py-4 text-right">
-                              {leave.status === 'PENDING' ? (
-                                <div className="flex justify-end items-center gap-2">
-                                  <button onClick={() => handleUpdateLeave(leave.id, 'APPROVED')} className="px-3 py-1 bg-emerald-500 text-white rounded font-bold text-xs hover:bg-emerald-600">Approve</button>
-                                  <button onClick={() => handleUpdateLeave(leave.id, 'REJECTED')} className="px-3 py-1 bg-gray-200 text-gray-700 rounded font-bold text-xs hover:bg-gray-300">Reject</button>
-                                  <button onClick={() => handleDeleteLeave(leave.id)} className="px-2 py-1 text-red-500 hover:bg-red-50 rounded" title="ลบข้อมูล">
-                                    <span className="material-symbols-outlined text-[16px]">delete</span>
-                                  </button>
-                                </div>
-                              ) : (
-                                <div className="flex justify-end items-center gap-2">
-                                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${leave.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
-                                    {leave.status}
-                                  </span>
-                                  <button onClick={() => handleDeleteLeave(leave.id)} className="px-2 py-1 text-red-500 hover:bg-red-50 rounded" title="ลบข้อมูล">
-                                    <span className="material-symbols-outlined text-[16px]">delete</span>
-                                  </button>
-                                </div>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })
-                    ) : (
-                      <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400 text-sm">ไม่มีคำขอลา</td></tr>
-                    )}
-                  </tbody>
-                </table>
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-[#161314]">Leave Requests</h3>
+                  <p className="text-sm text-gray-400 mt-0.5">คำขอลาทั้งหมดของพนักงาน</p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse inline-block"></span>
+                  {leaves.filter((l) => (l as {status:string}).status === 'PENDING').length} รออนุมัติ
+                </span>
               </div>
+
+              {/* ── Month Tab Bar ── */}
+              {(() => {
+                type LeaveRow = { startDate: string };
+                const monthSet = new Set<string>();
+                (leaves as unknown as LeaveRow[]).forEach((lv) => {
+                  const d = new Date(lv.startDate);
+                  monthSet.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+                });
+                const months = Array.from(monthSet).sort((a, b) => b.localeCompare(a));
+                if (months.length === 0) return null;
+                const thMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+                return (
+                  <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
+                    <button
+                      onClick={() => { setSelectedLeaveMonth(null); setSelectedLeaveStaff(null); }}
+                      className={`shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
+                        !selectedLeaveMonth
+                          ? 'bg-[#161314] text-white shadow-sm'
+                          : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                      }`}
+                    >
+                      ทั้งหมด
+                    </button>
+                    {months.map((m) => {
+                      const [y, mo] = m.split('-');
+                      const label = `${thMonths[parseInt(mo) - 1]} ${parseInt(y) + 543}`;
+                      const isActive = selectedLeaveMonth === m;
+                      return (
+                        <button
+                          key={m}
+                          onClick={() => { setSelectedLeaveMonth(isActive ? null : m); setSelectedLeaveStaff(null); }}
+                          className={`shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
+                            isActive
+                              ? 'bg-[#F07098] text-white shadow-sm'
+                              : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+
+              {/* ── Staff Summary Grid ── */}
+              {(() => {
+                type LeaveRow = { id: string; user: { name: string }; leaveType: string; startDate: string; endDate: string; reason: string; status: string };
+                const staffMap: Record<string, { name: string; sick: number; personal: number; vacation: number; other: number; pending: number; total: number }> = {};
+                (leaves as unknown as LeaveRow[])
+                  .filter((lv) => {
+                    if (!selectedLeaveMonth) return true;
+                    const d = new Date(lv.startDate);
+                    const m = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                    return m === selectedLeaveMonth;
+                  })
+                  .forEach((lv) => {
+                  const n = lv.user.name || 'Unknown';
+                  if (!staffMap[n]) staffMap[n] = { name: n, sick: 0, personal: 0, vacation: 0, other: 0, pending: 0, total: 0 };
+                  const days = Math.round((new Date(lv.endDate).getTime() - new Date(lv.startDate).getTime()) / 86400000) + 1;
+                  if (lv.leaveType === 'SICK') staffMap[n].sick += days;
+                  else if (lv.leaveType === 'PERSONAL') staffMap[n].personal += days;
+                  else if (lv.leaveType === 'VACATION') staffMap[n].vacation += days;
+                  else staffMap[n].other += days;
+                  if (lv.status === 'PENDING') staffMap[n].pending += 1;
+                  staffMap[n].total += days;
+                });
+                const staffList = Object.values(staffMap);
+                if (staffList.length === 0) return null;
+                return (
+                  <div className="mb-8">
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">สรุปวันลาแต่ละคน — คลิกเพื่อดูรายละเอียด</p>
+                      {selectedLeaveStaff && (
+                        <button
+                          onClick={() => setSelectedLeaveStaff(null)}
+                          className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-700 transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-[14px]">close</span>
+                          ดูทั้งหมด
+                        </button>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                      {staffList.map((s) => {
+                        const isSelected = selectedLeaveStaff === s.name;
+                        return (
+                          <button
+                            key={s.name}
+                            onClick={() => setSelectedLeaveStaff(isSelected ? null : s.name)}
+                            className={`relative text-left p-4 rounded-2xl border transition-all duration-200 ${
+                              isSelected
+                                ? 'bg-[#F07098]/10 border-[#F07098]/40 shadow-md ring-2 ring-[#F07098]/20'
+                                : 'bg-white border-gray-100 hover:border-gray-200 hover:shadow-sm'
+                            }`}
+                          >
+                            {/* Avatar + name */}
+                            <div className="flex items-center gap-2 mb-3">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black shrink-0 ${
+                                isSelected ? 'bg-[#F07098]' : 'bg-gradient-to-br from-[#F07098] to-[#c3a2ab]'
+                              }`}>
+                                {s.name.charAt(0)}
+                              </div>
+                              <span className="text-[13px] font-bold text-[#161314] leading-tight line-clamp-1">{s.name}</span>
+                            </div>
+                            {/* Total days big number */}
+                            <div className="flex items-end gap-1 mb-2">
+                              <span className="text-2xl font-black text-[#161314]">{s.total}</span>
+                              <span className="text-xs text-gray-400 mb-0.5">วัน</span>
+                            </div>
+                            {/* Type breakdown pills */}
+                            <div className="flex flex-wrap gap-1">
+                              {s.sick > 0 && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100">ป่วย {s.sick}ว.</span>}
+                              {s.personal > 0 && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-violet-50 text-violet-600 border border-violet-100">กิจ {s.personal}ว.</span>}
+                              {s.vacation > 0 && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-sky-50 text-sky-600 border border-sky-100">พักร้อน {s.vacation}ว.</span>}
+                              {s.other > 0 && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-600">อื่นๆ {s.other}ว.</span>}
+                            </div>
+                            {/* Pending badge */}
+                            {s.pending > 0 && (
+                              <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-amber-400 text-white text-[10px] font-black flex items-center justify-center">
+                                {s.pending}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Filter label when staff selected */}
+              {selectedLeaveStaff && (
+                <div className="flex items-center gap-2 mb-4 px-4 py-2.5 bg-[#F07098]/5 border border-[#F07098]/20 rounded-xl">
+                  <span className="material-symbols-outlined text-[16px] text-[#F07098]">filter_alt</span>
+                  <span className="text-sm font-bold text-[#F07098]">แสดงเฉพาะ: {selectedLeaveStaff}</span>
+                </div>
+              )}
+
+              {leaves.length > 0 ? (
+                <div className="grid gap-3">
+                  {(leaves as unknown[])
+                    .filter((l) => {
+                      const lv = l as { user: { name: string }; startDate: string };
+                      if (selectedLeaveStaff && lv.user.name !== selectedLeaveStaff) return false;
+                      if (selectedLeaveMonth) {
+                        const d = new Date(lv.startDate);
+                        const m = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                        if (m !== selectedLeaveMonth) return false;
+                      }
+                      return true;
+                    })
+                    .map((l) => {
+                    const leave = l as { id: string; user: { name: string; baseSalary?: number; baseSalaryShopee?: number }; leaveType: string; startDate: string; endDate: string; reason: string; status: string; platform?: string | null };
+                    const start = new Date(leave.startDate);
+                    const end = new Date(leave.endDate);
+                    const diffMs = end.getTime() - start.getTime();
+                    const days = Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1;
+
+                    const typeConfig: Record<string, { label: string; color: string; bg: string; icon: string }> = {
+                      SICK:     { label: 'ลาป่วย',    color: 'text-rose-600',   bg: 'bg-rose-50 border-rose-200',   icon: 'medical_services' },
+                      PERSONAL: { label: 'ลากิจ',     color: 'text-violet-600', bg: 'bg-violet-50 border-violet-200', icon: 'person' },
+                      VACATION: { label: 'ลาพักร้อน', color: 'text-sky-600',    bg: 'bg-sky-50 border-sky-200',     icon: 'beach_access' },
+                    };
+                    const type = typeConfig[leave.leaveType] ?? { label: leave.leaveType, color: 'text-gray-600', bg: 'bg-gray-50 border-gray-200', icon: 'event_busy' };
+
+                    const statusBadge = leave.status === 'APPROVED'
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                      : leave.status === 'REJECTED'
+                      ? 'bg-rose-50 border-rose-200 text-rose-700'
+                      : 'bg-amber-50 border-amber-200 text-amber-700';
+
+                    const worksOnTikTok = (leave.user.baseSalary ?? 0) > 0;
+                    const worksOnShopee = (leave.user.baseSalaryShopee ?? 0) > 0;
+                    const isDualPlatform = worksOnTikTok && worksOnShopee;
+                    const singlePlatformName = worksOnTikTok ? 'TikTok' : worksOnShopee ? 'Shopee' : null;
+
+                    return (
+                      <div key={leave.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-5">
+
+                          {/* Avatar + Name */}
+                          <div className="flex items-center gap-3 min-w-[160px]">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#F07098] to-[#c3a2ab] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                              {leave.user.name?.charAt(0) ?? '?'}
+                            </div>
+                            <div>
+                              <div className="font-bold text-[#161314] text-sm">{leave.user.name}</div>
+                              <div className="flex flex-wrap gap-1.5 mt-1 items-center">
+                                <div className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${type.bg} ${type.color}`}>
+                                  <span className="material-symbols-outlined text-[11px]">{type.icon}</span>
+                                  {type.label}
+                                </div>
+                                <select
+                                  value={selectedLeavePlatforms[leave.id] || leave.platform || singlePlatformName || 'TikTok'}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setSelectedLeavePlatforms({
+                                      ...selectedLeavePlatforms,
+                                      [leave.id]: val
+                                    });
+                                    if (leave.status !== 'PENDING') {
+                                      handleUpdateLeave(leave.id, leave.status, val);
+                                    }
+                                  }}
+                                  className="px-2 py-0.5 text-[10px] border border-[#F07098] rounded-full bg-white font-bold text-[#F07098] focus:outline-none cursor-pointer hover:bg-[#F07098]/5 transition-all"
+                                >
+                                  <option value="TikTok">TikTok</option>
+                                  <option value="Shopee">Shopee</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Days Badge */}
+                          <div className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gray-50 border border-gray-100 text-center min-w-[90px]">
+                            <span className="material-symbols-outlined text-[18px] text-gray-400">calendar_month</span>
+                            <div>
+                              <div className="text-lg font-black text-[#161314] leading-none">{days}</div>
+                              <div className="text-[10px] text-gray-400 font-medium">ครั้ง</div>
+                            </div>
+                          </div>
+
+                          {/* Date Range */}
+                          <div className="flex-1">
+                            <div className="text-xs text-gray-400 font-medium mb-1">ช่วงวันลา</div>
+                            <div className="flex items-center gap-2 text-sm font-bold text-[#161314]">
+                              <span>{format(start, 'dd MMM yyyy')}</span>
+                              <span className="material-symbols-outlined text-[14px] text-gray-300">arrow_forward</span>
+                              <span>{format(end, 'dd MMM yyyy')}</span>
+                            </div>
+                          </div>
+
+                          {/* Reason */}
+                          {leave.reason && (
+                            <div className="flex-1 hidden md:block">
+                              <div className="text-xs text-gray-400 font-medium mb-1">เหตุผล</div>
+                              <div className="text-sm text-gray-600 line-clamp-2">{leave.reason}</div>
+                            </div>
+                          )}
+
+                          {/* Status / Actions */}
+                          <div className="flex items-center gap-2 shrink-0">
+                            {leave.status === 'PENDING' ? (
+                              <>
+                                <button
+                                  onClick={() => handleUpdateLeave(leave.id, 'APPROVED', selectedLeavePlatforms[leave.id] || leave.platform || singlePlatformName || 'TikTok')}
+                                  className="flex items-center gap-1.5 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-xs transition-all duration-150 active:scale-95"
+                                >
+                                  <span className="material-symbols-outlined text-[14px]">check</span>
+                                  อนุมัติ
+                                </button>
+                                <button
+                                  onClick={() => handleUpdateLeave(leave.id, 'REJECTED')}
+                                  className="flex items-center gap-1.5 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold text-xs transition-all duration-150 active:scale-95"
+                                >
+                                  <span className="material-symbols-outlined text-[14px]">close</span>
+                                  ปฏิเสธ
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteLeave(leave.id)}
+                                  className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-150"
+                                  title="ลบ"
+                                >
+                                  <span className="material-symbols-outlined text-[16px]">delete</span>
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <span className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border ${statusBadge}`}>
+                                  <span className="material-symbols-outlined text-[12px]">
+                                    {leave.status === 'APPROVED' ? 'check_circle' : 'cancel'}
+                                  </span>
+                                  {leave.status === 'APPROVED' ? 'อนุมัติแล้ว' : 'ปฏิเสธแล้ว'}
+                                </span>
+                                <button
+                                  onClick={() => handleDeleteLeave(leave.id)}
+                                  className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-150"
+                                  title="ลบ"
+                                >
+                                  <span className="material-symbols-outlined text-[16px]">delete</span>
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Bottom accent bar for PENDING */}
+                        {leave.status === 'PENDING' && (
+                          <div className="h-0.5 w-full bg-gradient-to-r from-amber-300 via-amber-400 to-amber-300" />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                  <span className="material-symbols-outlined text-[48px] text-gray-300 mb-3">event_available</span>
+                  <p className="text-gray-400 font-medium">ไม่มีคำขอลาในขณะนี้</p>
+                </div>
+              )}
             </div>
 
             {/* Schedules Table */}

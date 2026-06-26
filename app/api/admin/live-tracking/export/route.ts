@@ -106,10 +106,11 @@ export async function GET(request: Request) {
     const approvedLeaves = await prisma.leaveRequest.findMany({
       where: {
         status: "APPROVED",
+        leaveType: { not: "SICK" }, // ลาป่วยไม่หักเงินเดือน
         startDate: { gte: cutoffStart, lte: cutoffEnd }
       },
       include: {
-        user: { select: { email: true } }
+        user: { select: { email: true, baseSalary: true, baseSalaryShopee: true } }
       }
     });
 
@@ -118,7 +119,7 @@ export async function GET(request: Request) {
     wb.created = new Date();
 
     // --- DATA PROCESSING ---
-    const userStats = completed.reduce((acc: Record<string, { name: string; email: string; totalMins: number; totalSales: number; shopeeSales: number; otherSales: number; sessionsCount: number; leaveDeductions: number; baseSalary: number; baseSalaryShopee: number; commissionRate: number; commissionRateShopee: number }>, curr) => {
+    const userStats = completed.reduce((acc: Record<string, { name: string; email: string; totalMins: number; totalSales: number; shopeeSales: number; otherSales: number; sessionsCount: number; leaveDeductions: number; leaveDeductionsTikTok: number; leaveDeductionsShopee: number; baseSalary: number; baseSalaryShopee: number; commissionRate: number; commissionRateShopee: number }>, curr) => {
       const c = curr as unknown as { user: { email: string; name: string | null; baseSalary: number | null; commissionRate: number | null; baseSalaryShopee: number | null; commissionRateShopee: number | null }; durationMin: number | null; salesAmount: number | null; platform: string };
       const email = c.user.email;
       if (!acc[email]) {
@@ -131,6 +132,8 @@ export async function GET(request: Request) {
           otherSales: 0,
           sessionsCount: 0,
           leaveDeductions: 0,
+          leaveDeductionsTikTok: 0,
+          leaveDeductionsShopee: 0,
           baseSalary: c.user.baseSalary || 0,
           baseSalaryShopee: c.user.baseSalaryShopee || 0,
           commissionRate: c.user.commissionRate ?? 0.05,
@@ -184,11 +187,25 @@ export async function GET(request: Request) {
         const days = overlapping.length;
         
         if (days > 0) {
+          let deduction = 0;
           if (leave.leaveType === "VACATION") {
-            userStats[email].leaveDeductions += (days * 250);
+            deduction = days * 250;
           } else if (leave.leaveType === "PERSONAL") {
-            userStats[email].leaveDeductions += (days * 500);
+            deduction = days * 500;
           }
+          
+          const isShopeeSalary = ((leave.user as any)?.baseSalaryShopee ?? 0) > 0;
+          const isTikTokSalary = ((leave.user as any)?.baseSalary ?? 0) > 0;
+          const targetPlatform = leave.platform
+            ? leave.platform
+            : (isShopeeSalary && !isTikTokSalary ? 'Shopee' : 'TikTok');
+
+          if (targetPlatform.toLowerCase() === 'shopee') {
+            userStats[email].leaveDeductionsShopee += deduction;
+          } else {
+            userStats[email].leaveDeductionsTikTok += deduction;
+          }
+          userStats[email].leaveDeductions += deduction;
         }
       }
     });
@@ -229,7 +246,7 @@ export async function GET(request: Request) {
     });
 
     statsArray.forEach((stat, idx: number) => {
-      const s = stat as { totalMins: number; totalSales: number; shopeeSales: number; otherSales: number; name: string; email: string; sessionsCount: number; leaveDeductions: number; baseSalary: number; baseSalaryShopee: number; commissionRate: number; commissionRateShopee: number };
+      const s = stat as { totalMins: number; totalSales: number; shopeeSales: number; otherSales: number; name: string; email: string; sessionsCount: number; leaveDeductions: number; leaveDeductionsTikTok: number; leaveDeductionsShopee: number; baseSalary: number; baseSalaryShopee: number; commissionRate: number; commissionRateShopee: number };
       const hours = Math.floor(s.totalMins / 60);
       const mins = s.totalMins % 60;
       const r = idx + 6;
@@ -243,16 +260,11 @@ export async function GET(request: Request) {
       // Calculate net base salary by deducting leave from TikTok baseSalary if it exists, otherwise from Shopee baseSalary
       let netTikTokSalary = s.baseSalary;
       let netShopeeSalary = s.baseSalaryShopee;
-      if (s.baseSalary > 0) {
-        netTikTokSalary = Math.max(0, s.baseSalary - s.leaveDeductions);
-      } else {
-        netShopeeSalary = Math.max(0, s.baseSalaryShopee - s.leaveDeductions);
-      }
+      netTikTokSalary = Math.max(0, s.baseSalary - s.leaveDeductionsTikTok);
+      netShopeeSalary = Math.max(0, s.baseSalaryShopee - s.leaveDeductionsShopee);
       const netSalaryValue = netTikTokSalary + netShopeeSalary + commissionValue;
 
-      const netFormula = s.baseSalary > 0
-        ? `MAX(0, ${s.baseSalary}-J${r})+${s.baseSalaryShopee}+H${r}`
-        : `${s.baseSalary}+MAX(0, ${s.baseSalaryShopee}-J${r})+H${r}`;
+      const netFormula = `MAX(0, ${s.baseSalary}-${s.leaveDeductionsTikTok})+MAX(0, ${s.baseSalaryShopee}-${s.leaveDeductionsShopee})+H${r}`;
 
       const row = wsSummary.addRow([
         s.name,

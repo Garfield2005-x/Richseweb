@@ -66,7 +66,7 @@ export default function SalaryReportModal({ show, onClose, startDate, endDate }:
       content += `📊 ยอดขายรวม: ฿${r.totalSales.toLocaleString()}\n`;
       content += `💎 ค่าคอมมิชชั่น: +฿${r.commission.toLocaleString()}\n`;
       if (r.leaveDays > 0) {
-        content += `🏥 วันลา: ${r.leaveDays} วัน (-฿${r.leaveDeduction.toLocaleString()})\n`;
+        content += `🏥 วันลา: ${r.leaveDays} ครั้ง (-฿${r.leaveDeduction.toLocaleString()})\n`;
       }
       content += `📝 หัก 3%: -฿${r.tax.toLocaleString()}\n`;
       content += `✅ รับสุทธิ: ฿${r.netPay.toLocaleString()}\n`;
@@ -161,7 +161,7 @@ export default function SalaryReportModal({ show, onClose, startDate, endDate }:
                   </div>
                   {r.leaveDays > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-gray-500">🏥 หักลา ({r.leaveDays} วัน)</span>
+                      <span className="text-gray-500">🏥 หักลา ({r.leaveDays} ครั้ง)</span>
                       <span className="font-bold text-red-500">-฿{r.leaveDeduction.toLocaleString()}</span>
                     </div>
                   )}

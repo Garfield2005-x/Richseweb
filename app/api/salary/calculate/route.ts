@@ -12,8 +12,15 @@ function daysInMonth(monthStr: string): number {
   return new Date(year, month, 0).getDate();
 }
 
-// Helper to count leave days between two dates for a user in a date range
-async function getApprovedLeaveDays(userId: string, startDate: string, endDate: string): Promise<number> {
+// Helper to count leave days between two dates for a user in a date range by platform
+// NOTE: SICK leave (ลาป่วย) is excluded — it does NOT deduct salary
+interface LeaveDaysResult {
+  tiktokDays: number;
+  shopeeDays: number;
+  totalDays: number;
+}
+
+async function getApprovedLeaveDaysByPlatform(userId: string, startDate: string, endDate: string): Promise<LeaveDaysResult> {
   const rangeStart = new Date(`${startDate}T00:00:00+07:00`);
   const rangeEnd = new Date(`${endDate}T23:59:59.999+07:00`);
 
@@ -21,9 +28,18 @@ async function getApprovedLeaveDays(userId: string, startDate: string, endDate: 
     where: {
       userId,
       status: 'APPROVED',
+      leaveType: { not: 'SICK' }, // ลาป่วยไม่หักเงินเดือน
       startDate: { lte: rangeEnd },
       endDate: { gte: rangeStart },
     },
+    include: {
+      user: {
+        select: {
+          baseSalary: true,
+          baseSalaryShopee: true,
+        }
+      }
+    }
   });
 
   const getDaysArray = (startStr: string, endStr: string): string[] => {
@@ -45,15 +61,33 @@ async function getApprovedLeaveDays(userId: string, startDate: string, endDate: 
     return thTime.toISOString().split('T')[0];
   };
 
-  let totalDays = 0;
+  let tiktokDays = 0;
+  let shopeeDays = 0;
+
   for (const leave of leaves) {
     const leaveStartStr = toTHDateString(leave.startDate);
     const leaveEndStr = toTHDateString(leave.endDate);
     const leaveDays = getDaysArray(leaveStartStr, leaveEndStr);
     const overlapping = leaveDays.filter(day => day >= startDate && day <= endDate);
-    totalDays += overlapping.length;
+    
+    const isShopeeSalary = (leave.user?.baseSalaryShopee ?? 0) > 0;
+    const isTikTokSalary = (leave.user?.baseSalary ?? 0) > 0;
+    const targetPlatform = leave.platform
+      ? leave.platform
+      : (isShopeeSalary && !isTikTokSalary ? 'Shopee' : 'TikTok');
+
+    if (targetPlatform.toLowerCase() === 'shopee') {
+      shopeeDays += overlapping.length;
+    } else {
+      tiktokDays += overlapping.length;
+    }
   }
-  return totalDays;
+
+  return {
+    tiktokDays,
+    shopeeDays,
+    totalDays: tiktokDays + shopeeDays
+  };
 }
 
 export async function GET(request: Request) {
@@ -139,22 +173,25 @@ export async function GET(request: Request) {
   // Fetch leave data for each employee
   for (const emp of Object.values(employeeMap) as any[]) {
     if (emp.userId) {
-      emp.leaveDays = await getApprovedLeaveDays(emp.userId, startDate, endDate);
+      const leaveResult = await getApprovedLeaveDaysByPlatform(emp.userId, startDate, endDate);
+      emp.tiktokLeaveDays = leaveResult.tiktokDays;
+      emp.shopeeLeaveDays = leaveResult.shopeeDays;
+      emp.leaveDays = leaveResult.totalDays;
+    } else {
+      emp.tiktokLeaveDays = 0;
+      emp.shopeeLeaveDays = 0;
+      emp.leaveDays = 0;
     }
   }
 
   // Final calculations per employee
   const report = Object.values(employeeMap).map((emp: any) => {
-    const leaveBase = emp.baseSalary > 0 ? emp.baseSalary : emp.baseSalaryShopee;
-    const leaveDeduction = dim > 0 ? (leaveBase / dim) * emp.leaveDays : 0;
+    const tiktokDeduction = dim > 0 ? (emp.baseSalary / dim) * emp.tiktokLeaveDays : 0;
+    const shopeeDeduction = dim > 0 ? (emp.baseSalaryShopee / dim) * emp.shopeeLeaveDays : 0;
+    const leaveDeduction = tiktokDeduction + shopeeDeduction;
     
-    let netTikTokSalary = emp.baseSalary;
-    let netShopeeSalary = emp.baseSalaryShopee;
-    if (emp.baseSalary > 0) {
-      netTikTokSalary = Math.max(0, emp.baseSalary - leaveDeduction);
-    } else {
-      netShopeeSalary = Math.max(0, emp.baseSalaryShopee - leaveDeduction);
-    }
+    const netTikTokSalary = Math.max(0, emp.baseSalary - tiktokDeduction);
+    const netShopeeSalary = Math.max(0, emp.baseSalaryShopee - shopeeDeduction);
     
     const totalBaseSalaryPaid = netTikTokSalary + netShopeeSalary;
     const gross = totalBaseSalaryPaid + emp.commission;
@@ -204,7 +241,8 @@ export async function POST(request: Request) {
       message += `📊 ยอดขายรวม: ฿${r.totalSales.toLocaleString()}\n`;
       message += `💎 ค่าคอมมิชชั่น: +฿${r.commission.toLocaleString()}\n`;
       if (r.leaveDays > 0) {
-        message += `🏥 วันลา: ${r.leaveDays} วัน (-฿${r.leaveDeduction.toLocaleString()})\n`;
+        message += `📅 วันลา (กิจ/พักร้อน): ${r.leaveDays} ครั้ง (-฿${r.leaveDeduction.toLocaleString()})\n`;
+        message += `ℹ️ หมายเหตุ: ลาป่วยไม่หักเงินเดือน\n`;
       }
       message += `📝 หัก 3%: -฿${r.tax.toLocaleString()}\n`;
       message += `✅ รับสุทธิ: ฿${r.netPay.toLocaleString()}\n`;

@@ -77,7 +77,7 @@ export async function getAdminLeaves() {
     if ((session?.user as { role?: string })?.role !== "ADMIN") return { error: "Unauthorized" };
 
     const leaves = await prisma.leaveRequest.findMany({
-      include: { user: { select: { name: true, email: true } } },
+      include: { user: { select: { name: true, email: true, baseSalary: true, baseSalaryShopee: true } } },
       orderBy: { createdAt: 'desc' },
       take: 50,
     });
@@ -88,20 +88,24 @@ export async function getAdminLeaves() {
   }
 }
 
-export async function updateLeaveStatus(id: string, status: string) {
+export async function updateLeaveStatus(id: string, status: string, platform?: string) {
   try {
     const session = await getServerSession(authOptions);
     if ((session?.user as { role?: string })?.role !== "ADMIN") return { error: "Unauthorized" };
 
     await prisma.leaveRequest.update({
       where: { id },
-      data: { status },
+      data: { 
+        status,
+        ...(platform ? { platform } : {})
+      },
     });
 
     revalidatePath("/admin/live-tracking");
     return { success: true };
-  } catch {
-    return { error: "Failed to update leave status" };
+  } catch (err: any) {
+    console.error("Failed to update leave status:", err);
+    return { error: err.message || "Failed to update leave status" };
   }
 }
 
