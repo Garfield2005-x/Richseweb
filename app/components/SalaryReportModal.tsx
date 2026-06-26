@@ -10,7 +10,11 @@ interface EmployeeReport {
   totalSales: number;
   commission: number;
   leaveDays: number;
+  tiktokLeaveDays: number;
+  shopeeLeaveDays: number;
   leaveDeduction: number;
+  tiktokLeaveDeduction: number;
+  shopeeLeaveDeduction: number;
   tax: number;
   netPay: number;
   period: string;
@@ -57,7 +61,7 @@ export default function SalaryReportModal({ show, onClose, startDate, endDate }:
 
   const handleDownloadFile = () => {
     if (!report || !period) return;
-    
+
     let content = `📋 สรุปเงินเดือน\n📅 ช่วง: ${period}\n${'─'.repeat(20)}\n`;
 
     for (const r of report) {
@@ -66,7 +70,13 @@ export default function SalaryReportModal({ show, onClose, startDate, endDate }:
       content += `📊 ยอดขายรวม: ฿${r.totalSales.toLocaleString()}\n`;
       content += `💎 ค่าคอมมิชชั่น: +฿${r.commission.toLocaleString()}\n`;
       if (r.leaveDays > 0) {
-        content += `🏥 วันลา: ${r.leaveDays} ครั้ง (-฿${r.leaveDeduction.toLocaleString()})\n`;
+        content += `🏥 หักลารวม: ${r.leaveDays} ครั้ง (-฿${r.leaveDeduction.toLocaleString()})\n`;
+        if (r.tiktokLeaveDays > 0) {
+          content += `   ↳ TikTok: ${r.tiktokLeaveDays} ครั้ง (-฿${r.tiktokLeaveDeduction.toLocaleString()})\n`;
+        }
+        if (r.shopeeLeaveDays > 0) {
+          content += `   ↳ Shopee: ${r.shopeeLeaveDays} ครั้ง (-฿${r.shopeeLeaveDeduction.toLocaleString()})\n`;
+        }
       }
       content += `📝 หัก 3%: -฿${r.tax.toLocaleString()}\n`;
       content += `✅ รับสุทธิ: ฿${r.netPay.toLocaleString()}\n`;
@@ -81,7 +91,7 @@ export default function SalaryReportModal({ show, onClose, startDate, endDate }:
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
-    
+
     toast.success('ดาวน์โหลดไฟล์สำเร็จ');
   };
 
@@ -159,12 +169,38 @@ export default function SalaryReportModal({ show, onClose, startDate, endDate }:
                     <span className="text-gray-500">💎 ค่าคอมมิชชั่น</span>
                     <span className="font-bold text-emerald-600">+฿{r.commission.toLocaleString()}</span>
                   </div>
+
+                  {/* Leave breakdown */}
                   {r.leaveDays > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">🏥 หักลา ({r.leaveDays} ครั้ง)</span>
-                      <span className="font-bold text-red-500">-฿{r.leaveDeduction.toLocaleString()}</span>
+                    <div className="bg-red-50/60 rounded-xl p-2.5 space-y-1 border border-red-100/60">
+                      {/* Summary row */}
+                      <div className="flex justify-between items-center">
+                        <span className="text-red-600 font-bold">🏥 หักลารวม ({r.leaveDays} ครั้ง)</span>
+                        <span className="font-bold text-red-600">-฿{r.leaveDeduction.toLocaleString()}</span>
+                      </div>
+                      {/* TikTok breakdown */}
+                      {r.tiktokLeaveDays > 0 && (
+                        <div className="flex justify-between items-center pl-3 text-[10px]">
+                          <span className="text-gray-500 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#c3a2ab] inline-block" />
+                            TikTok · {r.tiktokLeaveDays} ครั้ง
+                          </span>
+                          <span className="text-red-400 font-bold">-฿{r.tiktokLeaveDeduction.toLocaleString()}</span>
+                        </div>
+                      )}
+                      {/* Shopee breakdown */}
+                      {r.shopeeLeaveDays > 0 && (
+                        <div className="flex justify-between items-center pl-3 text-[10px]">
+                          <span className="text-gray-500 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block" />
+                            Shopee · {r.shopeeLeaveDays} ครั้ง
+                          </span>
+                          <span className="text-red-400 font-bold">-฿{r.shopeeLeaveDeduction.toLocaleString()}</span>
+                        </div>
+                      )}
                     </div>
                   )}
+
                   <div className="flex justify-between">
                     <span className="text-gray-500">📝 หัก 3%</span>
                     <span className="font-bold text-red-500">-฿{r.tax.toLocaleString()}</span>
@@ -189,7 +225,7 @@ export default function SalaryReportModal({ show, onClose, startDate, endDate }:
               className="w-full py-3.5 bg-[#0066ff] text-white rounded-2xl font-bold hover:bg-[#0055dd] transition-all flex justify-center items-center gap-2 shadow-lg"
             >
               <span className="material-symbols-outlined text-[20px]">download</span>
-              ดาวน์โหลดสลิปเงินเดือน (.txt) เพื่อทดสอบ
+              ดาวน์โหลดสลิปเงินเดือน (.txt)
             </button>
           </div>
         )}

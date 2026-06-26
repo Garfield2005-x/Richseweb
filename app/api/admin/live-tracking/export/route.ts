@@ -90,6 +90,12 @@ export async function GET(request: Request) {
       cutoffEnd = new Date(`${endAdjusted.year}-${pad(endAdjusted.month)}-28T23:59:59.999+07:00`);
     }
 
+    // จำนวนวันจริงในช่วงที่เลือก (ใช้ prorate เงินเดือนพื้นฐาน)
+    const rangedays = Math.round((cutoffEnd.getTime() - cutoffStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    // จำนวนวันในเดือนของ cutoffStart (ใช้หาอัตราหักลาต่อวัน)
+    const cutoffStartTH = new Date(cutoffStart.getTime() + 7 * 60 * 60 * 1000);
+    const dimMonth = new Date(cutoffStartTH.getUTCFullYear(), cutoffStartTH.getUTCMonth() + 1, 0).getDate();
+
     const completed = await prisma.liveSession.findMany({
       where: { 
         status: "COMPLETED",
@@ -254,17 +260,19 @@ export async function GET(request: Request) {
       const userRate = s.commissionRate;
       const userRateShopee = s.commissionRateShopee;
       const commissionValue = (s.shopeeSales * userRateShopee) + (s.otherSales * userRate);
-      const totalBaseSalary = s.baseSalary + s.baseSalaryShopee;
-      const grossEarnings = totalBaseSalary + commissionValue;
-      
-      // Calculate net base salary by deducting leave from TikTok baseSalary if it exists, otherwise from Shopee baseSalary
-      let netTikTokSalary = s.baseSalary;
-      let netShopeeSalary = s.baseSalaryShopee;
-      netTikTokSalary = Math.max(0, s.baseSalary - s.leaveDeductionsTikTok);
-      netShopeeSalary = Math.max(0, s.baseSalaryShopee - s.leaveDeductionsShopee);
-      const netSalaryValue = netTikTokSalary + netShopeeSalary + commissionValue;
 
-      const netFormula = `MAX(0, ${s.baseSalary}-${s.leaveDeductionsTikTok})+MAX(0, ${s.baseSalaryShopee}-${s.leaveDeductionsShopee})+H${r}`;
+      // Prorate เงินเดือนพื้นฐานตามวันจริงที่เลือก
+      const proratedBase       = dimMonth > 0 ? (s.baseSalary / dimMonth) * rangedays : s.baseSalary;
+      const proratedBaseShopee = dimMonth > 0 ? (s.baseSalaryShopee / dimMonth) * rangedays : s.baseSalaryShopee;
+      const totalBaseSalary    = proratedBase + proratedBaseShopee;
+
+      // อัตราหักต่อวัน = เงินเดือนเต็ม / วันในเดือน
+      const netTikTokSalary = Math.max(0, proratedBase - s.leaveDeductionsTikTok);
+      const netShopeeSalary = Math.max(0, proratedBaseShopee - s.leaveDeductionsShopee);
+      const netSalaryValue  = netTikTokSalary + netShopeeSalary + commissionValue;
+      const grossEarnings   = totalBaseSalary + commissionValue;
+
+      const netFormula = `MAX(0,${Math.round(proratedBase)}-${s.leaveDeductionsTikTok})+MAX(0,${Math.round(proratedBaseShopee)}-${s.leaveDeductionsShopee})+H${r}`;
 
       const row = wsSummary.addRow([
         s.name,

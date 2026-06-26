@@ -109,21 +109,26 @@ export async function GET(request: Request) {
   let startDate: string;
   let endDate: string;
   let monthLabel: string;
-  let dim: number; // days used for leave deduction calculation
+  let dim: number;    // จำนวนวันในเดือน (ใช้หาอัตราต่อวัน)
+  let rangedays: number; // จำนวนวันจริงในช่วงที่เลือก (ใช้ prorate เงินเดือนพื้นฐาน)
 
   if (startDateParam && endDateParam) {
     startDate = startDateParam;
     endDate = endDateParam;
     monthLabel = `${startDate} ถึง ${endDate}`;
-    // Calculate number of days in the range for leave deduction ratio
+    // อัตราต่อวัน = เงินเดือน / วันในเดือนของ startDate (ไม่ใช่วันในช่วงที่เลือก)
+    const [sy, sm] = startDate.split('-');
+    dim = daysInMonth(`${sy}-${sm}`);
+    // นับวันจริงที่เลือกเพื่อ prorate เงินเดือนพื้นฐาน
     const d1 = new Date(`${startDate}T00:00:00+07:00`);
     const d2 = new Date(`${endDate}T00:00:00+07:00`);
-    dim = Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    rangedays = Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   } else if (month) {
     startDate = `${month}-01`;
     endDate = `${month}-${daysInMonth(month)}`;
     monthLabel = month;
     dim = daysInMonth(month);
+    rangedays = dim; // เต็มเดือน = ไม่ prorate
   } else {
     return NextResponse.json(
       { error: 'Missing parameters. Use ?month=YYYY-MM or ?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD' },
@@ -186,12 +191,18 @@ export async function GET(request: Request) {
 
   // Final calculations per employee
   const report = Object.values(employeeMap).map((emp: any) => {
+    // Prorate เงินเดือนพื้นฐานตามวันที่เลือกจริง
+    // เช่น เลือก 15 วัน จากเดือน 30 วัน → ได้ baseSalary * 15/30
+    const proratedBase = dim > 0 ? (emp.baseSalary / dim) * rangedays : emp.baseSalary;
+    const proratedBaseShopee = dim > 0 ? (emp.baseSalaryShopee / dim) * rangedays : emp.baseSalaryShopee;
+
+    // อัตราหักต่อวัน = เงินเดือนเต็ม / วันในเดือน (ไม่ใช้ proratedBase)
     const tiktokDeduction = dim > 0 ? (emp.baseSalary / dim) * emp.tiktokLeaveDays : 0;
     const shopeeDeduction = dim > 0 ? (emp.baseSalaryShopee / dim) * emp.shopeeLeaveDays : 0;
     const leaveDeduction = tiktokDeduction + shopeeDeduction;
     
-    const netTikTokSalary = Math.max(0, emp.baseSalary - tiktokDeduction);
-    const netShopeeSalary = Math.max(0, emp.baseSalaryShopee - shopeeDeduction);
+    const netTikTokSalary = Math.max(0, proratedBase - tiktokDeduction);
+    const netShopeeSalary = Math.max(0, proratedBaseShopee - shopeeDeduction);
     
     const totalBaseSalaryPaid = netTikTokSalary + netShopeeSalary;
     const gross = totalBaseSalaryPaid + emp.commission;
@@ -200,11 +211,15 @@ export async function GET(request: Request) {
     return {
       name: emp.name,
       email: emp.email,
-      baseSalary: Math.round(emp.baseSalary + emp.baseSalaryShopee),
+      baseSalary: Math.round(proratedBase + proratedBaseShopee), // แสดงเงินเดือนตามช่วงที่เลือก
       totalSales: Math.round(emp.totalSales),
       commission: Math.round(emp.commission),
       leaveDays: emp.leaveDays,
+      tiktokLeaveDays: emp.tiktokLeaveDays,
+      shopeeLeaveDays: emp.shopeeLeaveDays,
       leaveDeduction: Math.round(leaveDeduction),
+      tiktokLeaveDeduction: Math.round(tiktokDeduction),
+      shopeeLeaveDeduction: Math.round(shopeeDeduction),
       tax: Math.round(tax),
       netPay: Math.round(netPay),
       period: monthLabel,
