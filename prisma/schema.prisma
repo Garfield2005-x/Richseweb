@@ -12,6 +12,7 @@ enum Role {
   USER
   ADMIN
   STAFF
+  AFFILIATE
 }
 
 model User {

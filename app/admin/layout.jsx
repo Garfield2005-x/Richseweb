@@ -16,9 +16,11 @@ export default async function AdminLayout({ children }) {
     select: { role: true },
   });
 
-  if (user?.role !== "ADMIN") {
+  if (user?.role !== "ADMIN" && user?.role !== "AFFILIATE") {
     redirect("/");
   }
+
+  const isAffiliate = user?.role === "AFFILIATE";
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row font-sans">
@@ -31,93 +33,97 @@ export default async function AdminLayout({ children }) {
           </div>
 
           <nav className="flex-1 p-4 space-y-2">
-            <Link
-              href="/admin"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined notranslate">dashboard</span>
-              <span className="font-medium">Dashboard</span>
-            </Link>
+            {!isAffiliate && (
+              <>
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined notranslate">dashboard</span>
+                  <span className="font-medium">Dashboard</span>
+                </Link>
 
-            <Link
-              href="/admin/products"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined notranslate">inventory_2</span>
-              <span className="font-medium">Products</span>
-            </Link>
+                <Link
+                  href="/admin/products"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined notranslate">inventory_2</span>
+                  <span className="font-medium">Products</span>
+                </Link>
 
-            <Link
-              href="/admin/orders"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined notranslate">shopping_cart</span>
-              <span className="font-medium">Orders</span>
-            </Link>
+                <Link
+                  href="/admin/orders"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined notranslate">shopping_cart</span>
+                  <span className="font-medium">Orders</span>
+                </Link>
 
-            <Link
-              href="/admin/discounts"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined notranslate">local_activity</span>
-              <span className="font-medium">Discounts</span>
-            </Link>
+                <Link
+                  href="/admin/discounts"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined notranslate">local_activity</span>
+                  <span className="font-medium">Discounts</span>
+                </Link>
 
-            <Link
-              href="/admin/customers"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined notranslate">group</span>
-              <span className="font-medium">Customers</span>
-            </Link>
+                <Link
+                  href="/admin/customers"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined notranslate">group</span>
+                  <span className="font-medium">Customers</span>
+                </Link>
 
-            <Link
-              href="/admin/subscribers"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined notranslate">mail</span>
-              <span className="font-medium">Subscribers</span>
-            </Link>
+                <Link
+                  href="/admin/subscribers"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined notranslate">mail</span>
+                  <span className="font-medium">Subscribers</span>
+                </Link>
 
-            <Link
-              href="/admin/marketing"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined notranslate text-[#c3a2ab]">campaign</span>
-              <span className="font-medium text-[#c3a2ab]">Marketing</span>
-            </Link>
+                <Link
+                  href="/admin/marketing"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined notranslate text-[#c3a2ab]">campaign</span>
+                  <span className="font-medium text-[#c3a2ab]">Marketing</span>
+                </Link>
 
-            <Link
-              href="/admin/campanet"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined notranslate">assignment</span>
-              <span className="font-medium">Campanet</span>
-            </Link>
+                <Link
+                  href="/admin/campanet"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined notranslate">assignment</span>
+                  <span className="font-medium">Campanet</span>
+                </Link>
 
-            <Link
-              href="/admin/reviews"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined notranslate">reviews</span>
-              <span className="font-medium">Reviews</span>
-            </Link>
+                <Link
+                  href="/admin/reviews"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined notranslate">reviews</span>
+                  <span className="font-medium">Reviews</span>
+                </Link>
 
-            <Link
-              href="/admin/rewards"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined notranslate">redeem</span>
-              <span className="font-medium">Rewards</span>
-            </Link>
+                <Link
+                  href="/admin/rewards"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined notranslate">redeem</span>
+                  <span className="font-medium">Rewards</span>
+                </Link>
 
-            <Link
-              href="/admin/flash-sale"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined text-orange-500">bolt</span>
-              <span className="font-medium">Flash Sale</span>
-            </Link>
+                <Link
+                  href="/admin/flash-sale"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined text-orange-500">bolt</span>
+                  <span className="font-medium">Flash Sale</span>
+                </Link>
+              </>
+            )}
 
             <Link
               href="/admin/affiliate"
@@ -127,37 +133,41 @@ export default async function AdminLayout({ children }) {
               <span className="font-medium">Affiliate Clips</span>
             </Link>
 
-            <Link
-              href="/admin/live-tracking"
-              className="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors font-bold"
-            >
-              <span className="material-symbols-outlined notranslate">sensors</span>
-              <span className="font-bold">Live Tracking</span>
-            </Link>
+            {!isAffiliate && (
+              <>
+                <Link
+                  href="/admin/live-tracking"
+                  className="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors font-bold"
+                >
+                  <span className="material-symbols-outlined notranslate">sensors</span>
+                  <span className="font-bold">Live Tracking</span>
+                </Link>
 
-            <Link
-              href="/admin/staff-commission"
-              className="flex items-center gap-3 px-4 py-3 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors font-bold"
-            >
-              <span className="material-symbols-outlined notranslate">percent</span>
-              <span className="font-bold">ค่าคอมพนักงาน</span>
-            </Link>
+                <Link
+                  href="/admin/staff-commission"
+                  className="flex items-center gap-3 px-4 py-3 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors font-bold"
+                >
+                  <span className="material-symbols-outlined notranslate">percent</span>
+                  <span className="font-bold">ค่าคอมพนักงาน</span>
+                </Link>
 
-            <Link
-              href="/admin/automations"
-              className="flex items-center gap-3 px-4 py-3 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-colors font-bold"
-            >
-              <span className="material-symbols-outlined notranslate">magic_button</span>
-              <span className="font-bold">Automations</span>
-            </Link>
+                <Link
+                  href="/admin/automations"
+                  className="flex items-center gap-3 px-4 py-3 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-colors font-bold"
+                >
+                  <span className="material-symbols-outlined notranslate">magic_button</span>
+                  <span className="font-bold">Automations</span>
+                </Link>
 
-            <Link
-              href="/admin/settings"
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <span className="material-symbols-outlined notranslate">settings</span>
-              <span className="font-medium">Site Settings</span>
-            </Link>
+                <Link
+                  href="/admin/settings"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <span className="material-symbols-outlined notranslate">settings</span>
+                  <span className="font-medium">Site Settings</span>
+                </Link>
+              </>
+            )}
           </nav>
 
           <div className="p-4 border-t border-gray-200">

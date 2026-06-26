@@ -20,15 +20,25 @@ import {
   CheckCircle2
 } from "lucide-react";
 
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import LoadingRichse from "@/app/components/LoadingRichse";
 
 export default function AdminDashboard() {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [stats, setStats] = useState(null);
   const [abandoned, setAbandoned] = useState([]);
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [nudging, setNudging] = useState({});
+
+  useEffect(() => {
+    if (session?.user?.role === "AFFILIATE") {
+      router.push("/admin/affiliate");
+    }
+  }, [session, router]);
 
   useEffect(() => {
     const fetchStats = async () => {

@@ -8,8 +8,8 @@ import Footer from "@/app/components/Footer";
 import LoadingRichse from "@/app/components/LoadingRichse";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("affiliate@richse.com");
+  const [password, setPassword] = useState("Affiliate@Richse25");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -33,6 +33,10 @@ export default function LoginPage() {
         const role = (session?.user as { role?: string })?.role;
         if (role === "STAFF") {
           router.push("/live-tracker");
+        } else if (role === "AFFILIATE") {
+          router.push("/admin/affiliate");
+        } else if (role === "ADMIN") {
+          router.push("/admin");
         } else {
           router.push("/account");
         }

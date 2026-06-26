@@ -70,8 +70,7 @@ export default function CustomerDetail(props) {
     }
   };
 
-  const handleRoleToggle = async () => {
-    const newRole = customer.role === "ADMIN" ? "USER" : "ADMIN";
+  const handleRoleChange = async (newRole) => {
     if (!confirm(`Are you sure you want to change this user's role to ${newRole}?`)) return;
 
     setIsUpdating(true);
@@ -269,14 +268,20 @@ export default function CustomerDetail(props) {
                    Adjust Loyalty
                 </button>
 
-                <button 
-                  onClick={handleRoleToggle}
-                  disabled={isUpdating}
-                  className={`${isAdmin ? 'bg-red-500/20 text-red-100 hover:bg-red-500/30 border-red-500/30' : 'bg-white hover:bg-gray-100 text-black border-transparent'} border font-bold py-3 px-6 rounded-xl transition-all text-[22px] flex items-center justify-center gap-2`}
-                >
+                <div className="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold py-3 px-6 rounded-xl transition-all text-[22px] flex items-center justify-center gap-2 backdrop-blur-sm relative">
                    <span className="material-symbols-outlined text-[18px]">admin_panel_settings</span>
-                   {isAdmin ? "Demote to User" : "Make Admin"}
-                </button>
+                   <select
+                     value={customer.role}
+                     disabled={isUpdating}
+                     onChange={(e) => handleRoleChange(e.target.value)}
+                     className="bg-transparent border-none outline-none font-bold text-[22px] cursor-pointer text-white appearance-none pr-6 bg-[url('https://api.iconify.design/heroicons:chevron-down.svg')] bg-[length:1.25rem_1.25rem] bg-[right_center] bg-no-repeat filter invert"
+                   >
+                     <option value="USER" className="text-black">USER</option>
+                     <option value="ADMIN" className="text-black">ADMIN</option>
+                     <option value="STAFF" className="text-black">STAFF</option>
+                     <option value="AFFILIATE" className="text-black">AFFILIATE</option>
+                   </select>
+                </div>
              </div>
           </div>
 
