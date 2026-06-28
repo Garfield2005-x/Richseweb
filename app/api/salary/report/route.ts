@@ -20,8 +20,7 @@ interface LeaveDaysResult {
   totalDays: number;
 }
 
-// นับจำนวนครั้งลา (non-SICK) ที่ตรงกับช่วงที่เลือก แยกตาม platform
-// ลาป่วย (SICK) ไม่หักเงินเดือน
+// นับจำนวนครั้งลาที่ตรงกับช่วงที่เลือก แยกตาม platform
 async function getDeductibleLeaveDaysByPlatform(
   userId: string,
   startDate: string,
@@ -34,7 +33,6 @@ async function getDeductibleLeaveDaysByPlatform(
     where: {
       userId,
       status: 'APPROVED',
-      leaveType: { not: 'SICK' },
       startDate: { lte: rangeEnd },
       endDate:   { gte: rangeStart },
     },
@@ -188,9 +186,9 @@ export async function GET(request: Request) {
     const proratedBase       = dim > 0 ? (emp.baseSalary / dim) * rangedays : emp.baseSalary;
     const proratedBaseShopee = dim > 0 ? (emp.baseSalaryShopee / dim) * rangedays : emp.baseSalaryShopee;
 
-    // อัตราหักต่อวัน = เงินเดือนเต็มเดือน / วันในเดือน (ไม่ใช้ proratedBase)
-    const tiktokDeduction = dim > 0 ? (emp.baseSalary / dim) * emp.tiktokLeaveDays : 0;
-    const shopeeDeduction = dim > 0 ? (emp.baseSalaryShopee / dim) * emp.shopeeLeaveDays : 0;
+    // อัตราหักต่อวัน = เงินเดือนเต็มเดือน / 30 วัน (ล็อกไว้ที่ 30 วันตามต้องการ)
+    const tiktokDeduction = (emp.baseSalary / 30) * emp.tiktokLeaveDays;
+    const shopeeDeduction = (emp.baseSalaryShopee / 30) * emp.shopeeLeaveDays;
     const leaveDeduction  = tiktokDeduction + shopeeDeduction;
 
     const netTikTokSalary     = Math.max(0, proratedBase - tiktokDeduction);

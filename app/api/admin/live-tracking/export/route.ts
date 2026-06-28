@@ -112,7 +112,6 @@ export async function GET(request: Request) {
     const approvedLeaves = await prisma.leaveRequest.findMany({
       where: {
         status: "APPROVED",
-        leaveType: { not: "SICK" }, // ลาป่วยไม่หักเงินเดือน
         startDate: { gte: cutoffStart, lte: cutoffEnd }
       },
       include: {
@@ -179,7 +178,7 @@ export async function GET(request: Request) {
     };
 
     // Calculate Leave Deductions
-    // VACATION deducts 250 per day, PERSONAL deducts 500 per day
+    // VACATION deducts 250 per day, PERSONAL & SICK deduct 500 per day
     approvedLeaves.forEach((leave) => {
       const email = leave.user.email;
       if (email && userStats[email]) {
@@ -196,12 +195,12 @@ export async function GET(request: Request) {
           let deduction = 0;
           if (leave.leaveType === "VACATION") {
             deduction = days * 250;
-          } else if (leave.leaveType === "PERSONAL") {
+          } else if (leave.leaveType === "PERSONAL" || leave.leaveType === "SICK") {
             deduction = days * 500;
           }
           
-          const isShopeeSalary = ((leave.user as any)?.baseSalaryShopee ?? 0) > 0;
-          const isTikTokSalary = ((leave.user as any)?.baseSalary ?? 0) > 0;
+          const isShopeeSalary = (leave.user?.baseSalaryShopee ?? 0) > 0;
+          const isTikTokSalary = (leave.user?.baseSalary ?? 0) > 0;
           const targetPlatform = leave.platform
             ? leave.platform
             : (isShopeeSalary && !isTikTokSalary ? 'Shopee' : 'TikTok');

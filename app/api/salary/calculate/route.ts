@@ -28,7 +28,6 @@ async function getApprovedLeaveDaysByPlatform(userId: string, startDate: string,
     where: {
       userId,
       status: 'APPROVED',
-      leaveType: { not: 'SICK' }, // ลาป่วยไม่หักเงินเดือน
       startDate: { lte: rangeEnd },
       endDate: { gte: rangeStart },
     },
@@ -196,9 +195,9 @@ export async function GET(request: Request) {
     const proratedBase = dim > 0 ? (emp.baseSalary / dim) * rangedays : emp.baseSalary;
     const proratedBaseShopee = dim > 0 ? (emp.baseSalaryShopee / dim) * rangedays : emp.baseSalaryShopee;
 
-    // อัตราหักต่อวัน = เงินเดือนเต็ม / วันในเดือน (ไม่ใช้ proratedBase)
-    const tiktokDeduction = dim > 0 ? (emp.baseSalary / dim) * emp.tiktokLeaveDays : 0;
-    const shopeeDeduction = dim > 0 ? (emp.baseSalaryShopee / dim) * emp.shopeeLeaveDays : 0;
+    // อัตราหักต่อวัน = เงินเดือนเต็ม / 30 วัน (ล็อกไว้ที่ 30 วันตามต้องการ)
+    const tiktokDeduction = (emp.baseSalary / 30) * emp.tiktokLeaveDays;
+    const shopeeDeduction = (emp.baseSalaryShopee / 30) * emp.shopeeLeaveDays;
     const leaveDeduction = tiktokDeduction + shopeeDeduction;
     
     const netTikTokSalary = Math.max(0, proratedBase - tiktokDeduction);
@@ -256,8 +255,7 @@ export async function POST(request: Request) {
       message += `📊 ยอดขายรวม: ฿${r.totalSales.toLocaleString()}\n`;
       message += `💎 ค่าคอมมิชชั่น: +฿${r.commission.toLocaleString()}\n`;
       if (r.leaveDays > 0) {
-        message += `📅 วันลา (กิจ/พักร้อน): ${r.leaveDays} ครั้ง (-฿${r.leaveDeduction.toLocaleString()})\n`;
-        message += `ℹ️ หมายเหตุ: ลาป่วยไม่หักเงินเดือน\n`;
+        message += `📅 วันลา: ${r.leaveDays} ครั้ง (-฿${r.leaveDeduction.toLocaleString()})\n`;
       }
       message += `📝 หัก 3%: -฿${r.tax.toLocaleString()}\n`;
       message += `✅ รับสุทธิ: ฿${r.netPay.toLocaleString()}\n`;
