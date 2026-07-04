@@ -46,6 +46,12 @@ const staffList = [
     password: "Aom@Richse25",
     note: "TikTok | ค่าคอม 3%",
   },
+  {
+    name: "คุณเกรซ",
+    email: "grace@richse-staff.com",
+    password: "Grace@Richse25",
+    note: "TikTok | ค่าคอม 3%",
+  },
 ];
 
 async function main() {
