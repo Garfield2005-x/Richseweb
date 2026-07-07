@@ -285,7 +285,6 @@ export default function AdminSidebar({ isAffiliate }: AdminSidebarProps) {
             <SidebarGroup
               key={group.label}
               group={group}
-              collapsed={false}
               defaultOpen={i < 2}
             />
           ))}
