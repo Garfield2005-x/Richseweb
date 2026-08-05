@@ -51,10 +51,11 @@ export const authOptions: NextAuthOptions = {
             image: true,
             role: true,
             password: true,
+            isDeleted: true,
           }
         });
 
-        if (!user || !user.password) {
+        if (!user || !user.password || user.isDeleted) {
           throw new Error("Invalid credentials");
         }
 

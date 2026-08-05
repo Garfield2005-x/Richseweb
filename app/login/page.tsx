@@ -8,8 +8,8 @@ import Footer from "@/app/components/Footer";
 import LoadingRichse from "@/app/components/LoadingRichse";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("affiliate@richse.com");
-  const [password, setPassword] = useState("Affiliate@Richse25");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();

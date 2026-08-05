@@ -23,6 +23,7 @@ model User {
   emailVerified DateTime?
   image         String?
   role          Role     @default(USER)
+  isDeleted     Boolean  @default(false)
 
   phone         String?
   address       String?

@@ -15,12 +15,15 @@ import {
   Lock,
   User,
   Loader2,
+  RotateCcw,
+  Archive,
 } from "lucide-react";
 
 interface StaffMember {
   id: string;
   name: string;
   email: string;
+  isDeleted?: boolean;
 }
 
 interface FormData {
@@ -36,6 +39,8 @@ export default function StaffManageClient() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [restoring, setRestoring] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"active" | "deleted">("active");
 
   // Modal state: null = closed, "add" = add modal, staffId = edit modal
   const [modal, setModal] = useState<null | "add" | string>(null);
@@ -49,7 +54,7 @@ export default function StaffManageClient() {
   const fetchStaff = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/staff");
+      const res = await fetch("/api/admin/staff?status=all");
       if (res.ok) {
         const data = await res.json();
         setStaff(data);
@@ -129,7 +134,7 @@ export default function StaffManageClient() {
     try {
       const res = await fetch(`/api/admin/staff/${confirmDelete.id}`, { method: "DELETE" });
       if (res.ok) {
-        setSuccessMsg(`ลบ ${confirmDelete.name} ออกแล้ว`);
+        setSuccessMsg(`ปิดใช้งาน ${confirmDelete.name} แล้ว (ประวัติยังอยู่ครบ)`);
         setTimeout(() => setSuccessMsg(""), 3000);
         setConfirmDelete(null);
         fetchStaff();
@@ -142,22 +147,42 @@ export default function StaffManageClient() {
     }
   };
 
+  const handleRestore = async (member: StaffMember) => {
+    setRestoring(member.id);
+    try {
+      const res = await fetch(`/api/admin/staff/${member.id}/restore`, { method: "POST" });
+      if (res.ok) {
+        setSuccessMsg(`กู้คืนบัญชี ${member.name} สำเร็จแล้ว`);
+        setTimeout(() => setSuccessMsg(""), 3000);
+        fetchStaff();
+      } else {
+        const data = await res.json();
+        alert(data.error || "เกิดข้อผิดพลาดในการกู้คืน");
+      }
+    } finally {
+      setRestoring(null);
+    }
+  };
+
   const editingMember = modal && modal !== "add" ? staff.find((s) => s.id === modal) : null;
+  const activeStaff = staff.filter((s) => !s.isDeleted);
+  const deletedStaff = staff.filter((s) => s.isDeleted);
+  const displayStaff = activeTab === "active" ? activeStaff : deletedStaff;
 
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto min-h-screen font-sans">
       {/* Header */}
-      <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#c3a2ab] mb-2">
             <Users size={12} />
-            Live Streamer Management
+            Live Streamer Management (Soft Delete Protected)
           </div>
           <h1 className="text-[40px] font-display font-black text-gray-900 tracking-tight leading-none">
             จัดการพนักงานไลฟ์
           </h1>
           <p className="text-gray-400 mt-2 font-medium">
-            เพิ่ม แก้ไข หรือลบบัญชีพนักงานไลฟ์ได้ที่นี่
+            เพิ่ม แก้ไข หรือปิดใช้งานบัญชีพนักงานไลฟ์ โดยประวัติการขึ้นไลฟ์และการลาจะไม่สูญหาย
           </p>
         </div>
         <button
@@ -177,6 +202,32 @@ export default function StaffManageClient() {
         </div>
       )}
 
+      {/* Tabs */}
+      <div className="flex items-center gap-2 mb-6 border-b border-gray-100 pb-3">
+        <button
+          onClick={() => setActiveTab("active")}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-[14px] transition-all ${
+            activeTab === "active"
+              ? "bg-gray-900 text-white shadow-lg shadow-black/10"
+              : "text-gray-500 hover:bg-gray-100"
+          }`}
+        >
+          <Users size={16} />
+          พนักงานใช้งานอยู่ ({activeStaff.length})
+        </button>
+        <button
+          onClick={() => setActiveTab("deleted")}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-[14px] transition-all ${
+            activeTab === "deleted"
+              ? "bg-amber-500 text-white shadow-lg shadow-amber-500/20"
+              : "text-gray-500 hover:bg-gray-100"
+          }`}
+        >
+          <Archive size={16} />
+          ปิดใช้งาน / ถังขยะ ({deletedStaff.length})
+        </button>
+      </div>
+
       {/* Staff table */}
       <div className="bg-white rounded-[2.5rem] shadow-xl shadow-black/[0.03] border border-gray-100 overflow-hidden">
         {loading ? (
@@ -184,12 +235,14 @@ export default function StaffManageClient() {
             <Loader2 size={32} className="animate-spin text-[#c3a2ab]" />
             <p className="font-medium">กำลังโหลด...</p>
           </div>
-        ) : staff.length === 0 ? (
+        ) : displayStaff.length === 0 ? (
           <div className="py-24 flex flex-col items-center gap-4 text-gray-400">
             <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center">
-              <Users size={28} className="text-gray-300" />
+              {activeTab === "active" ? <Users size={28} className="text-gray-300" /> : <Archive size={28} className="text-amber-300" />}
             </div>
-            <p className="font-semibold">ยังไม่มีพนักงานในระบบ</p>
+            <p className="font-semibold">
+              {activeTab === "active" ? "ยังไม่มีพนักงานในระบบ" : "ไม่มีพนักงานที่ถูกปิดใช้งาน"}
+            </p>
           </div>
         ) : (
           <table className="w-full">
@@ -204,14 +257,16 @@ export default function StaffManageClient() {
                 <th className="text-left px-4 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400 hidden md:table-cell">
                   อีเมล
                 </th>
-
+                <th className="text-left px-4 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                  สถานะ
+                </th>
                 <th className="text-right px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">
                   จัดการ
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {staff.map((member, index) => (
+              {displayStaff.map((member, index) => (
                 <tr
                   key={member.id}
                   className="group hover:bg-[#faf8f9] transition-colors"
@@ -221,10 +276,10 @@ export default function StaffManageClient() {
                   </td>
                   <td className="px-4 py-5">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-[#c3a2ab]/10 text-[#c3a2ab] flex items-center justify-center font-black text-[16px] shrink-0">
+                      <div className={`w-10 h-10 rounded-2xl ${member.isDeleted ? 'bg-amber-100 text-amber-600' : 'bg-[#c3a2ab]/10 text-[#c3a2ab]'} flex items-center justify-center font-black text-[16px] shrink-0`}>
                         {member.name.slice(-1)}
                       </div>
-                      <span className="font-bold text-gray-900 text-[15px]">
+                      <span className={`font-bold text-[15px] ${member.isDeleted ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
                         {member.name}
                       </span>
                     </div>
@@ -234,23 +289,50 @@ export default function StaffManageClient() {
                       {member.email}
                     </span>
                   </td>
-
+                  <td className="px-4 py-5">
+                    {member.isDeleted ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-600 border border-amber-200">
+                        <Archive size={12} /> ปิดใช้งาน
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
+                        <Check size={12} /> ใช้งานอยู่
+                      </span>
+                    )}
+                  </td>
                   <td className="px-8 py-5">
                     <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => openEdit(member)}
-                        className="flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all"
-                      >
-                        <Pencil size={13} />
-                        แก้ไข
-                      </button>
-                      <button
-                        onClick={() => setConfirmDelete(member)}
-                        className="flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-all"
-                      >
-                        <Trash2 size={13} />
-                        ลบ
-                      </button>
+                      {member.isDeleted ? (
+                        <button
+                          onClick={() => handleRestore(member)}
+                          disabled={restoring === member.id}
+                          className="flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-xl transition-all border border-amber-200"
+                        >
+                          {restoring === member.id ? (
+                            <Loader2 size={13} className="animate-spin" />
+                          ) : (
+                            <RotateCcw size={13} />
+                          )}
+                          กู้คืนบัญชี
+                        </button>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => openEdit(member)}
+                            className="flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all"
+                          >
+                            <Pencil size={13} />
+                            แก้ไข
+                          </button>
+                          <button
+                            onClick={() => setConfirmDelete(member)}
+                            className="flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-all"
+                          >
+                            <Trash2 size={13} />
+                            ปิดใช้งาน
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -376,18 +458,20 @@ export default function StaffManageClient() {
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-black/20 w-full max-w-sm p-8 animate-in fade-in zoom-in-95 duration-200">
-            <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-6">
-              <Trash2 size={26} />
+            <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-6">
+              <Archive size={26} />
             </div>
             <h2 className="text-[22px] font-display font-black text-gray-900 text-center mb-2">
-              ยืนยันการลบ?
+              ยืนยันการปิดใช้งาน?
             </h2>
-            <p className="text-center text-gray-500 text-[14px] font-medium mb-8">
-              คุณกำลังจะลบบัญชีของ{" "}
+            <p className="text-center text-gray-500 text-[14px] font-medium mb-6">
+              คุณกำลังจะปิดใช้งานบัญชีของ{" "}
               <span className="font-black text-gray-900">{confirmDelete.name}</span>
-              <br />
-              <span className="text-red-400 text-[12px]">การกระทำนี้ไม่สามารถย้อนกลับได้</span>
             </p>
+            <div className="p-4 bg-emerald-50 rounded-2xl text-[12px] text-emerald-800 font-medium mb-6 border border-emerald-100 flex items-start gap-2">
+              <Check size={16} className="shrink-0 text-emerald-600 mt-0.5" />
+              <span>ประวัติการขึ้นไลฟ์และการลาทั้งหมดจะถูกบันทึกไว้อย่างปลอดภัย และคุณสามารถกดกู้คืนบัญชีได้ตลอดเวลา</span>
+            </div>
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDelete(null)}
@@ -398,12 +482,12 @@ export default function StaffManageClient() {
               <button
                 onClick={handleDelete}
                 disabled={!!deleting}
-                className="flex-1 py-3 rounded-2xl bg-red-500 text-white font-bold text-[14px] hover:bg-red-600 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+                className="flex-1 py-3 rounded-2xl bg-amber-500 text-white font-bold text-[14px] hover:bg-amber-600 transition-all flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg shadow-amber-500/20"
               >
                 {deleting ? (
-                  <><Loader2 size={15} className="animate-spin" /> ลบ...</>
+                  <><Loader2 size={15} className="animate-spin" /> กำลังย้าย...</>
                 ) : (
-                  <><Trash2 size={15} /> ลบบัญชี</>
+                  <><Archive size={15} /> ปิดใช้งาน</>
                 )}
               </button>
             </div>

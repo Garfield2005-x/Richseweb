@@ -14,15 +14,27 @@ async function getAdminSession() {
   return user;
 }
 
-// GET /api/admin/staff — list all STAFF users
-export async function GET() {
+// GET /api/admin/staff — list STAFF users (supports ?status=active|deleted|all)
+export async function GET(req: Request) {
   const admin = await getAdminSession();
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const { searchParams } = new URL(req.url);
+  const status = searchParams.get("status");
+
+  const whereCondition: Record<string, unknown> = { role: "STAFF" };
+  if (status === "deleted") {
+    whereCondition.isDeleted = true;
+  } else if (status === "all") {
+    // include all
+  } else {
+    whereCondition.isDeleted = false;
+  }
+
   try {
     const staff = await prisma.user.findMany({
-      where: { role: "STAFF" },
-      select: { id: true, name: true, email: true },
+      where: whereCondition,
+      select: { id: true, name: true, email: true, isDeleted: true },
       orderBy: { name: "asc" },
     });
     return NextResponse.json(staff);
@@ -32,7 +44,7 @@ export async function GET() {
   }
 }
 
-// POST /api/admin/staff — create a new STAFF user
+// POST /api/admin/staff — create or reactivate a STAFF user
 export async function POST(req: Request) {
   const admin = await getAdminSession();
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -44,15 +56,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "กรุณากรอกข้อมูลให้ครบถ้วน" }, { status: 400 });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
     const existing = await prisma.user.findUnique({ where: { email } });
+
     if (existing) {
+      if (existing.isDeleted) {
+        const restored = await prisma.user.update({
+          where: { id: existing.id },
+          data: { name, password: hashedPassword, role: "STAFF", isDeleted: false },
+          select: { id: true, name: true, email: true, isDeleted: true },
+        });
+        return NextResponse.json(restored, { status: 200 });
+      }
       return NextResponse.json({ error: "อีเมลนี้มีในระบบแล้ว" }, { status: 409 });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: { name, email, password: hashedPassword, role: "STAFF" },
-      select: { id: true, name: true, email: true },
+      data: { name, email, password: hashedPassword, role: "STAFF", isDeleted: false },
+      select: { id: true, name: true, email: true, isDeleted: true },
     });
 
     return NextResponse.json(user, { status: 201 });

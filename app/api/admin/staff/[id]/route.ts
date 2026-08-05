@@ -74,21 +74,15 @@ export async function DELETE(
       return NextResponse.json({ error: "ลบได้เฉพาะบัญชีพนักงานเท่านั้น" }, { status: 403 });
     }
 
-    await prisma.$transaction([
-      // clear all related records before deleting the user
-      prisma.loginDevice.deleteMany({ where: { userId: id } }),
-      prisma.session.deleteMany({ where: { userId: id } }),
-      prisma.account.deleteMany({ where: { userId: id } }),
-      prisma.leaveRequest.deleteMany({ where: { userId: id } }),
-      prisma.liveSchedule.deleteMany({ where: { userId: id } }),
-      prisma.liveSession.deleteMany({ where: { userId: id } }),
-      prisma.supportTicket.deleteMany({ where: { userId: id } }),
-      prisma.userCookiePreference.deleteMany({ where: { user_id: id } }),
-      prisma.rewardRedemption.deleteMany({ where: { userId: id } }),
-      prisma.productReview.deleteMany({ where: { userId: id } }),
-      prisma.wishlist.deleteMany({ where: { userId: id } }),
-      prisma.user.delete({ where: { id } }),
-    ]);
+    // Soft delete — set isDeleted to true to preserve all history (LiveSession, LeaveRequest, etc.)
+    await prisma.user.update({
+      where: { id },
+      data: { isDeleted: true },
+    });
+
+    // Clear active sessions for security
+    await prisma.session.deleteMany({ where: { userId: id } });
+
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error(err);
