@@ -103,11 +103,12 @@ export async function GET(request: Request) {
     startDate   = startDateParam;
     endDate     = endDateParam;
     periodLabel = `${startDate} ถึง ${endDate}`;
-    const [sy, sm] = startDate.split('-');
-    dim       = daysInMonth(`${sy}-${sm}`);
+    // ฐานคงที่ 30 วัน
+    dim       = 30;
     const d1  = new Date(`${startDate}T00:00:00+07:00`);
     const d2  = new Date(`${endDate}T00:00:00+07:00`);
-    rangedays = Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const rawDays = Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    rangedays = Math.min(rawDays, 30); // cap ที่ 30 วัน
   } else if (monthParam) {
     const [yearStr, monthStr] = monthParam.split('-');
     const year  = Number(yearStr);

@@ -439,6 +439,27 @@ return (
                   />
                 </div>
               </div>
+
+              {/* แสดงจำนวนวันที่เลือก - ตัวโตๆ */}
+              {startDate && endDate && (() => {
+                const days = Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1;
+                return (
+                  <div className="flex items-center justify-center gap-3 bg-gradient-to-r from-white to-[#f9f5f6] border border-[#e0cfd3] rounded-2xl py-3 px-5 shadow-sm flex-wrap">
+                    <span className="text-[10px] font-black uppercase tracking-[0.15em] text-[#c3a2ab]">ช่วงที่เลือก</span>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-4xl font-black text-[#161314] leading-none tabular-nums">{days}</span>
+                      <span className="text-base font-bold text-gray-400">วัน</span>
+                    </div>
+                    {days > 30 && (
+                      <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-700 rounded-xl px-3 py-1">
+                        <span className="text-[10px]">⚠️</span>
+                        <span className="text-[10px] font-black">เกิน 30 วัน — ฐานคำนวณยึดที่ 30 วัน</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
               <div className="flex flex-wrap items-center gap-2 border-t border-gray-200/50 pt-3">
                 <span className="text-xs font-bold text-gray-400 mr-2">เลือกช่วงเวลาด่วน:</span>
                 <button

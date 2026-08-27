@@ -103,6 +103,11 @@ export default function SalaryReportModal({ show, onClose, startDate, endDate }:
 
   const totalNetPay = report ? report.reduce((sum, r) => sum + r.netPay, 0) : 0;
 
+  // คำนวณจำนวนวันที่เลือก
+  const selectedDays = startDate && endDate
+    ? Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1
+    : 0;
+
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in">
       <div className="bg-white rounded-[32px] p-6 sm:p-8 max-w-lg w-full shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
@@ -115,6 +120,22 @@ export default function SalaryReportModal({ show, onClose, startDate, endDate }:
           <p className="text-gray-400 text-xs mt-1">
             ช่วงวันที่: {startDate || '...'} ถึง {endDate || '...'}
           </p>
+
+          {/* จำนวนวันที่เลือก - แสดงตัวโตๆ */}
+          {selectedDays > 0 && (
+            <div className="mt-4 bg-gradient-to-br from-[#f9f5f6] to-white border-2 border-[#e0cfd3] rounded-2xl py-4 px-6 inline-flex flex-col items-center gap-1 shadow-sm">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#c3a2ab]">จำนวนวันที่เลือก</span>
+              <div className="flex items-end gap-2">
+                <span
+                  className="text-6xl font-black text-[#161314] leading-none"
+                  style={{ fontVariantNumeric: 'tabular-nums' }}
+                >
+                  {selectedDays}
+                </span>
+                <span className="text-lg font-bold text-gray-400 mb-1">วัน</span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Calculate Button */}

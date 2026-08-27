@@ -115,13 +115,13 @@ export async function GET(request: Request) {
     startDate = startDateParam;
     endDate = endDateParam;
     monthLabel = `${startDate} ถึง ${endDate}`;
-    // อัตราต่อวัน = เงินเดือน / วันในเดือนของ startDate (ไม่ใช่วันในช่วงที่เลือก)
-    const [sy, sm] = startDate.split('-');
-    dim = daysInMonth(`${sy}-${sm}`);
-    // นับวันจริงที่เลือกเพื่อ prorate เงินเดือนพื้นฐาน
+    // อัตราต่อวัน = เงินเดือน / 30 (ฐานคงที่ 30 วัน)
+    dim = 30;
+    // นับวันจริงที่เลือกเพื่อ prorate เงินเดือนพื้นฐาน — สูงสุด 30 วัน
     const d1 = new Date(`${startDate}T00:00:00+07:00`);
     const d2 = new Date(`${endDate}T00:00:00+07:00`);
-    rangedays = Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const rawDays = Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    rangedays = Math.min(rawDays, 30); // cap ที่ 30 วัน
   } else if (month) {
     startDate = `${month}-01`;
     endDate = `${month}-${daysInMonth(month)}`;

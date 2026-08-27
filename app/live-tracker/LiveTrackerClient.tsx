@@ -896,6 +896,21 @@ const handleFetchAnalytics = async (start: string, end: string) => {
                   />
                 </div>
               </div>
+
+              {/* แสดงจำนวนวันที่เลือก - ตัวโตๆ */}
+              {analyticsStartDate && analyticsEndDate && (() => {
+                const days = Math.round((new Date(analyticsEndDate).getTime() - new Date(analyticsStartDate).getTime()) / (1000 * 60 * 60 * 24)) + 1;
+                return (
+                  <div className="flex items-center justify-center gap-3 bg-gradient-to-r from-[#f9f5f6] to-white border border-[#e0cfd3] rounded-2xl py-3 px-5 shadow-sm">
+                    <span className="text-[10px] font-black uppercase tracking-[0.15em] text-[#c3a2ab]">ช่วงที่เลือก</span>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-4xl font-black text-[#161314] leading-none tabular-nums">{days}</span>
+                      <span className="text-base font-bold text-gray-400">วัน</span>
+                    </div>
+                  </div>
+                );
+              })()}
+
               <div className="flex flex-wrap items-center gap-2 border-t border-gray-200/50 pt-3">
                 <span className="text-xs font-bold text-gray-400 mr-2">เลือกช่วงเวลาด่วน:</span>
                 <button
