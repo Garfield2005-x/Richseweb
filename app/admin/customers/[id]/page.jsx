@@ -274,7 +274,7 @@ export default function CustomerDetail(props) {
                      value={customer.role}
                      disabled={isUpdating}
                      onChange={(e) => handleRoleChange(e.target.value)}
-                     className="bg-transparent border-none outline-none font-bold text-[22px] cursor-pointer text-white appearance-none pr-6 bg-[url('https://api.iconify.design/heroicons:chevron-down.svg')] bg-[length:1.25rem_1.25rem] bg-[right_center] bg-no-repeat filter invert"
+                     className="bg-transparent border-none outline-none font-bold text-[22px] cursor-pointer text-white appearance-none pr-6 bg-chevron-down bg-[length:1.25rem_1.25rem] bg-[right_center] bg-no-repeat filter invert"
                    >
                      <option value="USER" className="text-black">USER</option>
                      <option value="ADMIN" className="text-black">ADMIN</option>

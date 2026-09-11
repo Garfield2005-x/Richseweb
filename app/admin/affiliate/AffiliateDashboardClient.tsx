@@ -368,7 +368,7 @@ export default function AffiliateDashboardClient({
             />
           )}
           <select
-            className="w-full lg:w-auto px-4 py-3 bg-gray-50 border-none rounded-xl md:rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all outline-none text-gray-600 appearance-none bg-[url('https://api.iconify.design/heroicons:chevron-down.svg')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
+            className="w-full lg:w-auto px-4 py-3 bg-gray-50 border-none rounded-xl md:rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all outline-none text-gray-600 appearance-none bg-chevron-down bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -380,7 +380,7 @@ export default function AffiliateDashboardClient({
 
           {activeTab === 'clips' && (
             <select
-              className="w-full lg:w-auto px-4 py-3 bg-gray-50 border-none rounded-xl md:rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all outline-none text-gray-600 appearance-none bg-[url('https://api.iconify.design/heroicons:chevron-down.svg')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
+              className="w-full lg:w-auto px-4 py-3 bg-gray-50 border-none rounded-xl md:rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all outline-none text-gray-600 appearance-none bg-chevron-down bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
               value={campaignFilter}
               onChange={(e) => setCampaignFilter(e.target.value)}
             >

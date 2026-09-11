@@ -631,7 +631,7 @@ const handleFetchAnalytics = async (start: string, end: string) => {
                         <select
                           value={platform}
                           onChange={(e) => setPlatform(e.target.value)}
-                          className="w-full px-5 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all outline-none font-bold text-gray-700 text-base appearance-none bg-[url('https://api.iconify.design/heroicons:chevron-down.svg')] bg-[length:1.2rem_1.2rem] bg-[right_1.2rem_center] bg-no-repeat shadow-sm"
+                          className="w-full px-5 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[#c3a2ab] transition-all outline-none font-bold text-gray-700 text-base appearance-none bg-chevron-down bg-[length:1.2rem_1.2rem] bg-[right_1.2rem_center] bg-no-repeat shadow-sm"
                         >
                           {platforms.map(p => <option key={p} value={p}>{p}</option>)}
                         </select>
@@ -740,7 +740,7 @@ const handleFetchAnalytics = async (start: string, end: string) => {
                             setSelectedHookCategory(e.target.value);
                             handleGenerateHook(e.target.value);
                           }} 
-                          className="w-full mt-1.5 px-4 py-3 bg-white border border-gray-100 rounded-xl outline-none text-xs font-bold text-gray-600 appearance-none bg-[url('https://api.iconify.design/heroicons:chevron-down.svg')] bg-[length:1.2rem_1.2rem] bg-[right_1rem_center] bg-no-repeat"
+                          className="w-full mt-1.5 px-4 py-3 bg-white border border-gray-100 rounded-xl outline-none text-xs font-bold text-gray-600 appearance-none bg-chevron-down bg-[length:1.2rem_1.2rem] bg-[right_1rem_center] bg-no-repeat"
                         >
                           <option value="skincare">เซรั่ม / สกินแคร์</option>
                           <option value="cosmetics">เครื่องสำอาง</option>

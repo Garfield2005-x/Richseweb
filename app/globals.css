@@ -107,3 +107,7 @@ h1, h2, h3, h4, h5, h6 {
          transition-opacity duration-500
          hover:opacity-50;
 }
+
+.bg-chevron-down {
+  background-image: url("https://api.iconify.design/heroicons:chevron-down.svg");
+}

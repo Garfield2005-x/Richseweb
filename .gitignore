@@ -15,14 +15,24 @@
 
 # next.js
 /.next/
+/.next_dev/
 /out/
+/dist/
 
 # production
 /build
 
+# PWA service worker generated files
+/public/sw.js
+/public/sw.js.map
+/public/workbox-*.js
+/public/workbox-*.js.map
+
 # misc
 .DS_Store
 *.pem
+~$*.docx
+/public/uploads/
 ._*
 
 # debug

@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 0.0.0.0 --webpack",
-    "build": "prisma generate && next build",
+    "dev": "node --require ./scripts/patch-fs-readlink.cjs node_modules/next/dist/bin/next dev -H 0.0.0.0 --webpack",
+    "build": "prisma generate && node --require ./scripts/patch-fs-readlink.cjs node_modules/next/dist/bin/next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate && node scripts/patch-all.cjs"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
@@ -20,6 +21,8 @@
     "@vercel/blob": "^2.3.3",
     "bcryptjs": "^3.0.3",
     "date-fns": "^4.1.0",
+    "docxtemplater": "^3.69.3",
+    "docxtemplater-image-module-free": "^1.1.1",
     "exceljs": "^4.4.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^0.577.0",
@@ -27,6 +30,7 @@
     "next-auth": "^4.24.13",
     "next-pwa": "^5.6.0",
     "nodemailer": "^7.0.13",
+    "pizzip": "^3.2.0",
     "prisma": "^5.22.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",

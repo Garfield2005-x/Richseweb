@@ -1,18 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { signIn, getSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import LoadingRichse from "@/app/components/LoadingRichse";
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +33,21 @@ export default function LoginPage() {
       } else {
         const session = await getSession();
         const role = (session?.user as { role?: string })?.role;
+        const userEmail = session?.user?.email?.toLowerCase().trim();
+        const inputEmail = email.toLowerCase().trim();
+
+        // 1. ถ้ามี callbackUrl ระบุมา (เช่น redirect มาจาก /expense)
+        if (callbackUrl && callbackUrl.startsWith("/")) {
+          router.push(callbackUrl);
+          return;
+        }
+
+        // 2. ถ้าเป็นบัญชีทีมคอนเทนต์ ให้ตรงไปที่หน้าใบเบิกค่าใช้จ่ายทันที
+        if (inputEmail === "content@richse.com" || userEmail === "content@richse.com") {
+          router.push("/expense");
+          return;
+        }
+
         if (role === "STAFF") {
           router.push("/live-tracker");
         } else if (role === "AFFILIATE") {
@@ -145,5 +162,13 @@ export default function LoginPage() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoadingRichse />}>
+      <LoginForm />
+    </Suspense>
   );
 }

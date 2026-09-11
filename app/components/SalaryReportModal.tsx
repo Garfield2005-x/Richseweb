@@ -43,7 +43,7 @@ export default function SalaryReportModal({ show, onClose, startDate, endDate }:
     setIsFetching(true);
     setReport(null);
     try {
-      const res = await fetch(`/api/salary/calculate?startDate=${startDate}&endDate=${endDate}`);
+      const res = await fetch(`/api/salary/report?startDate=${startDate}&endDate=${endDate}`);
       const data = await res.json();
       if (data.success) {
         setReport(data.report);

@@ -50,6 +50,13 @@ model User {
   commissionRateShopee Float    @default(0.03)
   cookiePreferences UserCookiePreference?
 
+  // Staff profile fields
+  position      String?  // ตำแหน่งงาน
+  bankName      String?  // ชื่อธนาคาร
+  accountNumber String?  // เลขที่บัญชี
+
+  expenseRequests ExpenseRequest[]
+
   // Attribution
   signupCampaignId String?
   signupCampaign   MarketingCampaign? @relation("UserSignupCampaign", fields: [signupCampaignId], references: [id])
@@ -530,4 +537,28 @@ model SupportTicket {
 
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@map("support_tickets")
+}
+
+model ExpenseRequest {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date          DateTime
+  employeeName  String
+  position      String
+  accountNumber String
+  bankName      String
+
+  items         Json     // [{ no, description, purpose, amount, note }]
+  totalAmount   Float
+  imageUrls     String[] // URLs of receipt images
+
+  status        String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  adminNote     String?  @db.Text
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("expense_requests")
 }

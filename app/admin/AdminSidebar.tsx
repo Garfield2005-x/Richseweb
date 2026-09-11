@@ -71,6 +71,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/admin/staff-manage", icon: "manage_accounts", label: "พนักงานไลฟ์", accent: "text-violet-400" },
       { href: "/admin/live-tracking", icon: "sensors", label: "Live Tracking", accent: "text-red-400" },
       { href: "/admin/staff-commission", icon: "percent", label: "ค่าคอมพนักงาน", accent: "text-indigo-400" },
+      { href: "/admin/expense", icon: "receipt_long", label: "ใบเบิกค่าใช้จ่าย", accent: "text-amber-400" },
     ],
   },
   {

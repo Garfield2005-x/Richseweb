@@ -1,3 +1,4 @@
+import "./scripts/patch-fs-readlink.cjs";
 import type { NextConfig } from "next";
 import withPWAInit from "@ducanh2912/next-pwa";
 
@@ -10,6 +11,9 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  distDir: "dist",
+  reactStrictMode: true,
+  transpilePackages: ["next-auth"],
   turbopack: {},
   images: {
     remotePatterns: [
