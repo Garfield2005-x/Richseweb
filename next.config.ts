@@ -11,7 +11,8 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  distDir: "dist",
+  // "dist" is needed on Windows dev to avoid EPERM issues; Vercel must use default ".next"
+  distDir: process.env.VERCEL ? ".next" : "dist",
   reactStrictMode: true,
   transpilePackages: ["next-auth"],
   turbopack: {},
