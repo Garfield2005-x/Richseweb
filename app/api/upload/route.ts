@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { put } from "@vercel/blob";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
 
 const MAX_SIZE_MB = 10;
 
@@ -11,9 +9,9 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "กรุณาเข้าสู่ระบบใหม่อีกครั้ง (Session Expired)" }, { status: 401 });
     }
-    const userId = (session.user as { id?: string })?.id || 'user';
+    const userId = (session.user as { id?: string })?.id || "user";
 
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
@@ -32,48 +30,38 @@ export async function POST(req: NextRequest) {
 
     const mimeToExt: Record<string, string> = {
       "image/jpeg": "jpg",
-      "image/jpg": "jpg",
-      "image/png": "png",
+      "image/jpg":  "jpg",
+      "image/png":  "png",
       "image/webp": "webp",
-      "image/gif": "gif",
+      "image/gif":  "gif",
       "image/heic": "jpg",
       "image/heif": "jpg",
       "image/avif": "jpg",
     };
 
-    const ext = mimeToExt[file.type] || "jpg";
-    const filename = `expenses/${userId}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
-
-    // 1. พยายามอัปโหลดไปที่ Vercel Blob (ถ้ามี Token)
-    const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
-    if (blobToken) {
-      try {
-        const blob = await put(filename, file, {
-          access: "public",
-          contentType: file.type || "image/jpeg",
-          token: blobToken,
-        });
-        return NextResponse.json({ url: blob.url });
-      } catch (blobErr) {
-        console.warn("Vercel Blob upload failed, falling back to local filesystem:", blobErr);
-      }
+    if (!(file.type in mimeToExt)) {
+      return NextResponse.json(
+        { error: `ไม่รองรับไฟล์ประเภท ${file.type} กรุณาใช้ไฟล์รูปภาพ` },
+        { status: 400 }
+      );
     }
 
-    // 2. Fallback สำรอง: บันทึกลง public/uploads/expenses/
+    const ext = mimeToExt[file.type] ?? "jpg";
+    const filename = `expenses/${userId}_${Date.now()}.${ext}`;
+
     try {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const uploadDir = join(process.cwd(), "public", "uploads", "expenses");
-      await mkdir(uploadDir, { recursive: true });
+      const blob = await put(filename, file, {
+        access: "public",
+        contentType: file.type,
+        token: process.env.BLOB_READ_WRITE_TOKEN,
+      });
 
-      const localFileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
-      const localFilePath = join(uploadDir, localFileName);
-      await writeFile(localFilePath, buffer);
-
-      return NextResponse.json({ url: `/uploads/expenses/${localFileName}` });
-    } catch (localErr) {
-      console.error("Local storage error:", localErr);
+      return NextResponse.json({ url: blob.url });
+    } catch (blobError: unknown) {
+      console.error("Vercel Blob Storage Error:", blobError);
+      const errorMessage = blobError instanceof Error ? blobError.message : "Unknown error";
       return NextResponse.json(
-        { error: "ไม่สามารถบันทึกไฟล์ได้ กรุณาลองใหม่อีกครั้ง" },
+        { error: "ระบบ Storage มีปัญหา: " + errorMessage },
         { status: 500 }
       );
     }
