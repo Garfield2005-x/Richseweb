@@ -168,7 +168,7 @@ export default function ExpenseFormClient() {
     setItems(prev => prev.map((item, i) => i === idx ? { ...item, [field]: value } : item));
   };
 
-  // Submit
+  // Submit → บันทึก + ดาวน์โหลด docx ทันที
   const handleSubmit = async () => {
     if (!employeeName.trim() || !position.trim() || !accountNumber.trim() || !bankName.trim()) {
       toast.error('กรุณากรอกข้อมูลส่วนตัวให้ครบ');
@@ -180,7 +180,9 @@ export default function ExpenseFormClient() {
     }
 
     setSubmitting(true);
+    const toastId = toast.loading('กำลังสร้างเอกสาร...');
     try {
+      // 1. บันทึกลง DB (ไม่ต้องเก็บภาพแล้ว)
       const res = await fetch('/api/expense', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -192,23 +194,45 @@ export default function ExpenseFormClient() {
           bankName,
           items: items.map((item, idx) => ({ no: String(idx + 1), ...item })),
           totalAmount,
-          imageUrls,
+          imageUrls: [], // ไม่เก็บภาพใน DB
         }),
       });
 
       const data = await res.json();
-      if (data.success) {
-        toast.success('ส่งใบเบิกเรียบร้อยแล้ว!');
-        // Reset form
-        setItems([emptyItem()]);
-        setImageUrls([]);
-        setDate(new Date().toISOString().split('T')[0]);
-        fetchRequests();
-      } else {
-        toast.error(data.error || 'เกิดข้อผิดพลาด');
+      if (!data.success) {
+        toast.error(data.error || 'เกิดข้อผิดพลาด', { id: toastId });
+        return;
       }
-    } catch {
-      toast.error('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+
+      const expenseId = data.expense.id;
+
+      // 2. ดาวน์โหลด docx พร้อมภาพ (ส่ง imageUrls ไปใน query)
+      const urlParams = new URLSearchParams();
+      imageUrls.forEach(u => urlParams.append('img', u));
+      const docxRes = await fetch(
+        `/api/expense/${expenseId}/docx?${urlParams.toString()}`
+      );
+
+      if (!docxRes.ok) throw new Error('สร้างเอกสารไม่สำเร็จ');
+
+      const blob = await docxRes.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `expense_${employeeName.replace(/\s+/g, '_')}.docx`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      toast.success('ส่งใบเบิกและดาวน์โหลดเอกสารสำเร็จ!', { id: toastId });
+
+      // 3. Reset form
+      setItems([emptyItem()]);
+      setImageUrls([]);
+      setDate(new Date().toISOString().split('T')[0]);
+      fetchRequests();
+    } catch (err) {
+      console.error(err);
+      toast.error('เกิดข้อผิดพลาดในการสร้างเอกสาร', { id: toastId });
     } finally {
       setSubmitting(false);
     }
@@ -622,20 +646,7 @@ export default function ExpenseFormClient() {
                           </div>
                         )}
 
-                        {/* Image receipts */}
-                        {req.imageUrls.length > 0 && (
-                          <div>
-                            <p className="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-2">หลักฐาน / สลิป</p>
-                            <div className="flex flex-wrap gap-2">
-                              {req.imageUrls.map((url, i) => (
-                                <a key={i} href={url} target="_blank" rel="noreferrer" className="block w-16 h-16 rounded-xl overflow-hidden border border-gray-200 hover:scale-105 transition-transform">
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img src={url} alt={`receipt-${i + 1}`} className="w-full h-full object-cover" />
-                                </a>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+                        {/* ภาพแนบอยู่ในไฟล์ .docx ที่ดาวน์โหลดแล้ว */}
                       </div>
                     )}
                   </div>
